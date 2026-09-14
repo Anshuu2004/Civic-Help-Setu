@@ -1,0 +1,271 @@
+export const MOCK_SERVICES = [
+  {
+    id: 'birth-certificate',
+    name: 'Birth Certificate',
+    shortDescription: 'Official record of a person\'s birth, required for various legal and identity purposes.',
+    category: 'Certificates',
+    type: 'Online / Offline',
+    difficulty: 'Medium',
+    eligibility: ['Parents of the newborn', 'Individuals without a birth certificate'],
+    documents: [
+      'Proof of birth from hospital (if born in hospital)',
+      'Parents\' identity proof (Aadhaar/Voter ID)',
+      'Marriage certificate of parents (in some regions)'
+    ],
+    steps: [
+      { title: 'Register the birth', description: 'Ensure the hospital has registered the birth, or register it locally within 21 days.' },
+      { title: 'Gather documents', description: 'Collect hospital discharge summary and parents\' ID proofs.' },
+      { title: 'Apply online/offline', description: 'Submit the application via the local municipal portal or visit the registrar office.' }
+    ],
+    fees: 'Typically ₹20 - ₹100 (varies by state and time elapsed since birth)',
+    processingTime: '7 - 30 days',
+    officialSources: [
+      { name: 'National Government Services Portal', url: 'https://services.india.gov.in', verified: true }
+    ],
+    warnings: ['Late registration (after 21 days) may require an affidavit and additional fees.', 'Information may vary by state.'],
+    lastVerified: '2023-10-01'
+  },
+  {
+    id: 'aadhaar-card',
+    name: 'Aadhaar Card Enrollment',
+    shortDescription: '12-digit unique identity number based on biometric and demographic data.',
+    category: 'Identity',
+    type: 'Offline (Appointment Online)',
+    difficulty: 'Medium',
+    eligibility: ['Any resident of India'],
+    documents: [
+      'Proof of Identity (POI) (e.g., PAN, Passport, Voter ID)',
+      'Proof of Address (POA) (e.g., Passport, Bank Statement, Utility Bill)',
+      'Proof of Date of Birth (DOB) (e.g., Birth Certificate, SSLC Certificate)'
+    ],
+    steps: [
+      { title: 'Locate an Enrollment Center', description: 'Find a nearby Aadhaar Seva Kendra or authorized bank/post office.' },
+      { title: 'Book an Appointment (Optional)', description: 'Book online to save time.' },
+      { title: 'Visit the Center', description: 'Carry original documents. Provide biometrics (fingerprints, iris) and demographic details.' },
+      { title: 'Collect Acknowledgment Slip', description: 'Keep the 14-digit EID number safe to track status.' }
+    ],
+    fees: 'Free for new enrollment',
+    processingTime: 'Up to 90 days',
+    officialSources: [
+      { name: 'UIDAI Official Website', url: 'https://uidai.gov.in', verified: true }
+    ],
+    warnings: ['Always carry original documents to the center for verification.', 'Do not share your Aadhaar OTP with anyone.'],
+    lastVerified: '2023-11-05'
+  },
+  {
+    id: 'driving-license',
+    name: 'Driving License',
+    shortDescription: 'Official document certifying authorization to drive a motor vehicle.',
+    category: 'Transport',
+    type: 'Online / Offline',
+    difficulty: 'Hard',
+    eligibility: ['18+ years of age (for regular vehicles)', 'Must hold a valid Learner\'s License for at least 30 days'],
+    documents: [
+      'Valid Learner\'s License',
+      'Address Proof (Aadhaar, Passport, etc.)',
+      'Age Proof (Birth Certificate, PAN, etc.)',
+      'Passport size photographs'
+    ],
+    steps: [
+      { title: 'Apply for Learner\'s License', description: 'Pass the written traffic rules test.' },
+      { title: 'Practice Driving', description: 'Wait at least 30 days.' },
+      { title: 'Apply for Permanent License', description: 'Book a driving test slot online.' },
+      { title: 'Pass Driving Test', description: 'Take the test at the RTO with your vehicle.' }
+    ],
+    fees: 'Approx ₹200 - ₹1000 depending on vehicle class',
+    processingTime: '30 - 45 days after passing the test',
+    officialSources: [
+      { name: 'Parivahan Sewa', url: 'https://parivahan.gov.in', verified: true }
+    ],
+    warnings: ['You must bring a vehicle of the correct class for the driving test.'],
+    lastVerified: '2023-09-15'
+  },
+  {
+    id: 'pan-card',
+    name: 'PAN Card (Permanent Account Number)',
+    shortDescription: '10-digit alphanumeric identity issued by the Income Tax Department.',
+    category: 'Identity',
+    type: 'Online',
+    difficulty: 'Easy',
+    eligibility: ['Indian Citizens (Form 49A)', 'Foreign Citizens (Form 49AA)'],
+    documents: [
+      'Identity Proof (Aadhaar is generally sufficient for e-KYC)',
+      'Address Proof',
+      'Date of Birth Proof'
+    ],
+    steps: [
+      { title: 'Visit NSDL or UTIITSL', description: 'Go to the official portal.' },
+      { title: 'Fill Form 49A', description: 'Provide details and choose physical or e-PAN.' },
+      { title: 'Pay Fees', description: 'Pay online via net banking or cards.' },
+      { title: 'Aadhaar e-KYC', description: 'Authenticate using Aadhaar OTP (no document upload needed).' }
+    ],
+    fees: '₹107 for physical card (domestic dispatch)',
+    processingTime: '15 - 20 days (e-PAN in a few hours if e-KYC is used)',
+    officialSources: [
+      { name: 'NSDL PAN Portal', url: 'https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html', verified: true }
+    ],
+    warnings: ['Linking PAN with Aadhaar is mandatory.'],
+    lastVerified: '2023-12-01'
+  },
+  {
+    id: 'voter-id',
+    name: 'Voter ID Registration',
+    shortDescription: 'EPIC card required to cast a vote in democratic elections.',
+    category: 'Identity',
+    type: 'Online',
+    difficulty: 'Easy',
+    eligibility: ['Indian citizen', '18 years of age or older as of January 1st of the year'],
+    documents: [
+      'Passport size photograph',
+      'Age proof (Birth certificate, PAN, Aadhaar)',
+      'Address proof (Aadhaar, Utility bill, Passport)'
+    ],
+    steps: [
+      { title: 'Visit NVSP Portal', description: 'Go to the National Voter\'s Service Portal.' },
+      { title: 'Fill Form 6', description: 'Fill the form for new registration.' },
+      { title: 'Upload Documents', description: 'Attach digital copies of age and address proofs.' },
+      { title: 'Submit & Track', description: 'Note the reference ID to track application status.' }
+    ],
+    fees: 'Free',
+    processingTime: '30 - 60 days',
+    officialSources: [
+      { name: 'Voter\'s Service Portal', url: 'https://voters.eci.gov.in', verified: true }
+    ],
+    warnings: ['A physical verification by a Booth Level Officer (BLO) may happen before approval.'],
+    lastVerified: '2023-08-20'
+  },
+  {
+    id: 'passport',
+    name: 'New Passport Application',
+    shortDescription: 'Travel document issued by the Government for international travel.',
+    category: 'Identity',
+    type: 'Online / Offline',
+    difficulty: 'Medium',
+    eligibility: ['Citizens of India'],
+    documents: [
+      'Proof of Present Address (e.g., Aadhaar, Utility bill)',
+      'Proof of Date of Birth (e.g., Birth Certificate, PAN, School passing certificate)',
+      'Documentary proof for Non-ECR categories (if applicable)'
+    ],
+    steps: [
+      { title: 'Register on Passport Seva', description: 'Create an account and fill the application form.' },
+      { title: 'Pay & Schedule', description: 'Pay the fee and book an appointment at a Passport Seva Kendra (PSK).' },
+      { title: 'Visit PSK', description: 'Arrive on time with original documents.' },
+      { title: 'Police Verification', description: 'Wait for police verification at your address.' }
+    ],
+    fees: '₹1500 (Standard 36 pages) / Additional for Tatkaal',
+    processingTime: '30 - 45 days (Standard)',
+    officialSources: [
+      { name: 'Passport Seva', url: 'https://www.passportindia.gov.in', verified: true }
+    ],
+    warnings: ['Any discrepancy in documents can cause severe delays. Names must match exactly across all IDs.'],
+    lastVerified: '2023-11-10'
+  },
+  {
+    id: 'ration-card',
+    name: 'Ration Card Application',
+    shortDescription: 'Document issued by state governments for purchasing subsidized food.',
+    category: 'Social Welfare',
+    type: 'Online / Offline',
+    difficulty: 'Medium',
+    eligibility: ['Indian citizen', 'Not holding a ration card in any other state'],
+    documents: [
+      'Identity proof of the head of family',
+      'Address proof',
+      'Income certificate',
+      'Photographs of family members'
+    ],
+    steps: [
+      { title: 'Check State Portal', description: 'Ration cards are state-specific. Find your state\'s food department portal.' },
+      { title: 'Fill Application', description: 'Provide details of all family members.' },
+      { title: 'Submit Documents', description: 'Attach income proof and Aadhaar details.' },
+      { title: 'Verification', description: 'A field verification may be conducted.' }
+    ],
+    fees: 'Nominal fee (₹5 - ₹50 depending on state)',
+    processingTime: '15 - 30 days',
+    officialSources: [
+      { name: 'NFSA Portal', url: 'https://nfsa.gov.in', verified: true }
+    ],
+    warnings: ['Eligibility and card type (BPL/APL) depend heavily on the submitted income certificate.'],
+    lastVerified: '2023-07-15'
+  },
+  {
+    id: 'income-certificate',
+    name: 'Income Certificate',
+    shortDescription: 'Official document recording the annual income of an individual or family.',
+    category: 'Certificates',
+    type: 'Online',
+    difficulty: 'Easy',
+    eligibility: ['Residents of the respective state needing proof for scholarships, schemes, etc.'],
+    documents: [
+      'Aadhaar Card',
+      'Salary slips or IT returns (if employed)',
+      'Affidavit of income (if informal sector)'
+    ],
+    steps: [
+      { title: 'Visit e-District Portal', description: 'Go to your state\'s e-District portal.' },
+      { title: 'Register/Login', description: 'Create an account.' },
+      { title: 'Fill Form & Upload', description: 'Enter family income details and upload proofs.' },
+      { title: 'Download Certificate', description: 'Once approved by the Tehsildar, download it digitally.' }
+    ],
+    fees: '₹15 - ₹30',
+    processingTime: '7 - 15 days',
+    officialSources: [
+      { name: 'State e-District Portals', url: 'https://services.india.gov.in', verified: true }
+    ],
+    warnings: ['Usually valid for only 6 to 12 months from the date of issue.'],
+    lastVerified: '2023-10-25'
+  },
+  {
+    id: 'pf-withdrawal',
+    name: 'EPF Withdrawal',
+    shortDescription: 'Process to withdraw Provident Fund savings online.',
+    category: 'Employment',
+    type: 'Online',
+    difficulty: 'Medium',
+    eligibility: ['Employees with active UAN', 'Aadhaar linked to UAN', 'Bank details verified in EPF'],
+    documents: [
+      'UAN and Password',
+      'Cancelled cheque (if not already verified)'
+    ],
+    steps: [
+      { title: 'Login to Member Portal', description: 'Access the EPFO Unified Portal.' },
+      { title: 'Check KYC', description: 'Ensure Aadhaar, PAN, and Bank details are verified.' },
+      { title: 'Go to Online Services', description: 'Select Claim (Form-31, 19, 10C & 10D).' },
+      { title: 'Authenticate', description: 'Submit via Aadhaar OTP.' }
+    ],
+    fees: 'Free',
+    processingTime: '3 - 7 working days',
+    officialSources: [
+      { name: 'EPFO Member Portal', url: 'https://unifiedportal-mem.epfindia.gov.in', verified: true }
+    ],
+    warnings: ['Withdrawing before 5 years of continuous service may attract TDS.'],
+    lastVerified: '2024-01-05'
+  },
+  {
+    id: 'public-grievance',
+    name: 'File Public Grievance (CPGRAMS)',
+    shortDescription: 'Register complaints regarding central or state government services.',
+    category: 'Complaints',
+    type: 'Online',
+    difficulty: 'Easy',
+    eligibility: ['Any citizen facing issues with government departments'],
+    documents: [
+      'Supporting documents of the complaint (PDF format)'
+    ],
+    steps: [
+      { title: 'Visit CPGRAMS', description: 'Go to pgportal.gov.in.' },
+      { title: 'Register', description: 'Sign up using mobile number/email.' },
+      { title: 'Lodge Grievance', description: 'Select the department and describe the issue clearly.' },
+      { title: 'Attach Proofs', description: 'Upload relevant files.' },
+      { title: 'Track', description: 'Use the registration number to track action taken.' }
+    ],
+    fees: 'Free',
+    processingTime: 'Maximum 30 days (as per guidelines)',
+    officialSources: [
+      { name: 'CPGRAMS Portal', url: 'https://pgportal.gov.in', verified: true }
+    ],
+    warnings: ['RTI matters, court cases, and religious matters cannot be filed here.'],
+    lastVerified: '2023-12-15'
+  }
+];
