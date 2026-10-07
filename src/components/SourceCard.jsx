@@ -7,19 +7,23 @@ const SourceCard = ({ source }) => {
       href={source.url} 
       target="_blank" 
       rel="noopener noreferrer"
-      className="flex items-start gap-4 p-5 rounded-2xl border-2 border-light bg-white hover:border-accent-light hover:shadow-md transition-all group"
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', borderRadius: '1rem', textDecoration: 'none', transition: 'all 0.3s ease',
+        background: 'var(--glass-bg-subtle)', border: '1px solid var(--border-main)'
+      }}
+      onMouseOver={(e) => { e.currentTarget.style.background = 'var(--glass-bg)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
+      onMouseOut={(e) => { e.currentTarget.style.background = 'var(--glass-bg-subtle)'; e.currentTarget.style.borderColor = 'var(--border-main)'; }}
     >
-      <div className="flex items-center gap-3">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {source.verified ? (
-          <CheckCircle size={20} style={{ color: 'var(--success)' }} />
+          <CheckCircle size={20} color="var(--success)" fill="rgba(52, 211, 153, 0.1)" />
         ) : (
-          <ExternalLink size={20} className="text-muted" />
+          <ExternalLink size={20} color="var(--text-tertiary)" />
         )}
-        <span className="font-medium">{source.name}</span>
+        <span style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '1rem' }}>{source.name}</span>
       </div>
-      <ExternalLink size={16} className="text-muted" />
+      <ExternalLink size={16} color="var(--text-tertiary)" />
     </a>
   );
 };
-
 export default SourceCard;

@@ -267,5 +267,59 @@ export const MOCK_SERVICES = [
     ],
     warnings: ['RTI matters, court cases, and religious matters cannot be filed here.'],
     lastVerified: '2023-12-15'
+  },
+  {
+    id: 'udyam-registration',
+    name: 'Udyam Registration (MSME)',
+    shortDescription: 'Official registration for Micro, Small and Medium Enterprises in India.',
+    category: 'Business',
+    type: 'Online',
+    difficulty: 'Easy',
+    eligibility: ['Any individual intending to establish a micro, small or medium enterprise', 'Must possess a valid Aadhaar number'],
+    documents: [
+      'Aadhaar Number of proprietor/partner',
+      'PAN Card',
+      'Bank Account details of the business'
+    ],
+    steps: [
+      { title: 'Visit Udyam Portal', description: 'Go to the official Udyam Registration website.' },
+      { title: 'Aadhaar Verification', description: 'Enter Aadhaar and validate via OTP.' },
+      { title: 'Fill Enterprise Details', description: 'Provide PAN, plant location, and bank details.' },
+      { title: 'Generate Certificate', description: 'Submit the form to instantly generate your Udyam Certificate.' }
+    ],
+    fees: 'Free (Do not pay any agent)',
+    processingTime: 'Instant / 1-2 days',
+    officialSources: [
+      { name: 'Udyam Registration Portal', url: 'https://udyamregistration.gov.in', verified: true }
+    ],
+    warnings: ['The process is strictly online and totally free of cost. Beware of fake sites charging money.'],
+    lastVerified: '2024-02-10'
+  },
+  {
+    id: 'pm-kisan',
+    name: 'PM Kisan Samman Nidhi',
+    shortDescription: 'Financial benefit scheme providing ₹6,000 per year to eligible farmer families.',
+    category: 'Agriculture',
+    type: 'Online / Offline',
+    difficulty: 'Medium',
+    eligibility: ['Small and marginal farmer families holding cultivable land', 'Must not be institutional land holders or high income earners'],
+    documents: [
+      'Aadhaar Card',
+      'Land holding papers (Khatauni)',
+      'Savings Bank Account details'
+    ],
+    steps: [
+      { title: 'Visit PM Kisan Portal', description: 'Access pmkisan.gov.in or visit a local CSC.' },
+      { title: 'New Farmer Registration', description: 'Select Rural or Urban farmer and enter Aadhaar.' },
+      { title: 'Fill Land Details', description: 'Upload land holding records and bank details.' },
+      { title: 'e-KYC', description: 'Complete mandatory e-KYC using Aadhaar OTP or biometrics.' }
+    ],
+    fees: 'Free at portal (CSC may charge nominal fee)',
+    processingTime: 'Varies based on state verification',
+    officialSources: [
+      { name: 'PM Kisan Portal', url: 'https://pmkisan.gov.in', verified: true }
+    ],
+    warnings: ['Mandatory e-KYC is required to receive installments. Land holding must be registered in the farmer\'s name.'],
+    lastVerified: '2024-01-20'
   }
 ];

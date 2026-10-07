@@ -11,147 +11,136 @@ const ServiceDetails = () => {
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    // Mock fetching data
     const found = MOCK_SERVICES.find(s => s.id === id);
     setService(found);
-
-    // Check if saved in localStorage
     const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
-    if (saved.some(s => s.id === id)) {
-      setIsSaved(true);
-    }
+    if (saved.some(s => s.id === id)) setIsSaved(true);
   }, [id]);
 
   const toggleSave = () => {
     if (!service) return;
-    
     let saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
-    if (isSaved) {
-      saved = saved.filter(s => s.id !== service.id);
-    } else {
-      saved.push({ id: service.id, name: service.name, category: service.category });
-    }
+    if (isSaved) saved = saved.filter(s => s.id !== service.id);
+    else saved.push({ id: service.id, name: service.name, category: service.category });
     localStorage.setItem('civicbridge_saved', JSON.stringify(saved));
     setIsSaved(!isSaved);
   };
 
-  if (!service) {
-    return (
-      <div className="container py-12 text-center">
-        <h2 className="text-2xl font-bold mb-4">Service not found</h2>
-        <Link to="/services" className="text-accent hover:underline">Return to directory</Link>
-      </div>
-    );
-  }
+  if (!service) return (
+    <div className="section container" style={{ textAlign: 'center' }}>
+      <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Service not found</h2>
+      <Link to="/services" className="btn btn-secondary">Return to directory</Link>
+    </div>
+  );
 
   return (
-    <div className="container max-w-4xl pt-20 pb-24">
-      <div className="mb-8">
-        <Link to="/services" className="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors">
-          <ArrowLeft size={16} /> Back to Services
-        </Link>
-      </div>
-
-      <div className="card mb-8 p-8 md:p-12">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="badge">{service.category}</span>
-              <span className="text-sm text-muted">{service.type}</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight">{service.name}</h1>
-            <p className="text-lg text-muted">{service.shortDescription}</p>
-          </div>
-          <button 
-            onClick={toggleSave}
-            className="flex items-center gap-2 px-4 py-2 rounded-md border border-light bg-secondary hover:bg-main transition-colors text-sm font-medium"
-            style={{ 
-              borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-light)',
-              color: isSaved ? 'var(--accent-main)' : 'inherit'
-            }}
-          >
-            <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
-            {isSaved ? 'Saved' : 'Save Guide'}
-          </button>
+    <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
+      <div className="container" style={{ maxWidth: '900px' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <Link to="/services" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontWeight: '500', transition: 'color 0.3s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+            <ArrowLeft size={18} /> Back to Services
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-tertiary rounded-lg border border-light">
-          <div className="flex items-start gap-3">
-            <CreditCard className="text-muted mt-1" size={20} />
+        <div className="glass-panel" style={{ padding: '3rem', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '2rem', marginBottom: '2rem' }}>
             <div>
-              <h4 className="font-semibold text-sm">Expected Fees</h4>
-              <p className="text-sm">{service.fees}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                <span style={{ padding: '0.25rem 0.75rem', background: 'var(--accent-light)', color: 'var(--accent-main)', borderRadius: '99px', fontSize: '0.875rem', fontWeight: '600' }}>{service.category}</span>
+                <span style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)', fontWeight: '500' }}>{service.type}</span>
+              </div>
+              <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '800', lineHeight: '1.2', marginBottom: '1rem' }}>{service.name}</h1>
+              <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '600px' }}>{service.shortDescription}</p>
+            </div>
+            
+            <button 
+              onClick={toggleSave}
+              className="btn btn-secondary"
+              style={{ 
+                background: isSaved ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
+                borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-main)',
+                color: isSaved ? 'var(--accent-main)' : 'var(--text-primary)'
+              }}
+            >
+              <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
+              {isSaved ? 'Saved' : 'Save Guide'}
+            </button>
+          </div>
+
+          <div className="grid-2" style={{ marginBottom: '2.5rem' }}>
+            <div style={{ background: 'var(--glass-bg-subtle)', border: '1px solid var(--border-light)', padding: '1.5rem', borderRadius: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <CreditCard size={24} color="var(--text-tertiary)" />
+              <div>
+                <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Expected Fees</h4>
+                <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-primary)' }}>{service.fees}</p>
+              </div>
+            </div>
+            <div style={{ background: 'var(--glass-bg-subtle)', border: '1px solid var(--border-light)', padding: '1.5rem', borderRadius: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+              <Clock size={24} color="var(--text-tertiary)" />
+              <div>
+                <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Processing Time</h4>
+                <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-primary)' }}>{service.processingTime}</p>
+              </div>
             </div>
           </div>
-          <div className="flex items-start gap-3">
-            <Clock className="text-muted mt-1" size={20} />
-            <div>
-              <h4 className="font-semibold text-sm">Processing Time</h4>
-              <p className="text-sm">{service.processingTime}</p>
+
+          {service.warnings && service.warnings.length > 0 && (
+            <div style={{ padding: '1.5rem', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '1rem', marginBottom: '2.5rem' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', color: '#fbbf24', marginBottom: '1rem', fontSize: '1.125rem' }}>
+                <AlertTriangle size={20} /> Important Notice
+              </h3>
+              <ul style={{ paddingLeft: '1.5rem', color: '#fcd34d', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {service.warnings.map((warning, idx) => <li key={idx} style={{ listStyleType: 'disc' }}>{warning}</li>)}
+              </ul>
             </div>
-          </div>
-        </div>
+          )}
 
-        {service.warnings && service.warnings.length > 0 && (
-          <div className="mb-8 p-4 rounded-lg bg-orange-50 border border-orange-200" style={{ backgroundColor: '#fff7ed', borderColor: '#ffedd5' }}>
-            <h3 className="flex items-center gap-2 font-bold text-orange-800 mb-2">
-              <AlertTriangle size={20} /> Important
-            </h3>
-            <ul className="list-disc pl-5 text-orange-800 space-y-1">
-              {service.warnings.map((warning, idx) => (
-                <li key={idx} className="text-sm">{warning}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+            <section>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility</h2>
+              <ul style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)', fontSize: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {service.eligibility.map((item, idx) => <li key={idx} style={{ listStyleType: 'disc' }}>{item}</li>)}
+              </ul>
+            </section>
 
-        <div className="space-y-10">
-          <section>
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b border-light">Eligibility</h2>
-            <ul className="list-disc pl-5 space-y-2 text-muted">
-              {service.eligibility.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-          </section>
+            <section>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Required Documents</h2>
+              <Checklist items={service.documents} />
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b border-light">Required Documents</h2>
-            <Checklist items={service.documents} />
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b border-light">Steps</h2>
-            <div className="space-y-6">
-              {service.steps.map((step, idx) => (
-                <div key={idx} className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-light text-accent flex items-center justify-center font-bold text-sm">
-                    {String(idx + 1).padStart(2, '0')}
+            <section>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Steps</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {service.steps.map((step, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '1.5rem' }}>
+                    <div style={{ width: '3rem', height: '3rem', flexShrink: 0, borderRadius: '50%', background: 'var(--glass-bg)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '1.125rem', color: 'var(--text-secondary)' }}>
+                      {String(idx + 1).padStart(2, '0')}
+                    </div>
+                    <div style={{ paddingTop: '0.25rem' }}>
+                      <h3 style={{ fontWeight: '700', fontSize: '1.125rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{step.title}</h3>
+                      <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>{step.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold mb-1">{step.title}</h3>
-                    <p className="text-muted">{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b border-light">Official Resources</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {service.officialSources.map((source, idx) => (
-                <SourceCard key={idx} source={source} />
-              ))}
-            </div>
-          </section>
-        </div>
+            <section>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Official Resources</h2>
+              <div className="grid-2">
+                {service.officialSources.map((source, idx) => (
+                  <SourceCard key={idx} source={source} />
+                ))}
+              </div>
+            </section>
+          </div>
 
-        <div className="mt-12 pt-6 border-t border-light flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted">
-          <div>Last Verified: {service.lastVerified}</div>
-          <button className="flex items-center gap-2 text-muted hover:text-error transition-colors">
-            <Flag size={16} /> Report incorrect information
-          </button>
+          <div style={{ marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Last Verified: {service.lastVerified}</div>
+            <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--error)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}>
+              <Flag size={14} /> Report incorrect information
+            </button>
+          </div>
         </div>
       </div>
     </div>

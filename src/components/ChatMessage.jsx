@@ -11,7 +11,7 @@ const ChatMessage = ({ role, content }) => {
         className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm`}
         style={{ 
           backgroundColor: isAssistant ? 'var(--accent-light)' : 'var(--accent-main)',
-          color: isAssistant ? 'var(--accent-main)' : 'white'
+          color: isAssistant ? 'var(--accent-main)' : 'var(--text-primary)'
         }}
       >
         {isAssistant ? <Shield size={24} /> : <User size={24} />}
@@ -22,8 +22,8 @@ const ChatMessage = ({ role, content }) => {
           isAssistant ? 'bg-white rounded-tl-sm border border-light' : 'bg-accent-main text-white rounded-tr-sm'
         }`}
         style={{
-          backgroundColor: isAssistant ? 'white' : 'var(--accent-main)',
-          color: isAssistant ? 'inherit' : 'white'
+          backgroundColor: isAssistant ? 'var(--text-primary)' : 'var(--accent-main)',
+          color: isAssistant ? 'inherit' : 'var(--text-primary)'
         }}
       >
         {content}

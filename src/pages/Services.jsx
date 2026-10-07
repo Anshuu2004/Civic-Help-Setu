@@ -5,55 +5,60 @@ import SearchBox from '../components/SearchBox';
 
 const Services = () => {
   const [filter, setFilter] = useState('All');
-  
   const categories = ['All', ...new Set(MOCK_SERVICES.map(s => s.category))];
-
-  const filteredServices = filter === 'All' 
-    ? MOCK_SERVICES 
-    : MOCK_SERVICES.filter(s => s.category === filter);
+  const filteredServices = filter === 'All' ? MOCK_SERVICES : MOCK_SERVICES.filter(s => s.category === filter);
 
   return (
-    <div className="container pt-20 pb-24">
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">Service Directory</h1>
-        <p className="text-xl text-muted mb-10 max-w-3xl">
-          Browse our collection of simplified guides for government and public services.
-        </p>
-        
-        <div className="max-w-2xl">
-          <SearchBox placeholder="Search the directory..." size="large" />
+    <div className="section animate-fade-in">
+      <div className="container" style={{ maxWidth: '1200px' }}>
+        <div style={{ marginBottom: '3rem' }}>
+          <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem' }}>Service Directory</h1>
+          <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', maxWidth: '800px' }}>
+            Browse our comprehensive, simplified guides for government and public services.
+          </p>
+          <div style={{ maxWidth: '800px', marginBottom: '3rem' }}>
+            <SearchBox placeholder="Search the directory..." size="large" />
+          </div>
         </div>
-      </div>
 
-      <div className="flex flex-wrap gap-3 mb-12">
-        {categories.map(cat => (
-          <button 
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-5 py-2.5 rounded-full text-base font-bold transition-all shadow-sm ${
-              filter === cat 
-                ? 'bg-accent-main text-white transform scale-105' 
-                : 'bg-white text-muted hover:text-accent hover:border-accent-light border border-transparent'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {filteredServices.length > 0 ? (
-        <div className="masonry-grid pb-12">
-          {filteredServices.map(service => (
-            <ServiceCard key={service.id} service={service} />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '3rem' }}>
+          {categories.map(cat => (
+            <button 
+              key={cat}
+              onClick={() => setFilter(cat)}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '99px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+                background: filter === cat ? 'var(--text-primary)' : 'var(--glass-bg)',
+                color: filter === cat ? 'var(--bg-main)' : 'var(--text-secondary)',
+                border: filter === cat ? '1px solid transparent' : '1px solid var(--border-main)',
+                cursor: 'pointer',
+                boxShadow: filter === cat ? '0 0 15px var(--glass-border-strong)' : 'none'
+              }}
+            >
+              {cat}
+            </button>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-20 bg-secondary rounded-3xl border border-light">
-          <p className="text-xl text-muted font-bold">No services found for this category.</p>
-        </div>
-      )}
+
+        {filteredServices.length > 0 ? (
+          <div className="grid-3 pb-12">
+            {filteredServices.map((service, index) => (
+              <div key={service.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
+                 <ServiceCard service={service} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+            <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', fontWeight: '600' }}>No services found for this category.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
 export default Services;

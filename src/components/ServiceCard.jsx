@@ -6,29 +6,31 @@ const ServiceCard = ({ service }) => {
   return (
     <Link 
       to={`/services/${service.id}`} 
-      className="card flex flex-col justify-between h-full hover:animate-float-hover group block"
+      className="card"
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', textDecoration: 'none' }}
     >
       <div>
-        <div className="flex items-center justify-between mb-6">
-          <span className="badge" style={{ transform: 'translateY(-5px) translateX(-5px)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <span style={{ padding: '0.25rem 0.75rem', background: 'var(--accent-light)', color: 'var(--accent-main)', borderRadius: '99px', fontSize: '0.875rem', fontWeight: '600', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
             {service.category}
           </span>
-          <span className="text-sm font-bold text-muted bg-secondary px-3 py-1 rounded-full">{service.type}</span>
+          <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-tertiary)', background: 'var(--glass-bg)', padding: '0.25rem 0.75rem', borderRadius: '99px', border: '1px solid var(--border-light)' }}>
+            {service.type}
+          </span>
         </div>
-        <h3 className="text-2xl font-bold mb-3 leading-tight group-hover:text-accent transition-colors">{service.name}</h3>
-        <p className="text-muted mb-6 text-lg">{service.shortDescription}</p>
+        <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem', color: 'var(--text-primary)', transition: 'color 0.3s' }} onMouseOver={(e) => e.target.style.color = 'var(--accent-main)'} onMouseOut={(e) => e.target.style.color = 'var(--text-primary)'}>{service.name}</h3>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '2rem', lineHeight: '1.6' }}>{service.shortDescription}</p>
       </div>
       
-      <div className="mt-4 pt-6" style={{ borderTop: '2px dashed var(--border-light)' }}>
-        <div className="flex items-center justify-between font-bold text-accent group-hover:text-accent-hover transition-colors">
-          <span className="flex items-center gap-2"><BookOpen size={20} /> View Guide</span>
-          <div className="bg-accent-light p-2 rounded-full group-hover:bg-accent-main group-hover:text-white transition-all">
-            <ArrowRight size={20} />
-          </div>
+      <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px dashed var(--border-main)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600', color: 'var(--accent-main)', fontSize: '0.875rem' }}>
+          <BookOpen size={18} /> View Guide
+        </span>
+        <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'var(--glass-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)', transition: 'all 0.3s' }}>
+          <ArrowRight size={18} />
         </div>
       </div>
     </Link>
   );
 };
-
 export default ServiceCard;
