@@ -28,8 +28,9 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div style={{ display: 'none', gap: '0.5rem', alignItems: 'center' }} className="md-flex">
           <Link to="/services" className="nav-link">Services</Link>
+          <Link to="/track" className="nav-link">Track Status</Link>
           <Link to="/assistant" className="nav-link">AI Assistant</Link>
-          {user && <Link to="/saved" className="nav-link">Saved Guides</Link>}
+          {user && <Link to="/vault" className="nav-link">Doc Vault</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
           
           <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title="Toggle Theme">
@@ -62,7 +63,9 @@ const Navbar = () => {
       {isOpen && (
         <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid var(--border-main)' }}>
           <Link to="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Services</Link>
+          <Link to="/track" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Track Status</Link>
           <Link to="/assistant" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>AI Assistant</Link>
+          {user && <Link to="/vault" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Document Vault</Link>}
           {user && <Link to="/saved" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Saved Guides</Link>}
           {user && user.role === 'admin' && <Link to="/admin" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--accent-main)' }}>Admin Portal</Link>}
           

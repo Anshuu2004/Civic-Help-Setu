@@ -6,24 +6,27 @@ const ChatMessage = ({ role, content }) => {
   const isAssistant = role === 'assistant';
   
   return (
-    <div className={`flex gap-4 ${isAssistant ? '' : 'flex-row-reverse'} mb-6`}>
+    <div style={{ display: 'flex', gap: '1rem', flexDirection: isAssistant ? 'row' : 'row-reverse', marginBottom: '1.5rem' }} className="animate-fade-in">
       <div 
-        className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-sm`}
         style={{ 
+          width: '3rem', height: '3rem', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
           backgroundColor: isAssistant ? 'var(--accent-light)' : 'var(--accent-main)',
-          color: isAssistant ? 'var(--accent-main)' : 'var(--text-primary)'
+          color: isAssistant ? 'var(--accent-main)' : 'var(--bg-main)'
         }}
       >
         {isAssistant ? <Shield size={24} /> : <User size={24} />}
       </div>
       
       <div 
-        className={`max-w-[85%] rounded-3xl p-6 shadow-sm text-sm md:text-base leading-relaxed ${
-          isAssistant ? 'bg-white rounded-tl-sm border border-light' : 'bg-accent-main text-white rounded-tr-sm'
-        }`}
         style={{
-          backgroundColor: isAssistant ? 'var(--text-primary)' : 'var(--accent-main)',
-          color: isAssistant ? 'inherit' : 'var(--text-primary)'
+          maxWidth: '85%', padding: '1.5rem', fontSize: '1.05rem', lineHeight: '1.6',
+          borderRadius: '1.5rem',
+          borderTopLeftRadius: isAssistant ? '0.25rem' : '1.5rem',
+          borderTopRightRadius: isUser ? '0.25rem' : '1.5rem',
+          backgroundColor: isAssistant ? 'var(--glass-bg-hover)' : 'var(--accent-main)',
+          color: isAssistant ? 'var(--text-primary)' : 'var(--bg-main)',
+          border: isAssistant ? '1px solid var(--border-main)' : 'none',
+          boxShadow: 'var(--shadow-md)'
         }}
       >
         {content}

@@ -15,6 +15,8 @@ import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
+import Track from './pages/Track';
+import Vault from './pages/Vault';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user } = useAuth();
@@ -44,10 +46,17 @@ function App() {
               <Route path="/assistant" element={<Assistant />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/:id" element={<ServiceDetails />} />
+              <Route path="/track" element={<Track />} />
               
               <Route path="/saved" element={
                 <ProtectedRoute>
                   <Saved />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/vault" element={
+                <ProtectedRoute>
+                  <Vault />
                 </ProtectedRoute>
               } />
               

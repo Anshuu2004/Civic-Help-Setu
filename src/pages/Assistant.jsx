@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Send, RotateCcw, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { Send, RotateCcw, AlertCircle, Loader2, Sparkles, Mic, MicOff } from 'lucide-react';
 import ChatMessage from '../components/ChatMessage';
 import { askCivicAssistant } from '../ai/civicAssistant';
 import SourceCard from '../components/SourceCard';
@@ -9,11 +9,12 @@ const Assistant = () => {
   const [messages, setMessages] = useState([
     { 
       role: 'assistant', 
-      content: 'Hello! I am the CivicBridge Assistant. Tell me what you need help with, for example: "I need to apply for a birth certificate."' 
+      content: 'Hello! I am the CivicBridge AI Assistant. Tell me what you need help with, for example: "I need to apply for a birth certificate."' 
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
   
@@ -81,6 +82,24 @@ const Assistant = () => {
                 </div>
               </div>
             )}
+
+            {/* Render AI Suggestions */}
+            {response.suggestions && response.suggestions.length > 0 && (
+              <div className="mt-6 pt-4">
+                <p className="text-sm font-bold text-text-tertiary mb-3 uppercase tracking-wider">Suggested Questions</p>
+                <div className="flex flex-wrap gap-2">
+                  {response.suggestions.map((suggestion, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => handleSendMessage(suggestion)}
+                      className="px-4 py-2 rounded-full border border-accent-light bg-accent-light/10 text-accent-main text-sm hover:bg-accent-main hover:text-bg-main transition-colors text-left"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )
       };
@@ -91,6 +110,46 @@ const Assistant = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const toggleVoiceInput = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Voice input is not supported in this browser.");
+      return;
+    }
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('');
+      setInput(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error(event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
   };
 
   const handleClear = () => {
@@ -104,72 +163,97 @@ const Assistant = () => {
   };
 
   return (
-    <div className="container max-w-4xl pt-20 pb-24">
-      <div className="flex justify-between items-end mb-8 border-b border-light pb-6">
-        <div>
-          <h1 className="text-4xl font-bold flex items-center gap-3">
-            <Sparkles className="text-accent-main" size={32} />
-            CivicBridge Assistant
-          </h1>
-          <p className="text-xl text-muted mt-2 font-medium">Tell me what you need help with in plain English.</p>
-        </div>
-        <button 
-          onClick={handleClear}
-          className="text-muted hover:text-error transition-colors flex items-center gap-2 font-bold text-sm bg-white px-4 py-2 rounded-full shadow-sm"
-        >
-          <RotateCcw size={16} /> Clear chat
-        </button>
-      </div>
-
-      <div className="flex flex-col gap-8 mb-12">
-        {messages.map((msg, idx) => (
-          <ChatMessage key={idx} role={msg.role} content={msg.content} />
-        ))}
-        
-        {isLoading && (
-          <div className="p-8 flex items-center gap-4 text-accent-main font-bold text-lg card animate-float-slow">
-            <Loader2 size={28} className="animate-spin" />
-            <span>Consulting civic records...</span>
+    <div className="section animate-fade-in" style={{ paddingBottom: '8rem' }}>
+      <div className="container" style={{ maxWidth: '900px' }}>
+        <div className="flex-between" style={{ marginBottom: '2rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '1.5rem' }}>
+          <div>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Sparkles color="var(--accent-main)" size={32} />
+              AI Assistant
+            </h1>
+            <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontWeight: '500' }}>Tell me what you need help with in plain English.</p>
           </div>
-        )}
-        
-        {error && (
-          <div className="p-6 m-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl flex items-center gap-3 text-base shadow-sm">
-            <AlertCircle size={24} />
-            {error}
-            <button onClick={() => handleSendMessage(messages[messages.length-1].content)} className="ml-auto btn btn-primary text-sm px-4 py-2">Retry</button>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Sticky Input Area */}
-      <div className="sticky bottom-8 z-10 w-full animate-float" style={{ animationDelay: '2s' }}>
-        <form 
-          onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-          className="flex gap-3 bg-white p-2 rounded-full shadow-lg border border-light backdrop-blur-md"
-        >
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="E.g., I lost my Aadhaar card..."
-            className="input-field border-none shadow-none bg-transparent flex-1 focus:ring-0 focus:box-shadow-none"
-            style={{ boxShadow: 'none' }}
-            disabled={isLoading}
-          />
           <button 
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${input.trim() && !isLoading ? 'bg-accent-main text-white hover:scale-105 shadow-md' : 'bg-secondary text-muted'}`}
+            onClick={handleClear}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '600', fontSize: '0.875rem', background: 'var(--glass-bg)', padding: '0.5rem 1rem', borderRadius: '99px', color: 'var(--text-secondary)', border: '1px solid var(--border-light)', cursor: 'pointer', transition: 'all 0.3s' }}
+            onMouseOver={(e) => e.currentTarget.style.color = 'var(--error)'}
+            onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
           >
-            <Send size={20} className={input.trim() && !isLoading ? 'ml-1' : ''} />
+            <RotateCcw size={16} /> Clear chat
           </button>
-        </form>
-        <p className="text-sm font-bold text-center text-muted mt-4 bg-white/50 inline-block px-4 py-1 rounded-full backdrop-blur-sm mx-auto w-max block shadow-sm border border-white">
-          AI can make mistakes. Always verify information with official sources.
-        </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '3rem' }}>
+          {messages.map((msg, idx) => (
+            <ChatMessage key={idx} role={msg.role} content={msg.content} />
+          ))}
+          
+          {isLoading && (
+            <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--accent-main)', fontWeight: '700', fontSize: '1.125rem' }}>
+              <Loader2 size={28} className="animate-spin" style={{ animation: 'spin 2s linear infinite' }} />
+              <span>Analyzing your request...</span>
+            </div>
+          )}
+          
+          {error && (
+            <div style={{ padding: '1.5rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: 'var(--error)', borderRadius: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '500' }}>
+              <AlertCircle size={24} />
+              {error}
+              <button onClick={() => handleSendMessage(messages[messages.length-1].content)} className="btn btn-primary" style={{ marginLeft: 'auto', padding: '0.5rem 1rem', fontSize: '0.875rem' }}>Retry</button>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Sticky Input Area */}
+        <div style={{ position: 'sticky', bottom: '2rem', zIndex: 10 }}>
+          <form 
+            onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
+            style={{ display: 'flex', gap: '0.75rem', background: 'var(--bg-main)', padding: '0.5rem', borderRadius: '99px', boxShadow: 'var(--shadow-lg)', border: '1px solid var(--border-main)' }}
+          >
+            <button
+              type="button"
+              onClick={toggleVoiceInput}
+              style={{
+                width: '3rem', height: '3rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isListening ? 'var(--error)' : 'var(--glass-bg)',
+                color: isListening ? 'var(--bg-main)' : 'var(--text-primary)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.3s'
+              }}
+              title={isListening ? "Stop listening" : "Use Voice Input"}
+            >
+              {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+            </button>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={isListening ? "Listening..." : "E.g., I lost my Aadhaar card..."}
+              className="input-field"
+              style={{ border: 'none', background: 'transparent', flex: 1, padding: '0 1rem', boxShadow: 'none' }}
+              disabled={isLoading}
+            />
+            <button 
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              style={{
+                width: '3rem', height: '3rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: input.trim() && !isLoading ? 'var(--accent-main)' : 'var(--glass-bg)',
+                color: input.trim() && !isLoading ? 'var(--bg-main)' : 'var(--text-tertiary)',
+                border: 'none', cursor: input.trim() && !isLoading ? 'pointer' : 'default', transition: 'all 0.3s'
+              }}
+            >
+              <Send size={20} style={{ marginLeft: input.trim() && !isLoading ? '2px' : '0' }} />
+            </button>
+          </form>
+          <p style={{ textAlign: 'center', fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-tertiary)', marginTop: '1rem' }}>
+            AI responses may contain inaccuracies. Always verify with official authorities.
+          </p>
+        </div>
       </div>
+      <style>{`
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 };
