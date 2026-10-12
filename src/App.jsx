@@ -55,7 +55,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup/*" element={<SignUpPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/sso-callback" element={<SSOCallback />} />
+                <Route path="/signup/sso-callback" element={<SSOCallback />} />
                 <Route path="/assistant" element={<Assistant />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/:id" element={<ServiceDetails />} />

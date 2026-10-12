@@ -1,7 +1,11 @@
 import { AuthenticateWithRedirectCallback } from '@clerk/react';
 import { Loader2, ShieldCheck } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const SSOCallback = () => {
+  const [searchParams] = useSearchParams();
+  const signInRedirect = searchParams.get('sign_in_force_redirect_url') || '/';
+  const signUpRedirect = searchParams.get('sign_up_force_redirect_url') || '/';
   return (
     <div className="section flex-center" style={{ minHeight: '85vh', textAlign: 'center' }}>
       <div className="glass-panel animate-fade-in" style={{ padding: '3rem 2.5rem', maxWidth: '420px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
@@ -14,7 +18,10 @@ const SSOCallback = () => {
         </p>
         <Loader2 size={32} className="animate-spin" color="var(--accent-main)" style={{ marginTop: '0.5rem' }} />
         <div style={{ marginTop: '0.5rem', opacity: 0, height: 0, overflow: 'hidden' }}>
-          <AuthenticateWithRedirectCallback signInForceRedirectUrl="/" signUpForceRedirectUrl="/" />
+          <AuthenticateWithRedirectCallback
+            signInForceRedirectUrl={signInRedirect}
+            signUpForceRedirectUrl={signUpRedirect}
+          />
         </div>
       </div>
     </div>
