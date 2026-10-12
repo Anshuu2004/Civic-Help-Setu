@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MOCK_SERVICES } from '../data/services';
 import { BarChart3, CheckSquare, AlertTriangle, MessageSquare, Users, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -28,7 +28,12 @@ const Admin = () => {
         <div className="flex-between animate-fade-in" style={{ marginBottom: '3rem', borderBottom: '1px solid var(--border-main)', paddingBottom: '1.5rem' }}>
           <div>
             <h1 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.25rem' }}>Admin Dashboard</h1>
-            <p style={{ color: 'var(--text-secondary)' }}>Welcome back, <span style={{ color: 'var(--accent-main)', fontWeight: '600' }}>{user?.username}</span></p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+              {user?.imageUrl && (
+                <img src={user.imageUrl} alt="" style={{ width: '22px', height: '22px', borderRadius: '50%' }} />
+              )}
+              <p style={{ color: 'var(--text-secondary)' }}>Welcome back, <span style={{ color: 'var(--accent-main)', fontWeight: '600' }}>{user?.username}</span> {user?.email ? `(${user.email})` : ''}</p>
+            </div>
           </div>
           <button onClick={handleLogout} className="btn btn-secondary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
             <LogOut size={16} /> Logout

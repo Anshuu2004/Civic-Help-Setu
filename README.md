@@ -9,6 +9,8 @@ CivicBridge is an open-source civic-tech platform that helps ordinary people und
 - **AI Assistant:** Conversational interface to help you find what you need.
 - **Service Directory:** Searchable directory of public services and procedures.
 - **Verified Sources:** All guides point back to official government resources.
+- **Authentication with Clerk & Google:** Secure single sign-on with Google and email via Clerk.
+- **Digital Document Vault:** Store and verify citizen credentials securely.
 - **Open Source:** Community-driven and privacy-focused.
 
 ## 🚀 Getting Started
@@ -29,8 +31,23 @@ cd civicbridge
 npm install
 ```
 
-3. Set up environment variables
-Copy `.env.example` to `.env` and fill in your keys.
+3. Configure Environment Variables
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+
+Add your Clerk Publishable Key:
+```env
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+```
+
+> **Setting up Google Login in Clerk:**
+> 1. Go to your [Clerk Dashboard](https://dashboard.clerk.com).
+> 2. Navigate to **Configure > Social Connections**.
+> 3. Ensure **Google** is toggled ON (enabled by default in development mode).
+> 4. Copy your **Publishable Key** from **API Keys** and paste it into `.env` as `VITE_CLERK_PUBLISHABLE_KEY`.
+
 
 4. Start the development server
 ```bash

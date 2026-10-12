@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { FileBadge, ShieldCheck, Upload, MoreVertical, CreditCard, Car, FileText, Loader2, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -54,6 +54,18 @@ const Vault = () => {
             <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', fontWeight: '500' }}>
               Securely store and access your civic documents anytime.
             </p>
+            {user && (
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginTop: '1rem', padding: '0.4rem 0.85rem', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)' }}>
+                {user.imageUrl ? (
+                  <img src={user.imageUrl} alt="" style={{ width: '22px', height: '22px', borderRadius: '50%' }} />
+                ) : (
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success)' }}></div>
+                )}
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: '500' }}>
+                  Owner: <strong>{user.username}</strong> {user.email ? `• ${user.email}` : ''}
+                </span>
+              </div>
+            )}
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
