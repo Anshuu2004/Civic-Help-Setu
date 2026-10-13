@@ -1,4 +1,4 @@
-import { AuthenticateWithRedirectCallback } from '@clerk/react';
+import { AuthenticateWithRedirectCallback } from '@clerk/clerk-react';
 import { Loader2, ShieldCheck } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
