@@ -18,6 +18,7 @@ import SignUpPage from './pages/SignUp';
 import SSOCallback from './pages/SSOCallback';
 import Track from './pages/Track';
 import Vault from './pages/Vault';
+import Profile from './pages/Profile';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, loading } = useAuth();
@@ -71,6 +72,12 @@ function App() {
                 <Route path="/vault" element={
                   <ProtectedRoute>
                     <Vault />
+                  </ProtectedRoute>
+                } />
+
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
                   </ProtectedRoute>
                 } />
 

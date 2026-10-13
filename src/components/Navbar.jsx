@@ -49,7 +49,12 @@ const Navbar = () => {
                 </Link>
               )}
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.3rem 0.85rem', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)', fontSize: '0.875rem' }}>
+              <Link
+                to="/profile"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.3rem 0.85rem', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)', fontSize: '0.875rem', transition: 'border-color 0.2s', textDecoration: 'none' }}
+                onMouseOver={e => e.currentTarget.style.borderColor = 'var(--accent-main)'}
+                onMouseOut={e => e.currentTarget.style.borderColor = 'var(--border-light)'}
+              >
                 {user.imageUrl ? (
                   <img
                     src={user.imageUrl}
@@ -65,7 +70,7 @@ const Navbar = () => {
                 <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', borderRadius: '99px', background: user.role === 'admin' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(52, 211, 153, 0.15)', color: user.role === 'admin' ? 'var(--accent-main)' : 'var(--success)' }}>
                   {user.role === 'admin' ? 'Admin' : 'Citizen'}
                 </span>
-              </div>
+              </Link>
 
               <button
                 onClick={handleLogout}
@@ -107,6 +112,7 @@ const Navbar = () => {
           <Link to="/assistant" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>AI Assistant</Link>
           {user && <Link to="/vault" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Document Vault</Link>}
           {user && <Link to="/saved" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Saved Guides</Link>}
+          {user && <Link to="/profile" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>My Profile</Link>}
           {user && user.role === 'admin' && <Link to="/admin" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--accent-main)' }}>Admin Portal</Link>}
           
           <div style={{ width: '100%', height: '1px', background: 'var(--border-main)', margin: '0.5rem 0' }}></div>
