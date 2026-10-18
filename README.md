@@ -27,17 +27,6 @@ Many public services are difficult to understand because they are fragmented acr
 - Theme support and responsive UI
 - Admin route to manage or review platform access
 
-## Screenshots
-
-<p align="center">
-  <img src="./public/hero-bg.png" alt="Civic Help Setu homepage screenshot" width="900" />
-</p>
-
-<div align="center">
-  <img src="./public/hero-bg-2.png" alt="Civic Help Setu services screenshot" width="430" />
-  <img src="./public/hero-bg-3.png" alt="Civic Help Setu assistant screenshot" width="430" />
-</div>
-
 ## Tech stack
 
 - React 19
