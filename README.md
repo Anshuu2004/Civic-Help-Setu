@@ -27,6 +27,18 @@ Many public services are difficult to understand because they are fragmented acr
 - Theme support and responsive UI
 - Admin route to manage or review platform access
 
+## Screenshots
+
+<p align="center">
+  <img src="./public/hero-bg.png" alt="Civic Help Setu landing page" width="900" />
+</p>
+
+<div align="center">
+  <img src="./public/cat-health.png" alt="Health category" width="300" />
+  <img src="./public/cat-finance.png" alt="Finance category" width="300" />
+  <img src="./public/cat-transport.png" alt="Transport category" width="300" />
+</div>
+
 ## Tech stack
 
 - React 19
@@ -67,6 +79,7 @@ Many public services are difficult to understand because they are fragmented acr
 ├── refactor.js
 ├── vercel.json
 ├── vite.config.js
+├── LICENSE
 └── README.md
 ```
 
@@ -156,6 +169,10 @@ npm run lint
 ## Deployment
 
 This project includes a Vercel configuration (`vercel.json`) and is ready for deployment on Vercel or similar hosting platforms.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
