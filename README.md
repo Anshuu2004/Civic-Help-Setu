@@ -30,13 +30,12 @@ Many public services are difficult to understand because they are fragmented acr
 ## Screenshots
 
 <p align="center">
-  <img src="./public/hero-bg.png" alt="Civic Help Setu landing page" width="900" />
+  <img src="./public/hero-bg.png" alt="Civic Help Setu homepage screenshot" width="900" />
 </p>
 
 <div align="center">
-  <img src="./public/cat-health.png" alt="Health category" width="300" />
-  <img src="./public/cat-finance.png" alt="Finance category" width="300" />
-  <img src="./public/cat-transport.png" alt="Transport category" width="300" />
+  <img src="./public/hero-bg-2.png" alt="Civic Help Setu services screenshot" width="430" />
+  <img src="./public/hero-bg-3.png" alt="Civic Help Setu assistant screenshot" width="430" />
 </div>
 
 ## Tech stack
