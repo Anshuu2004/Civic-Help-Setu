@@ -1,61 +1,174 @@
-# CivicBridge
+# Civic Help Setu
 
-**"Making public services easier to understand."**
+A civic-tech web application designed to help citizens easily understand, navigate, and track government and public services.
 
-CivicBridge is an open-source civic-tech platform that helps ordinary people understand and navigate government/public services. We aim to translate complex government processes into simple, structured guides using plain language.
+Civic Help Setu turns complex civic procedures into clear, accessible guidance and combines service discovery, AI assistance, secure user accounts, and document tracking in a single experience.
 
-## 🌟 Features
-- **Simple Language:** Clear, easy-to-understand explanations of government services.
-- **AI Assistant:** Conversational interface to help you find what you need.
-- **Service Directory:** Searchable directory of public services and procedures.
-- **Verified Sources:** All guides point back to official government resources.
-- **Authentication with Clerk & Google:** Secure single sign-on with Google and email via Clerk.
-- **Digital Document Vault:** Store and verify citizen credentials securely.
-- **Open Source:** Community-driven and privacy-focused.
+## Why this project exists
 
-## 🚀 Getting Started
+Many public services are difficult to understand because they are fragmented across agencies, departments, and portals. Civic Help Setu aims to simplify this by:
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm
+- explaining services in plain language
+- helping users find the right public service quickly
+- providing an AI-backed assistant for guidance
+- letting users save and track relevant services
+- storing secure personal documents in a protected vault
+- enabling secure authentication through Clerk
 
-### Installation
-1. Clone the repository
-```bash
-git clone https://github.com/your-org/civicbridge.git
-cd civicbridge
+## Features
+
+- AI-powered civic assistant for practical guidance
+- Browseable directory of public services and procedures
+- Detailed service pages with eligibility and process information
+- Saved services for users to revisit later
+- Tracking dashboard for service progress or status updates
+- Secure authentication with Clerk (email, Google SSO, and protected routes)
+- Digital vault for citizen documents and credentials
+- Theme support and responsive UI
+- Admin route to manage or review platform access
+
+## Tech stack
+
+- React 19
+- Vite
+- React Router
+- Clerk authentication
+- Lucide React icons
+- ESLint
+- Vercel-ready deployment config
+
+## Project structure
+
+```text
+.
+├── .github/
+├── public/
+├── src/
+│   ├── ai/
+│   ├── assets/
+│   ├── components/
+│   ├── context/
+│   ├── data/
+│   ├── pages/
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+├── .env.example
+├── .gitignore
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+├── CHANGELOG.md
+├── SECURITY.md
+├── eslint.config.js
+├── index.html
+├── package.json
+├── package-lock.json
+├── refactor.js
+├── vercel.json
+├── vite.config.js
+└── README.md
 ```
 
-2. Install dependencies
+## Key application flows
+
+The app includes the following main routes:
+
+- Home
+- Assistant
+- Services
+- Service Details
+- Saved
+- Track
+- Vault
+- Profile
+- Login / Sign Up
+- Open Source
+- Privacy Policy
+- Admin
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18 or newer
+- npm
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/GoldRay19/Civic-Help-Setu.git
+cd Civic-Help-Setu
+```
+
+### 2. Install dependencies
+
 ```bash
 npm install
 ```
 
-3. Configure Environment Variables
-Copy `.env.example` to `.env`:
+### 3. Configure environment variables
+
+Copy the sample environment file:
+
 ```bash
 cp .env.example .env
 ```
 
-Add your Clerk Publishable Key:
+Then update `.env` with your values:
+
 ```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+VITE_OPENAI_API_KEY=your_openai_key
+VITE_API_BASE_URL=your_backend_base_url
 ```
 
-> **Setting up Google Login in Clerk:**
-> 1. Go to your [Clerk Dashboard](https://dashboard.clerk.com).
-> 2. Navigate to **Configure > Social Connections**.
-> 3. Ensure **Google** is toggled ON (enabled by default in development mode).
-> 4. Copy your **Publishable Key** from **API Keys** and paste it into `.env` as `VITE_CLERK_PUBLISHABLE_KEY`.
+#### Clerk setup
 
+1. Create an account or sign in at [Clerk](https://dashboard.clerk.com)
+2. Get your publishable key from the Clerk dashboard
+3. Add it to `VITE_CLERK_PUBLISHABLE_KEY` in your `.env` file
 
-4. Start the development server
+## Run the app locally
+
 ```bash
 npm run dev
 ```
 
-## 🤝 Contributing
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
+The app will start in development mode with Vite, usually at:
 
-## 📜 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+```text
+http://localhost:5173
+```
+
+## Production build
+
+```bash
+npm run build
+```
+
+## Linting
+
+```bash
+npm run lint
+```
+
+## Deployment
+
+This project includes a Vercel configuration (`vercel.json`) and is ready for deployment on Vercel or similar hosting platforms.
+
+## Contributing
+
+Contributions are welcome. Please follow the repository standards and review the project docs before making changes.
+
+- open an issue for bug reports or feature requests
+- keep changes focused and well-documented
+- validate with linting and build checks before submitting
+
+## Notes
+
+This repository includes several civic service and user flow components, and the project is structured as a modern front-end application focused on accessibility, clarity, and public service navigation.
+
+## Contact
+
+For project questions or collaboration opportunities, contact the repository owner through GitHub.
