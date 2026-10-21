@@ -1,0 +1,351 @@
+import { useState, useEffect } from 'react';
+import { X, CheckSquare, Plus, Save } from 'lucide-react';
+
+const CATEGORIES = ['Certificates', 'Identity', 'Transport', 'Finance', 'Health', 'Welfare', 'Business'];
+const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
+const MODES = ['Online', 'Offline', 'Online / Offline'];
+
+const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
+  const [form, setForm] = useState({
+    name: '',
+    category: 'Certificates',
+    type: 'Online / Offline',
+    difficulty: 'Medium',
+    shortDescription: '',
+    fees: 'Free of cost',
+    processingTime: '7 - 15 days',
+    officialUrl: 'https://services.india.gov.in',
+    portalName: 'National Government Services Portal',
+    documentsText: '',
+    eligibilityText: '',
+  });
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (serviceToEdit) {
+      setForm({
+        name: serviceToEdit.name || '',
+        category: serviceToEdit.category || 'Certificates',
+        type: serviceToEdit.type || 'Online / Offline',
+        difficulty: serviceToEdit.difficulty || 'Medium',
+        shortDescription: serviceToEdit.shortDescription || '',
+        fees: serviceToEdit.fees || 'Free of cost',
+        processingTime: serviceToEdit.processingTime || '7 - 15 days',
+        officialUrl: serviceToEdit.officialSources?.[0]?.url || 'https://services.india.gov.in',
+        portalName: serviceToEdit.officialSources?.[0]?.name || 'Official Government Portal',
+        documentsText: (serviceToEdit.documents || []).join('\n'),
+        eligibilityText: (serviceToEdit.eligibility || []).join('\n'),
+      });
+    } else {
+      setForm({
+        name: '',
+        category: 'Certificates',
+        type: 'Online / Offline',
+        difficulty: 'Medium',
+        shortDescription: '',
+        fees: 'Free of cost',
+        processingTime: '7 - 15 days',
+        officialUrl: 'https://services.india.gov.in',
+        portalName: 'National Government Services Portal',
+        documentsText: 'Proof of Identity (Aadhaar / Voter ID)\nProof of Address\nPassport size photograph',
+        eligibilityText: 'Indian citizen or resident\nValid identification proof',
+      });
+    }
+  }, [serviceToEdit, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim()) {
+      setError('Service name is required');
+      return;
+    }
+    if (!form.shortDescription.trim()) {
+      setError('Short description is required');
+      return;
+    }
+
+    const documents = form.documentsText
+      .split('\n')
+      .map((d) => d.trim())
+      .filter(Boolean);
+
+    const eligibility = form.eligibilityText
+      .split('\n')
+      .map((e) => e.trim())
+      .filter(Boolean);
+
+    const servicePayload = {
+      ...(serviceToEdit || {}),
+      name: form.name.trim(),
+      category: form.category,
+      type: form.type,
+      difficulty: form.difficulty,
+      shortDescription: form.shortDescription.trim(),
+      fees: form.fees.trim(),
+      processingTime: form.processingTime.trim(),
+      documents,
+      eligibility,
+      officialSources: [
+        {
+          name: form.portalName.trim(),
+          url: form.officialUrl.trim(),
+          verified: true,
+        },
+      ],
+      steps: serviceToEdit?.steps || [
+        { title: 'Gather Documents', description: 'Collect and verify all prerequisite identity proofs.' },
+        { title: 'Online/Offline Submission', description: 'Fill the official form on the designated government portal.' },
+        { title: 'Verification & Issuance', description: 'Officer reviews records and issues the certificate.' },
+      ],
+    };
+
+    onSave(servicePayload);
+    onClose();
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 100,
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+      }}
+    >
+      <div
+        className="card animate-fade-in"
+        style={{
+          width: '100%',
+          maxWidth: '620px',
+          background: 'var(--bg-main)',
+          position: 'relative',
+          padding: '2rem',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+        }}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close dialog"
+          style={{
+            position: 'absolute',
+            top: '1.25rem',
+            right: '1.25rem',
+            background: 'var(--glass-bg)',
+            border: 'none',
+            color: 'var(--text-secondary)',
+            padding: '0.5rem',
+            borderRadius: '50%',
+            cursor: 'pointer',
+          }}
+        >
+          <X size={20} />
+        </button>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--accent-main)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Administrative Panel
+          </span>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginTop: '0.2rem' }}>
+            {serviceToEdit ? 'Edit Service Roadmap' : 'Create New Civic Service Guide'}
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+            Define eligibility rules, fees, processing duration, and official portal URLs.
+          </p>
+        </div>
+
+        {error && (
+          <div style={{ padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '0.5rem', color: 'var(--error, #ef4444)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Service Name *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Caste Certificate, Income Certificate"
+              className="input-field"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Category
+              </label>
+              <select
+                className="input-field"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                style={{ padding: '0.65rem 0.5rem', fontSize: '0.85rem', background: 'var(--glass-bg)' }}
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c} value={c} style={{ background: 'var(--bg-main)' }}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Mode
+              </label>
+              <select
+                className="input-field"
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+                style={{ padding: '0.65rem 0.5rem', fontSize: '0.85rem', background: 'var(--glass-bg)' }}
+              >
+                {MODES.map((m) => (
+                  <option key={m} value={m} style={{ background: 'var(--bg-main)' }}>{m}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Difficulty
+              </label>
+              <select
+                className="input-field"
+                value={form.difficulty}
+                onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
+                style={{ padding: '0.65rem 0.5rem', fontSize: '0.85rem', background: 'var(--glass-bg)' }}
+              >
+                {DIFFICULTIES.map((d) => (
+                  <option key={d} value={d} style={{ background: 'var(--bg-main)' }}>{d}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Plain Language Summary *
+            </label>
+            <textarea
+              rows={2}
+              required
+              placeholder="Explain the service clearly in 1 or 2 sentences."
+              className="input-field"
+              value={form.shortDescription}
+              onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
+              style={{ fontSize: '0.9rem', padding: '0.75rem 1rem', borderRadius: '0.75rem' }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Expected Fees
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. ₹50 (varies by state)"
+                className="input-field"
+                value={form.fees}
+                onChange={(e) => setForm({ ...form, fees: e.target.value })}
+                style={{ fontSize: '0.9rem', padding: '0.7rem 0.9rem' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Processing Duration
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. 7 - 21 days"
+                className="input-field"
+                value={form.processingTime}
+                onChange={(e) => setForm({ ...form, processingTime: e.target.value })}
+                style={{ fontSize: '0.9rem', padding: '0.7rem 0.9rem' }}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Official Portal Name
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. UIDAI Official Portal"
+                className="input-field"
+                value={form.portalName}
+                onChange={(e) => setForm({ ...form, portalName: e.target.value })}
+                style={{ fontSize: '0.9rem', padding: '0.7rem 0.9rem' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                Official Portal URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://..."
+                className="input-field"
+                value={form.officialUrl}
+                onChange={(e) => setForm({ ...form, officialUrl: e.target.value })}
+                style={{ fontSize: '0.9rem', padding: '0.7rem 0.9rem' }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Required Documents (one item per line)
+            </label>
+            <textarea
+              rows={3}
+              placeholder="e.g. Aadhaar Card&#10;Proof of Residence&#10;Salary Certificate"
+              className="input-field"
+              value={form.documentsText}
+              onChange={(e) => setForm({ ...form, documentsText: e.target.value })}
+              style={{ fontSize: '0.85rem', padding: '0.75rem', borderRadius: '0.75rem', fontFamily: 'inherit' }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn btn-secondary"
+              style={{ flex: 1, padding: '0.75rem', fontSize: '0.9rem' }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              style={{ flex: 1, padding: '0.75rem', fontSize: '0.9rem' }}
+            >
+              <Save size={16} /> Save to Directory
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ServiceModal;
