@@ -1,29 +1,41 @@
-import React, { useState } from 'react';
-import { Search, CheckCircle2, Circle, Clock, FileText, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Search, CheckCircle2, Circle, Clock, FileText, ArrowRight, Copy } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
 const Track = () => {
   const [appId, setAppId] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState(null);
+  const { toast } = useToast();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!appId.trim()) return;
+    if (!appId.trim()) {
+      toast.warning('Please enter an application reference ID to track status.');
+      return;
+    }
     
     setIsSearching(true);
     setResult(null);
     
-    // Simulate network delay
+    // Simulate network lookup
     setTimeout(() => {
       setResult({
-        id: appId.toUpperCase(),
+        id: appId.toUpperCase().trim(),
         service: 'Income Certificate',
         date: 'Oct 02, 2024',
         status: 'in-progress',
         estimatedCompletion: 'Oct 12, 2024'
       });
       setIsSearching(false);
-    }, 1200);
+      toast.success('Application record retrieved successfully.', 'Record Found');
+    }, 900);
+  };
+
+  const handleCopyId = () => {
+    if (!result) return;
+    navigator.clipboard?.writeText(result.id);
+    toast.info(`Reference ID ${result.id} copied to clipboard.`);
   };
 
   return (
@@ -66,7 +78,29 @@ const Track = () => {
                   Application Found
                 </span>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginTop: '0.5rem', color: 'var(--text-primary)' }}>{result.service}</h2>
-                <p style={{ color: 'var(--text-tertiary)', marginTop: '0.25rem', fontSize: '1rem' }}>Ref ID: {result.id}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+                  <p style={{ color: 'var(--text-tertiary)', margin: 0, fontSize: '1rem' }}>Ref ID: {result.id}</p>
+                  <button
+                    type="button"
+                    onClick={handleCopyId}
+                    title="Copy Reference ID"
+                    aria-label="Copy Reference ID"
+                    style={{
+                      background: 'var(--border-light)',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      padding: '0.2rem 0.4rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-secondary)'
+                    }}
+                  >
+                    <Copy size={13} /> Copy
+                  </button>
+                </div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Applied on</span>
@@ -117,7 +151,11 @@ const Track = () => {
                 <FileText size={24} color="var(--text-secondary)" />
                 <span style={{ fontWeight: '500', color: 'var(--text-secondary)' }}>View submitted documents</span>
               </div>
-              <button style={{ background: 'none', border: 'none', color: 'var(--accent-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '1rem' }}>
+              <button
+                type="button"
+                onClick={() => toast.info('Official receipt copy available in your Documents Vault.', 'Receipt Available')}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '1rem' }}
+              >
                 View Receipt <ArrowRight size={18} />
               </button>
             </div>
