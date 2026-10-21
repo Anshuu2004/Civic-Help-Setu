@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
+import EligibilityWizard from '../components/eligibility/EligibilityWizard';
 import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -124,10 +125,12 @@ const ServiceDetails = () => {
 
             <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '4rem' }}>
               <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility</h2>
-                <ul style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)', fontSize: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {service.eligibility.map((item, idx) => <li key={idx} style={{ listStyleType: 'disc' }}>{item}</li>)}
-                </ul>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility Criteria</h2>
+                <EligibilityWizard
+                  serviceId={service.id}
+                  staticCriteria={service.eligibility}
+                  onApplyClick={() => (user ? setShowApplyModal(true) : navigate('/login'))}
+                />
               </section>
 
               <section>
