@@ -1,16 +1,38 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const SearchBox = ({ placeholder = "Search for a service...", size = "normal" }) => {
-  const [query, setQuery] = useState('');
+const SearchBox = ({
+  placeholder = 'Search for a service...',
+  size = 'normal',
+  onSearch,
+  value: controlledValue,
+  onChange: controlledOnChange,
+}) => {
+  const [internalQuery, setInternalQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
 
+  const isControlled = controlledValue !== undefined;
+  const currentQuery = isControlled ? controlledValue : internalQuery;
+
+  const handleInputChange = (e) => {
+    if (isControlled && controlledOnChange) {
+      controlledOnChange(e.target.value);
+    } else {
+      setInternalQuery(e.target.value);
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      navigate(`/assistant?q=${encodeURIComponent(query)}`);
+    const q = currentQuery.trim();
+    if (!q) return;
+
+    if (onSearch) {
+      onSearch(q);
+    } else {
+      navigate(`/assistant?q=${encodeURIComponent(q)}`);
     }
   };
 
@@ -18,14 +40,15 @@ const SearchBox = ({ placeholder = "Search for a service...", size = "normal" })
 
   return (
     <form onSubmit={handleSearch} style={{ position: 'relative', width: '100%', zIndex: 10 }}>
-      <div 
-        style={{ 
-          position: 'absolute', 
-          left: isLarge ? '1.5rem' : '1.25rem', 
-          top: '50%', 
-          transform: 'translateY(-50%)', 
+      <div
+        style={{
+          position: 'absolute',
+          left: isLarge ? '1.5rem' : '1.25rem',
+          top: '50%',
+          transform: 'translateY(-50%)',
           color: isFocused ? 'var(--accent-main)' : 'var(--text-tertiary)',
-          transition: 'color 0.3s ease'
+          transition: 'color 0.3s ease',
+          pointerEvents: 'none',
         }}
       >
         <Search size={isLarge ? 24 : 20} strokeWidth={2.5} />
@@ -34,18 +57,18 @@ const SearchBox = ({ placeholder = "Search for a service...", size = "normal" })
         type="text"
         className="input-field"
         placeholder={placeholder}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={currentQuery}
+        onChange={handleInputChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        style={{ 
-          padding: isLarge ? '1.25rem 1.5rem 1.25rem 4rem' : '0.875rem 1rem 0.875rem 3.5rem', 
+        style={{
+          padding: isLarge ? '1.25rem 1.5rem 1.25rem 4rem' : '0.875rem 1rem 0.875rem 3.5rem',
           fontSize: isLarge ? '1.125rem' : '1rem',
-          paddingRight: isLarge ? '9rem' : '6rem' 
+          paddingRight: isLarge ? '9rem' : '6rem',
         }}
       />
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         className="btn-primary"
         style={{
           position: 'absolute',
@@ -60,7 +83,7 @@ const SearchBox = ({ placeholder = "Search for a service...", size = "normal" })
           alignItems: 'center',
           gap: '0.5rem',
           border: 'none',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         <span style={{ fontWeight: '600' }}>Search</span>
