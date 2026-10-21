@@ -1,59 +1,260 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { MOCK_SERVICES } from '../data/services';
-import ServiceCard from '../components/ServiceCard';
-import { BookmarkMinus } from 'lucide-react';
+import { BookmarkMinus, Bookmark, Search, Layers, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {
+  getSavedItems,
+  updateItem,
+  removeItem,
+  clearAllSaved,
+  getFolders,
+} from '../services/savedStorage';
+import FolderTabs from '../components/saved/FolderTabs';
+import ServiceNoteModal from '../components/saved/ServiceNoteModal';
+import SavedItemCard from '../components/saved/SavedItemCard';
 
 const Saved = () => {
-  const [savedServices, setSavedServices] = useState([]);
+  const [savedItems, setSavedItems] = useState([]);
+  const [activeFolder, setActiveFolder] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingModal, setEditingModal] = useState({ isOpen: false, item: null, service: null });
 
   useEffect(() => {
-    const savedIds = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]').map(s => s.id);
-    const services = MOCK_SERVICES.filter(s => savedIds.includes(s.id));
-    setSavedServices(services);
+    setSavedItems(getSavedItems());
   }, []);
 
+  const folders = useMemo(() => getFolders(savedItems), [savedItems]);
+
+  const handleAddFolder = (newFolder) => {
+    setActiveFolder(newFolder);
+  };
+
+  const handleEditNotes = (item, service) => {
+    setEditingModal({ isOpen: true, item, service });
+  };
+
+  const handleSaveNotes = (serviceId, updates) => {
+    const updated = updateItem(serviceId, updates);
+    setSavedItems(updated);
+  };
+
+  const handleRemoveItem = (serviceId) => {
+    const updated = removeItem(serviceId);
+    setSavedItems(updated);
+  };
+
   const clearSaved = () => {
-    if (confirm('Are you sure you want to clear all saved guides?')) {
-      localStorage.removeItem('civicbridge_saved');
-      setSavedServices([]);
+    if (window.confirm('Are you sure you want to clear all your saved service guides?')) {
+      const reset = clearAllSaved();
+      setSavedItems(reset);
     }
   };
 
-  return (
-    <div className="container pt-20 pb-24">
-      <div className="flex justify-between items-end mb-12 border-b border-light pb-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Saved Guides</h1>
-          <p className="text-muted">Quickly access guides you've bookmarked.</p>
-        </div>
-        
-        {savedServices.length > 0 && (
-          <button 
-            onClick={clearSaved}
-            className="flex items-center gap-2 text-sm text-muted hover:text-error transition-colors"
-          >
-            <BookmarkMinus size={16} /> Clear All
-          </button>
-        )}
-      </div>
+  // Match saved items with mock services
+  const populatedItems = useMemo(() => {
+    return savedItems
+      .map((item) => {
+        const service = MOCK_SERVICES.find((s) => s.id === item.serviceId);
+        return service ? { item, service } : null;
+      })
+      .filter(Boolean);
+  }, [savedItems]);
 
-      {savedServices.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {savedServices.map(service => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
+  // Filter by folder and query
+  const filteredItems = useMemo(() => {
+    return populatedItems.filter(({ item, service }) => {
+      const matchesFolder =
+        activeFolder === 'All' ||
+        (item.folder && item.folder.toLowerCase() === activeFolder.toLowerCase());
+
+      const q = searchQuery.toLowerCase().trim();
+      const matchesQuery =
+        !q ||
+        service.name.toLowerCase().includes(q) ||
+        service.category.toLowerCase().includes(q) ||
+        (item.notes && item.notes.toLowerCase().includes(q));
+
+      return matchesFolder && matchesQuery;
+    });
+  }, [populatedItems, activeFolder, searchQuery]);
+
+  return (
+    <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
+      <div className="container" style={{ maxWidth: '1100px' }}>
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            marginBottom: '2.5rem',
+            borderBottom: '1px solid var(--border-main)',
+            paddingBottom: '1.5rem',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-main)', fontSize: '0.85rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.35rem' }}>
+              <Bookmark size={16} /> Personal Bookmark Hub
+            </div>
+            <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3rem)', fontWeight: '800' }}>
+              Saved Guides & Notes
+            </h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '0.25rem' }}>
+              Organize saved civic roadmaps into custom folders with personal checklists and deadlines.
+            </p>
+          </div>
+
+          {savedItems.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button
+                type="button"
+                onClick={clearSaved}
+                className="btn btn-secondary"
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '0.85rem',
+                  color: 'var(--error, #ef4444)',
+                  borderColor: 'rgba(239, 68, 68, 0.3)',
+                }}
+              >
+                <BookmarkMinus size={15} /> Clear All
+              </button>
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="text-center py-16 bg-secondary rounded-lg border border-light">
-          <BookmarkMinus size={48} className="mx-auto text-tertiary mb-4" />
-          <h2 className="text-xl font-bold mb-2">No saved guides</h2>
-          <p className="text-muted mb-6">You haven't saved any guides yet.</p>
-          <Link to="/services" className="btn btn-primary">
-            Explore Services
-          </Link>
-        </div>
-      )}
+
+        {/* Folder Tabs & Search Toolbar */}
+        {savedItems.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '1rem',
+            }}
+          >
+            <FolderTabs
+              folders={folders}
+              activeFolder={activeFolder}
+              onSelectFolder={setActiveFolder}
+              onAddFolder={handleAddFolder}
+            />
+
+            <div style={{ position: 'relative', width: '100%', maxWidth: '280px' }}>
+              <Search
+                size={16}
+                style={{
+                  position: 'absolute',
+                  left: '0.85rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--text-tertiary)',
+                }}
+              />
+              <input
+                type="text"
+                placeholder="Search saved guides..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="input-field"
+                style={{
+                  padding: '0.45rem 0.85rem 0.45rem 2.4rem',
+                  fontSize: '0.875rem',
+                  borderRadius: '99px',
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Content Grid */}
+        {filteredItems.length > 0 ? (
+          <div className="grid-3 pb-12">
+            {filteredItems.map(({ item, service }) => (
+              <SavedItemCard
+                key={service.id}
+                item={item}
+                service={service}
+                onEditNotes={handleEditNotes}
+                onRemove={handleRemoveItem}
+              />
+            ))}
+          </div>
+        ) : savedItems.length > 0 ? (
+          <div
+            className="glass-panel"
+            style={{
+              textAlign: 'center',
+              padding: '3rem 2rem',
+              marginTop: '1.5rem',
+            }}
+          >
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', fontWeight: '600' }}>
+              No saved guides found in folder "{activeFolder}" matching "{searchQuery}".
+            </p>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setSearchQuery('');
+                setActiveFolder('All');
+              }}
+              style={{ marginTop: '1rem', padding: '0.5rem 1.25rem', fontSize: '0.875rem' }}
+            >
+              Show All Saved Guides
+            </button>
+          </div>
+        ) : (
+          <div
+            className="glass-panel"
+            style={{
+              textAlign: 'center',
+              padding: '4rem 2rem',
+              borderRadius: '1.5rem',
+              maxWidth: '600px',
+              margin: '2rem auto',
+            }}
+          >
+            <div
+              style={{
+                width: '4rem',
+                height: '4rem',
+                borderRadius: '50%',
+                background: 'rgba(56, 189, 248, 0.1)',
+                color: 'var(--accent-main)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1rem',
+              }}
+            >
+              <Bookmark size={32} />
+            </div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '0.5rem' }}>
+              No Saved Guides Yet
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1rem' }}>
+              Bookmark government services while browsing to track requirements, attach personal notes, and prepare for in-person visits.
+            </p>
+            <Link to="/services" className="btn btn-primary">
+              Explore Services Directory
+            </Link>
+          </div>
+        )}
+
+        {/* Edit Note Modal */}
+        <ServiceNoteModal
+          isOpen={editingModal.isOpen}
+          item={editingModal.item}
+          service={editingModal.service}
+          onClose={() => setEditingModal({ isOpen: false, item: null, service: null })}
+          onSave={handleSaveNotes}
+        />
+      </div>
     </div>
   );
 };
