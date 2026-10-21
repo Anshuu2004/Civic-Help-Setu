@@ -3,11 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Shield, Menu, X, LogOut, User, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -22,30 +25,32 @@ const Navbar = () => {
           <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem', background: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Shield size={20} color="var(--bg-main)" fill="currentColor" />
           </div>
-          <span style={{ letterSpacing: '-0.02em' }}>CivicBridge</span>
+          <span style={{ letterSpacing: '-0.02em' }}>{t('nav.brand', 'CivicBridge')}</span>
         </Link>
-        
+
         {/* Desktop Nav */}
         <div style={{ display: 'none', gap: '0.5rem', alignItems: 'center' }} className="md-flex">
-          <Link to="/services" className="nav-link">Services</Link>
-          <Link to="/track" className="nav-link">Track Status</Link>
-          <Link to="/assistant" className="nav-link">AI Assistant</Link>
-          {user && <Link to="/vault" className="nav-link">Doc Vault</Link>}
+          <Link to="/services" className="nav-link">{t('nav.services', 'Services')}</Link>
+          <Link to="/track" className="nav-link">{t('nav.track', 'Track Status')}</Link>
+          <Link to="/assistant" className="nav-link">{t('nav.assistant', 'AI Assistant')}</Link>
+          {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
-          
-          <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title="Toggle Theme">
+
+          <LanguageSwitcher />
+
+          <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title={t('nav.toggleTheme', 'Toggle Theme')}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          
+
           {!user ? (
             <Link to="/login" className="btn btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.9rem', marginLeft: '0.5rem' }}>
-              Sign In
+              {t('nav.signIn', 'Sign In')}
             </Link>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: '0.5rem' }}>
               {user.role === 'admin' && (
                 <Link to="/admin" className="nav-link" style={{ color: 'var(--accent-main)', fontWeight: '600' }}>
-                  Admin Portal
+                  {t('nav.admin', 'Admin Portal')}
                 </Link>
               )}
 
@@ -68,14 +73,14 @@ const Navbar = () => {
                   {user.username}
                 </span>
                 <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.45rem', borderRadius: '99px', background: user.role === 'admin' ? 'rgba(56, 189, 248, 0.2)' : 'rgba(52, 211, 153, 0.15)', color: user.role === 'admin' ? 'var(--accent-main)' : 'var(--success)' }}>
-                  {user.role === 'admin' ? 'Admin' : 'Citizen'}
+                  {user.role === 'admin' ? t('common.admin', 'Admin') : t('common.citizen', 'Citizen')}
                 </span>
               </Link>
 
               <button
                 onClick={handleLogout}
                 style={{ display: 'flex', alignItems: 'center', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.5rem', background: 'transparent', border: 'none', transition: 'color 0.2s' }}
-                title="Sign Out"
+                title={t('nav.signOut', 'Sign Out')}
                 onMouseOver={(e) => e.currentTarget.style.color = 'var(--error)'}
                 onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
               >
@@ -86,11 +91,14 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Nav Toggle */}
-        <button className="md-hidden" style={{ padding: '0.5rem', background: 'var(--glass-bg-hover)', borderRadius: '50%', color: 'var(--text-primary)' }} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="md-hidden">
+          <LanguageSwitcher variant="mobile" />
+          <button style={{ padding: '0.5rem', background: 'var(--glass-bg-hover)', borderRadius: '50%', color: 'var(--text-primary)' }} onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
-      
+
       {/* Mobile Menu */}
       {isOpen && (
         <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid var(--border-main)' }}>
@@ -107,20 +115,20 @@ const Navbar = () => {
               </div>
             </div>
           )}
-          <Link to="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Services</Link>
-          <Link to="/track" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Track Status</Link>
-          <Link to="/assistant" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>AI Assistant</Link>
-          {user && <Link to="/vault" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Document Vault</Link>}
-          {user && <Link to="/saved" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Saved Guides</Link>}
-          {user && <Link to="/profile" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>My Profile</Link>}
-          {user && user.role === 'admin' && <Link to="/admin" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--accent-main)' }}>Admin Portal</Link>}
-          
+          <Link to="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.services', 'Services')}</Link>
+          <Link to="/track" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.track', 'Track Status')}</Link>
+          <Link to="/assistant" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.assistant', 'AI Assistant')}</Link>
+          {user && <Link to="/vault" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.vault', 'Document Vault')}</Link>}
+          {user && <Link to="/saved" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.saved', 'Saved Guides')}</Link>}
+          {user && <Link to="/profile" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.profile', 'My Profile')}</Link>}
+          {user && user.role === 'admin' && <Link to="/admin" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--accent-main)' }}>{t('nav.admin', 'Admin Portal')}</Link>}
+
           <div style={{ width: '100%', height: '1px', background: 'var(--border-main)', margin: '0.5rem 0' }}></div>
-          
+
           {!user ? (
-            <Link to="/login" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Sign In</Link>
+            <Link to="/login" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.signIn', 'Sign In')}</Link>
           ) : (
-            <button onClick={() => { handleLogout(); setIsOpen(false); }} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--error)', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Sign Out</button>
+            <button onClick={() => { handleLogout(); setIsOpen(false); }} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--error)', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>{t('nav.signOut', 'Sign Out')}</button>
           )}
         </div>
       )}

@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
 
 // Pages
 import Home from './pages/Home';
@@ -45,58 +46,60 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Navbar />
-            <main style={{ flex: 1 }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login/*" element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup/*" element={<SignUpPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/sso-callback" element={<SSOCallback />} />
-                <Route path="/signup/sso-callback" element={<SSOCallback />} />
-                <Route path="/assistant" element={<Assistant />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/services/:id" element={<ServiceDetails />} />
-                <Route path="/track" element={<Track />} />
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+              <Navbar />
+              <main style={{ flex: 1 }}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login/*" element={<Login />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup/*" element={<SignUpPage />} />
+                  <Route path="/signup" element={<SignUpPage />} />
+                  <Route path="/sso-callback" element={<SSOCallback />} />
+                  <Route path="/signup/sso-callback" element={<SSOCallback />} />
+                  <Route path="/assistant" element={<Assistant />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/services/:id" element={<ServiceDetails />} />
+                  <Route path="/track" element={<Track />} />
 
-                <Route path="/saved" element={
-                  <ProtectedRoute>
-                    <Saved />
-                  </ProtectedRoute>
-                } />
+                  <Route path="/saved" element={
+                    <ProtectedRoute>
+                      <Saved />
+                    </ProtectedRoute>
+                  } />
 
-                <Route path="/vault" element={
-                  <ProtectedRoute>
-                    <Vault />
-                  </ProtectedRoute>
-                } />
+                  <Route path="/vault" element={
+                    <ProtectedRoute>
+                      <Vault />
+                    </ProtectedRoute>
+                  } />
 
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } />
 
-                <Route path="/open-source" element={<OpenSource />} />
-                <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/open-source" element={<OpenSource />} />
+                  <Route path="/privacy" element={<Privacy />} />
 
-                <Route path="/admin" element={
-                  <ProtectedRoute requiredRole="admin">
-                    <Admin />
-                  </ProtectedRoute>
-                } />
+                  <Route path="/admin" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <Admin />
+                    </ProtectedRoute>
+                  } />
 
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </AuthProvider>
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </BrowserRouter>
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }
