@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
@@ -7,7 +6,7 @@ import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { NetworkProvider } from './context/NetworkContext';
 
-import SkipToContent from './components/SkipToContent';
+import SkipToContent from './components/common/SkipToContent';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ToastContainer from './components/ToastContainer';
@@ -17,11 +16,12 @@ import OfflineBanner from './components/common/OfflineBanner';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
-import SignUpPage from './pages/SignUpPage';
+import SignUpPage from './pages/SignUp';
 import SSOCallback from './pages/SSOCallback';
 import Assistant from './pages/Assistant';
 import Services from './pages/Services';
 import ServiceDetails from './pages/ServiceDetails';
+import Eligibility from './pages/Eligibility';
 import NearbyOffices from './pages/NearbyOffices';
 import Track from './pages/Track';
 import Saved from './pages/Saved';
@@ -56,6 +56,7 @@ function App() {
                       <Route path="/assistant" element={<Assistant />} />
                       <Route path="/services" element={<Services />} />
                       <Route path="/services/:id" element={<ServiceDetails />} />
+                      <Route path="/eligibility" element={<Eligibility />} />
                       <Route path="/nearby" element={<NearbyOffices />} />
                       <Route path="/nearby-offices" element={<NearbyOffices />} />
                       <Route path="/track" element={<Track />} />
