@@ -1,9 +1,32 @@
 import { Link } from 'react-router-dom';
-import { Bookmark, Calendar, Edit3, Trash2, ArrowRight, Folder } from 'lucide-react';
+import {
+  Bookmark,
+  Calendar,
+  Edit3,
+  Trash2,
+  ArrowRight,
+  Folder,
+  Star,
+  Bell,
+  Clock,
+  AlertTriangle,
+} from 'lucide-react';
+import { calculateDaysRemaining } from '../../services/reminderNotificationService';
 
-const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
+const SavedItemCard = ({
+  item,
+  service,
+  reminder = null,
+  onEditNotes,
+  onScheduleReminder,
+  onToggleFavorite,
+  onRemove,
+}) => {
   const isHighPriority = item.priority === 'high';
   const isMedPriority = item.priority === 'medium';
+  const isFavorite = Boolean(item.isFavorite);
+
+  const daysLeft = reminder?.deadlineDate ? calculateDaysRemaining(reminder.deadlineDate) : null;
 
   return (
     <div
@@ -15,6 +38,7 @@ const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
         height: '100%',
         padding: '2rem',
         position: 'relative',
+        border: isFavorite ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid var(--border-light)',
       }}
     >
       <div>
@@ -29,7 +53,7 @@ const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
             <span
               style={{
                 display: 'inline-flex',
@@ -75,26 +99,78 @@ const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
                 Medium
               </span>
             )}
+
+            {/* Reminder Badge */}
+            {reminder && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.25rem',
+                  fontSize: '0.75rem',
+                  padding: '0.2rem 0.55rem',
+                  borderRadius: '99px',
+                  background:
+                    daysLeft != null && daysLeft <= 7
+                      ? 'rgba(239, 68, 68, 0.15)'
+                      : 'rgba(56, 189, 248, 0.15)',
+                  color:
+                    daysLeft != null && daysLeft <= 7 ? '#ef4444' : 'var(--accent-main)',
+                  fontWeight: '700',
+                }}
+              >
+                <Bell size={11} />
+                {daysLeft != null
+                  ? daysLeft > 0
+                    ? `Due in ${daysLeft}d`
+                    : daysLeft === 0
+                    ? 'Due Today'
+                    : 'Overdue'
+                  : 'Reminder Set'}
+              </span>
+            )}
           </div>
 
-          <button
-            type="button"
-            onClick={() => onRemove(service.id)}
-            aria-label="Remove bookmark"
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-tertiary)',
-              cursor: 'pointer',
-              padding: '0.25rem',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.color = 'var(--error)')}
-            onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-          >
-            <Trash2 size={16} />
-          </button>
+          {/* Action Icons: Favorite Star & Remove */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <button
+              type="button"
+              onClick={() => onToggleFavorite(service.id)}
+              aria-label={isFavorite ? 'Remove from favorites' : 'Mark as favorite'}
+              title={isFavorite ? 'Favorited' : 'Mark favorite'}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: isFavorite ? '#f59e0b' : 'var(--text-tertiary)',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Star size={18} fill={isFavorite ? '#f59e0b' : 'none'} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onRemove(service.id)}
+              aria-label="Remove bookmark"
+              title="Remove from saved hub"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-tertiary)',
+                cursor: 'pointer',
+                padding: '0.25rem',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.color = 'var(--error)')}
+              onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
 
         <h3
@@ -129,40 +205,48 @@ const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
               borderRadius: '0.75rem',
               fontSize: '0.85rem',
               color: 'var(--text-primary)',
-              marginBottom: '1.25rem',
+              marginBottom: '1rem',
               display: 'flex',
               flexDirection: 'column',
               gap: '0.25rem',
             }}
           >
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: '700' }}>
-              Your Note:
+            <span
+              style={{
+                fontSize: '0.7rem',
+                color: 'var(--text-tertiary)',
+                textTransform: 'uppercase',
+                fontWeight: '700',
+              }}
+            >
+              Citizen Notes:
             </span>
             <p style={{ fontStyle: 'italic', color: 'var(--text-secondary)' }}>"{item.notes}"</p>
           </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => onEditNotes(item, service)}
+        ) : null}
+
+        {/* Reminder details snippet */}
+        {reminder && reminder.reminderNote && (
+          <div
             style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--accent-main)',
+              padding: '0.6rem 0.85rem',
+              borderRadius: '0.5rem',
+              background: 'rgba(56, 189, 248, 0.05)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
               fontSize: '0.8rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              marginBottom: '1.25rem',
-              cursor: 'pointer',
-              padding: 0,
+              color: 'var(--text-secondary)',
+              marginBottom: '1rem',
             }}
           >
-            <Edit3 size={13} /> Add personal notes or deadline
-          </button>
+            <span style={{ fontWeight: '600', color: 'var(--accent-main)', display: 'block' }}>
+              Target: {reminder.deadlineDate} ({reminder.reminderType})
+            </span>
+            <span>{reminder.reminderNote}</span>
+          </div>
         )}
       </div>
 
-      {/* Card Footer */}
+      {/* Card Footer with Details & Actions */}
       <div
         style={{
           marginTop: 'auto',
@@ -171,24 +255,47 @@ const SavedItemCard = ({ item, service, onEditNotes, onRemove }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: '0.5rem',
+          flexWrap: 'wrap',
         }}
       >
-        <button
-          type="button"
-          onClick={() => onEditNotes(item, service)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-secondary)',
-            fontSize: '0.8rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            cursor: 'pointer',
-          }}
-        >
-          <Edit3 size={14} /> Edit Details
-        </button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button
+            type="button"
+            onClick={() => onEditNotes(item, service)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-secondary)',
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <Edit3 size={14} /> Notes
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onScheduleReminder(service)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: reminder ? 'var(--accent-main)' : 'var(--text-secondary)',
+              fontSize: '0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <Bell size={14} /> {reminder ? 'Edit Reminder' : 'Set Reminder'}
+          </button>
+        </div>
 
         <Link
           to={`/services/${service.id}`}
