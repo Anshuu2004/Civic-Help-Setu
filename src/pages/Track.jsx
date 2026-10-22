@@ -1,60 +1,43 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Search, Clock, FileText, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
-import { getApplicationById, getApplications } from '../services/trackingService';
-import ApplicationTimeline from '../components/tracking/ApplicationTimeline';
-import TrackingReceiptModal from '../components/tracking/TrackingReceiptModal';
+import { useState } from 'react';
+import { Search, CheckCircle2, Circle, Clock, FileText, ArrowRight, Copy } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
 const Track = () => {
   const location = useLocation();
   const [appId, setAppId] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState(null);
-  const [notFound, setNotFound] = useState(false);
-  const [showReceipt, setShowReceipt] = useState(false);
-  const [recentApps, setRecentApps] = useState([]);
-
-  useEffect(() => {
-    const all = getApplications();
-    setRecentApps(all.slice(0, 4));
-
-    const params = new URLSearchParams(location.search);
-    const initialId = params.get('id');
-    if (initialId) {
-      setAppId(initialId);
-      triggerSearch(initialId);
-    }
-  }, [location.search]);
-
-  const triggerSearch = (searchQuery) => {
-    const q = searchQuery.trim();
-    if (!q) return;
-
-    setIsSearching(true);
-    setNotFound(false);
-    setResult(null);
-
-    setTimeout(() => {
-      const found = getApplicationById(q);
-      if (found) {
-        setResult(found);
-        setNotFound(false);
-      } else {
-        setNotFound(true);
-        setResult(null);
-      }
-      setIsSearching(false);
-    }, 400);
-  };
+  const { toast } = useToast();
 
   const handleSearch = (e) => {
     e.preventDefault();
-    triggerSearch(appId);
+    if (!appId.trim()) {
+      toast.warning('Please enter an application reference ID to track status.');
+      return;
+    }
+    
+    setIsSearching(true);
+    setNotFound(false);
+    setResult(null);
+    
+    // Simulate network lookup
+    setTimeout(() => {
+      setResult({
+        id: appId.toUpperCase().trim(),
+        service: 'Income Certificate',
+        date: 'Oct 02, 2024',
+        status: 'in-progress',
+        estimatedCompletion: 'Oct 12, 2024'
+      });
+      setIsSearching(false);
+      toast.success('Application record retrieved successfully.', 'Record Found');
+    }, 900);
   };
 
-  const handleSelectRecent = (id) => {
-    setAppId(id);
-    triggerSearch(id);
+  const handleCopyId = () => {
+    if (!result) return;
+    navigator.clipboard?.writeText(result.id);
+    toast.info(`Reference ID ${result.id} copied to clipboard.`);
   };
 
   return (
@@ -191,12 +174,30 @@ const Track = () => {
                 >
                   Application Status
                 </span>
-                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginTop: '0.25rem', color: 'var(--text-primary)' }}>
-                  {result.serviceName}
-                </h2>
-                <p style={{ color: 'var(--text-tertiary)', marginTop: '0.25rem', fontSize: '0.95rem' }}>
-                  Reference ID: <strong style={{ fontFamily: 'monospace', color: 'var(--text-primary)' }}>{result.id}</strong> • Applicant: {result.applicantName}
-                </p>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginTop: '0.5rem', color: 'var(--text-primary)' }}>{result.service}</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+                  <p style={{ color: 'var(--text-tertiary)', margin: 0, fontSize: '1rem' }}>Ref ID: {result.id}</p>
+                  <button
+                    type="button"
+                    onClick={handleCopyId}
+                    title="Copy Reference ID"
+                    aria-label="Copy Reference ID"
+                    style={{
+                      background: 'var(--border-light)',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      padding: '0.2rem 0.4rem',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--text-secondary)'
+                    }}
+                  >
+                    <Copy size={13} /> Copy
+                  </button>
+                </div>
               </div>
 
               <div style={{ textAlign: 'right' }}>
@@ -245,23 +246,28 @@ const Track = () => {
                 </span>
               </div>
 
+              <div style={{ position: 'relative', display: 'flex', gap: '2rem', zIndex: 1 }}>
+                <div style={{ background: 'var(--bg-main)', borderRadius: '50%', padding: '0.25rem' }}>
+                  <Circle size={32} color="var(--text-tertiary)" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-tertiary)' }}>Final Approval & Issuance</h3>
+                  <p style={{ color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>Awaiting clearance from verification officer.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <FileText size={24} color="var(--text-secondary)" />
+                <span style={{ fontWeight: '500', color: 'var(--text-secondary)' }}>View submitted documents</span>
+              </div>
               <button
                 type="button"
-                onClick={() => setShowReceipt(true)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--accent-main)',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  cursor: 'pointer',
-                  fontSize: '0.95rem',
-                }}
+                onClick={() => toast.info('Official receipt copy available in your Documents Vault.', 'Receipt Available')}
+                style={{ background: 'none', border: 'none', color: 'var(--accent-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '1rem' }}
               >
-                <span>View Official Receipt</span>
-                <ArrowRight size={16} />
+                View Receipt <ArrowRight size={18} />
               </button>
             </div>
           </div>

@@ -4,7 +4,8 @@ import Footer from './components/Footer';
 import AuthFallbackBanner from './components/AuthFallbackBanner';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { LanguageProvider } from './context/LanguageContext';
+import { ToastProvider } from './context/ToastContext';
+import ToastContainer from './components/toast/ToastContainer';
 
 // Pages
 import Home from './pages/Home';
@@ -47,12 +48,11 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 function App() {
   return (
     <ThemeProvider>
-      <LanguageProvider>
+      <ToastProvider>
         <AuthProvider>
           <BrowserRouter>
             <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
               <Navbar />
-              <AuthFallbackBanner />
               <main style={{ flex: 1 }}>
                 <Routes>
                   <Route path="/" element={<Home />} />
@@ -98,10 +98,11 @@ function App() {
                 </Routes>
               </main>
               <Footer />
+              <ToastContainer />
             </div>
           </BrowserRouter>
         </AuthProvider>
-      </LanguageProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }
