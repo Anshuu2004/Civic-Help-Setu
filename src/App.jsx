@@ -4,7 +4,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
-import { ThemeProvider } from './context/ThemeProvider';
+import { ThemeProvider } from './context/ThemeContext';
 
 import SkipToContent from './components/SkipToContent';
 import Navbar from './components/Navbar';
@@ -55,7 +55,7 @@ function App() {
                       <Route path="/nearby" element={<NearbyOffices />} />
                       <Route path="/nearby-offices" element={<NearbyOffices />} />
                       <Route path="/track" element={<Track />} />
-                      
+
                       <Route path="/saved" element={
                         <ProtectedRoute>
                           <Saved />
