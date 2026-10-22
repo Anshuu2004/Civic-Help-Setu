@@ -6,6 +6,8 @@ import { askCivicAssistant } from '../ai/civicAssistant';
 import SourceCard from '../components/SourceCard';
 import ChatHeaderControls from '../components/chat/ChatHeaderControls';
 import VoiceInputStatus from '../components/chat/VoiceInputStatus';
+import PersonalizedRecommendationsPanel from '../components/chat/PersonalizedRecommendationsPanel';
+import DocumentChecklistCard from '../components/chat/DocumentChecklistCard';
 import { loadChatHistory, saveChatHistory, clearChatHistory } from '../services/chatStorage';
 
 const Assistant = () => {
@@ -193,6 +195,14 @@ const Assistant = () => {
           </div>
         )}
 
+        {/* Document Readiness Checklist */}
+        {data.documents && data.documents.length > 0 && (
+          <DocumentChecklistCard
+            serviceName={data.title}
+            requiredDocuments={data.documents}
+          />
+        )}
+
         {/* Direct Link to Detailed Service Guide */}
         {msg.serviceId && (
           <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-light)' }}>
@@ -299,6 +309,9 @@ const Assistant = () => {
           voiceError={voiceError}
           onDismissError={() => setVoiceError('')}
         />
+
+        {/* Personalized Civic Recommendations based on User Profile Context */}
+        <PersonalizedRecommendationsPanel onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
 
         {/* Messages Container */}
         <div

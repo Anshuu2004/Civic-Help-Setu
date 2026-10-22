@@ -1,0 +1,119 @@
+import { useState } from 'react';
+import { Sparkles, ShieldCheck, Bookmark, HelpCircle } from 'lucide-react';
+import UniversalEligibilityWizard from '../components/eligibility/UniversalEligibilityWizard';
+import SavedAssessmentsList from '../components/eligibility/SavedAssessmentsList';
+
+const Eligibility = () => {
+  const [activeTab, setActiveTab] = useState('wizard');
+  const [refreshCount, setRefreshCount] = useState(0);
+
+  const handleAssessmentSaved = () => {
+    setRefreshCount((prev) => prev + 1);
+  };
+
+  return (
+    <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
+      <div className="container" style={{ maxWidth: '900px' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: 'var(--accent-main)',
+              fontSize: '0.875rem',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginBottom: '0.5rem',
+            }}
+          >
+            <Sparkles size={18} /> Official Citizen Entitlement Engine
+          </div>
+          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
+            Interactive Eligibility Checker
+          </h1>
+          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
+            Answer a few quick questions to instantly check your qualification across key central and state civic schemes.
+          </p>
+        </div>
+
+        {/* Tab switcher */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '0.75rem',
+            marginBottom: '2rem',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setActiveTab('wizard')}
+            style={{
+              padding: '0.6rem 1.5rem',
+              borderRadius: '99px',
+              fontWeight: '700',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              border: activeTab === 'wizard' ? '1px solid var(--accent-main)' : '1px solid var(--border-light)',
+              background: activeTab === 'wizard' ? 'var(--accent-main)' : 'var(--glass-bg)',
+              color: activeTab === 'wizard' ? 'var(--bg-main)' : 'var(--text-secondary)',
+              transition: 'all 0.2s',
+            }}
+          >
+            Run Eligibility Wizard
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('saved')}
+            style={{
+              padding: '0.6rem 1.5rem',
+              borderRadius: '99px',
+              fontWeight: '700',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              border: activeTab === 'saved' ? '1px solid var(--accent-main)' : '1px solid var(--border-light)',
+              background: activeTab === 'saved' ? 'var(--accent-main)' : 'var(--glass-bg)',
+              color: activeTab === 'saved' ? 'var(--bg-main)' : 'var(--text-secondary)',
+              transition: 'all 0.2s',
+            }}
+          >
+            Saved Assessments
+          </button>
+        </div>
+
+        {/* Transparent logic privacy banner */}
+        <div
+          className="glass-panel"
+          style={{
+            padding: '0.85rem 1.25rem',
+            borderRadius: '0.75rem',
+            marginBottom: '1.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            border: '1px solid var(--border-light)',
+            fontSize: '0.85rem',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          <ShieldCheck size={18} color="var(--accent-main)" style={{ flexShrink: 0 }} />
+          <span>
+            <strong>Auditable & Private:</strong> Eligibility criteria are evaluated locally in your browser using verified government scheme guidelines. Your financial and demographic answers are not uploaded to any remote server.
+          </span>
+        </div>
+
+        {/* Content based on active tab */}
+        {activeTab === 'wizard' ? (
+          <UniversalEligibilityWizard onAssessmentSaved={handleAssessmentSaved} />
+        ) : (
+          <SavedAssessmentsList refreshTrigger={refreshCount} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Eligibility;

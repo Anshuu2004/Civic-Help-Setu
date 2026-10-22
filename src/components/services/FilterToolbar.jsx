@@ -1,4 +1,6 @@
 import { Search, X, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import DepartmentFilterSelect from './DepartmentFilterSelect';
+import FeeAndSpeedFilter from './FeeAndSpeedFilter';
 
 const FilterToolbar = ({
   searchQuery,
@@ -7,6 +9,13 @@ const FilterToolbar = ({
   onModeChange,
   selectedDifficulty,
   onDifficultyChange,
+  departments = [],
+  selectedDepartment = 'All',
+  onDepartmentChange = () => {},
+  feeType = 'All',
+  onFeeTypeChange = () => {},
+  speedFilter = 'All',
+  onSpeedFilterChange = () => {},
   sortBy,
   onSortChange,
   totalResults,
@@ -20,7 +29,7 @@ const FilterToolbar = ({
         border: '1px solid var(--border-light)',
         borderRadius: '1.25rem',
         padding: '1.25rem 1.5rem',
-        marginBottom: '2rem',
+        marginBottom: '1.5rem',
         display: 'flex',
         flexDirection: 'column',
         gap: '1rem',
@@ -94,12 +103,40 @@ const FilterToolbar = ({
                 textDecoration: 'underline',
                 fontWeight: '600',
                 cursor: 'pointer',
+                background: 'none',
+                border: 'none',
               }}
             >
               Reset all
             </button>
           )}
         </div>
+      </div>
+
+      {/* Middle Row: Department, Fee Structure & Processing Speed */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingTop: '0.5rem',
+          borderTop: '1px solid var(--border-light)',
+        }}
+      >
+        <DepartmentFilterSelect
+          departments={departments}
+          selectedDepartment={selectedDepartment}
+          onDepartmentChange={onDepartmentChange}
+        />
+
+        <FeeAndSpeedFilter
+          feeType={feeType}
+          onFeeTypeChange={onFeeTypeChange}
+          speedFilter={speedFilter}
+          onSpeedFilterChange={onSpeedFilterChange}
+        />
       </div>
 
       {/* Bottom Row: Mode, Difficulty, and Sorting Facets */}
@@ -109,7 +146,7 @@ const FilterToolbar = ({
           flexWrap: 'wrap',
           gap: '1rem',
           alignItems: 'center',
-          paddingTop: '0.75rem',
+          paddingTop: '0.5rem',
           borderTop: '1px solid var(--border-light)',
         }}
       >
@@ -181,7 +218,9 @@ const FilterToolbar = ({
               outline: 'none',
             }}
           >
-            <option value="featured" style={{ background: 'var(--bg-main)' }}>Featured</option>
+            <option value="relevance" style={{ background: 'var(--bg-main)' }}>Most Relevant</option>
+            <option value="popularity" style={{ background: 'var(--bg-main)' }}>Most Popular</option>
+            <option value="speed-asc" style={{ background: 'var(--bg-main)' }}>Fastest Processing</option>
             <option value="name-asc" style={{ background: 'var(--bg-main)' }}>Name (A – Z)</option>
             <option value="name-desc" style={{ background: 'var(--bg-main)' }}>Name (Z – A)</option>
             <option value="difficulty-asc" style={{ background: 'var(--bg-main)' }}>Difficulty (Easiest first)</option>

@@ -2,6 +2,7 @@
   "nav": {
     "brand": "CivicBridge",
     "services": "Services",
+    "nearby": "Nearby Centers",
     "track": "Track Status",
     "assistant": "AI Assistant",
     "vault": "Doc Vault",
@@ -31,6 +32,22 @@
     "subtitle": "CivicBridge translates bureaucratic procedures into clear, actionable steps using verified official sources. No jargon, just direct answers.",
     "exploreBtn": "Explore All Guides",
     "tryAiBtn": "Try AI Assistant"
+  },
+  "service": {
+    "apply_online": "Apply on Official Portal",
+    "view_roadmap": "View Step-by-Step Roadmap",
+    "estimated_time": "Estimated Time",
+    "official_fee": "Official Fees",
+    "required_documents": "Prerequisite Documents",
+    "steps_to_apply": "Standard Operating Procedure",
+    "save_service": "Bookmark Service",
+    "saved": "Bookmarked"
+  },
+  "plain_language": {
+    "toggle_label": "Plain Language Mode",
+    "toggle_description": "Translate legal & administrative terms into plain, simple citizen language",
+    "glossary_title": "Civic Jargon Dictionary",
+    "search_terms": "Search legal and municipal terminology..."
   },
   "footer": {
     "tagline": "A civic-tech bridge helping citizens navigate public services with clarity, dignity, and verified official guidance.",

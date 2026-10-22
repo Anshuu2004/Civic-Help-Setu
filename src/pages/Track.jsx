@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Search,
   CheckCircle2,
@@ -11,11 +11,8 @@ import {
   Plus,
   AlertTriangle,
   ShieldCheck,
-  CheckSquare,
   MessageSquare,
-  Calendar,
   Send,
-  Sparkles,
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import {
@@ -29,6 +26,7 @@ import ActiveApplicationsSummaryGrid from '../components/tracking/ActiveApplicat
 import ActionRequiredAlert from '../components/tracking/ActionRequiredAlert';
 import LinkedDocumentsManager from '../components/tracking/LinkedDocumentsManager';
 import ManualAddApplicationModal from '../components/tracking/ManualAddApplicationModal';
+import TrackingReceiptModal from '../components/tracking/TrackingReceiptModal';
 
 const Track = () => {
   const location = useLocation();
@@ -40,6 +38,7 @@ const Track = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [activeApp, setActiveApp] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   // Note addition state
   const [newNoteText, setNewNoteText] = useState('');
@@ -71,7 +70,7 @@ const Track = () => {
     e?.preventDefault();
     const query = appIdInput.trim();
     if (!query) {
-      toast.warning('Please enter an application reference ID to track status.');
+      toast?.warning?.('Please enter an application reference ID to track status.');
       return;
     }
 
@@ -83,11 +82,11 @@ const Track = () => {
       if (match) {
         setActiveApp(match);
         setNotFound(false);
-        toast.success(`Application record ${match.id} loaded successfully.`);
+        toast?.success?.(`Application record ${match.id} loaded successfully.`);
       } else {
         setActiveApp(null);
         setNotFound(true);
-        toast.error(`No record found matching "${query}".`);
+        toast?.error?.(`No record found matching "${query}".`);
       }
       setIsSearching(false);
     }, 400);
@@ -96,7 +95,7 @@ const Track = () => {
   const handleCopyId = () => {
     if (!activeApp) return;
     navigator.clipboard?.writeText(activeApp.id);
-    toast.info(`Reference ID ${activeApp.id} copied to clipboard.`);
+    toast?.info?.(`Reference ID ${activeApp.id} copied to clipboard.`);
   };
 
   const handleSelectApp = (app) => {
@@ -114,7 +113,7 @@ const Track = () => {
       setActiveApp({ ...updated });
       setApplications(getApplications());
       setNewNoteText('');
-      toast.success('Note added to application timeline.');
+      toast?.success?.('Note added to application timeline.');
     }
   };
 
@@ -124,7 +123,7 @@ const Track = () => {
       setActiveApp({ ...updated });
       setApplications(getApplications());
       setMetrics(getTrackingMetrics());
-      toast.success('Action marked as resolved! Application moved to in-progress verification.');
+      toast?.success?.('Action marked as resolved! Application moved to in-progress verification.');
     }
   };
 
@@ -441,11 +440,32 @@ const Track = () => {
                 border: '1px solid var(--border-light)',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <MessageSquare size={18} color="var(--accent-main)" />
-                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '800', color: 'var(--text-primary)' }}>
-                  Citizen Filing Notes & Updates ({activeApp.notes?.length || 0})
-                </h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <MessageSquare size={18} color="var(--accent-main)" />
+                  <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '800', color: 'var(--text-primary)' }}>
+                    Citizen Filing Notes & Updates ({activeApp.notes?.length || 0})
+                  </h4>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowReceipt(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--accent-main)',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  <span>View Official Receipt</span>
+                  <ArrowRight size={16} />
+                </button>
               </div>
 
               {/* Existing notes */}
@@ -501,6 +521,14 @@ const Track = () => {
           onClose={() => setIsAddModalOpen(false)}
           onApplicationAdded={handleApplicationAdded}
         />
+
+        {/* Official Receipt Modal */}
+        {showReceipt && activeApp && (
+          <TrackingReceiptModal
+            application={activeApp}
+            onClose={() => setShowReceipt(false)}
+          />
+        )}
       </div>
     </div>
   );

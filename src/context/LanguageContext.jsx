@@ -2,24 +2,42 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import en from '../locales/en.json';
 import hi from '../locales/hi.json';
+import bn from '../locales/bn.json';
+import ta from '../locales/ta.json';
 
 const LanguageContext = createContext(null);
 const STORAGE_KEY = 'civicbridge_lang';
+const PLAIN_LANG_KEY = 'civicbridge_plain_lang';
 
-const DICTIONARIES = { en, hi };
+export const SUPPORTED_LANGUAGES = [
+  { code: 'en', label: 'English', native: 'English', badge: 'EN' },
+  { code: 'hi', label: 'Hindi', native: 'हिन्दी', badge: 'हि' },
+  { code: 'bn', label: 'Bengali', native: 'বাংলা', badge: 'বা' },
+  { code: 'ta', label: 'Tamil', native: 'தமிழ்', badge: 'த' },
+];
+
+const DICTIONARIES = { en, hi, bn, ta };
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguageState] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved === 'hi' ? 'hi' : 'en';
+      return ['en', 'hi', 'bn', 'ta'].includes(saved) ? saved : 'en';
     } catch {
       return 'en';
     }
   });
 
+  const [isPlainLanguage, setIsPlainLanguage] = useState(() => {
+    try {
+      return localStorage.getItem(PLAIN_LANG_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   const setLanguage = useCallback((lang) => {
-    const valid = lang === 'hi' ? 'hi' : 'en';
+    const valid = ['en', 'hi', 'bn', 'ta'].includes(lang) ? lang : 'en';
     setLanguageState(valid);
     try {
       localStorage.setItem(STORAGE_KEY, valid);
@@ -27,6 +45,18 @@ export const LanguageProvider = ({ children }) => {
     } catch (err) {
       console.error('Failed to save language preference', err);
     }
+  }, []);
+
+  const togglePlainLanguage = useCallback(() => {
+    setIsPlainLanguage((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(PLAIN_LANG_KEY, String(next));
+      } catch (err) {
+        console.error('Failed to save plain language preference', err);
+      }
+      return next;
+    });
   }, []);
 
   useEffect(() => {
@@ -62,7 +92,16 @@ export const LanguageProvider = ({ children }) => {
   );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider
+      value={{
+        language,
+        setLanguage,
+        t,
+        isPlainLanguage,
+        togglePlainLanguage,
+        supportedLanguages: SUPPORTED_LANGUAGES,
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   );
