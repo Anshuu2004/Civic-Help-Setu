@@ -4,7 +4,9 @@ import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
 import EligibilityWizard from '../components/eligibility/EligibilityWizard';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass } from 'lucide-react';
+import PrintableChecklistModal from '../components/services/PrintableChecklistModal';
+import ShareServiceModal from '../components/services/ShareServiceModal';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
@@ -25,6 +27,8 @@ const ServiceDetails = () => {
     }
   });
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
@@ -119,17 +123,59 @@ const ServiceDetails = () => {
                   <Zap size={20} fill="currentColor" />
                   Fast-Track Apply
                 </button>
-                <button 
-                  onClick={toggleSave}
-                  className="btn btn-secondary"
-                  style={{ 
-                    background: isSaved ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
-                    borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-main)',
-                    color: isSaved ? 'var(--accent-main)' : 'var(--text-primary)'
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button 
+                    onClick={toggleSave}
+                    className="btn btn-secondary"
+                    style={{ 
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: isSaved ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
+                      borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-main)',
+                      color: isSaved ? 'var(--accent-main)' : 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    <Bookmark size={16} fill={isSaved ? 'currentColor' : 'none'} />
+                    {isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button 
+                    onClick={() => setShowShareModal(true)}
+                    className="btn btn-secondary"
+                    style={{ 
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: 'var(--glass-bg)',
+                      color: 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                    title="Share checklist with family or WhatsApp"
+                  >
+                    <Share2 size={16} color="var(--accent-main)" />
+                    Share
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowPrintModal(true)}
+                  className="btn btn-outline"
+                  style={{
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.85rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.45rem'
                   }}
+                  title="Generate ink-friendly office visit dossier"
                 >
-                  <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
-                  {isSaved ? 'Saved' : 'Save Guide'}
+                  <Printer size={16} />
+                  <span>Print Visit Dossier</span>
                 </button>
               </div>
             </div>
@@ -368,6 +414,20 @@ const ServiceDetails = () => {
           </div>
         </div>
       )}
+
+      {/* Printable Office Visit Dossier Modal */}
+      <PrintableChecklistModal
+        isOpen={showPrintModal}
+        onClose={() => setShowPrintModal(false)}
+        service={service}
+      />
+
+      {/* Share Checklist Modal */}
+      <ShareServiceModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        service={service}
+      />
     </>
   );
 };
