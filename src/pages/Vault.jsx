@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   FileBadge, ShieldCheck, Upload, CreditCard, Car, FileText,
-  Plus, Search, Eye, AlertTriangle, Layers
+  Plus, Search, Eye, AlertTriangle, Layers, Download, Tag
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -9,10 +9,14 @@ import {
   saveDocument,
   deleteDocument,
   getExpiryStatus,
+  getExpiringDocuments,
 } from '../services/vaultStorage';
 import VaultStats from '../components/vault/VaultStats';
 import DocumentModal from '../components/vault/DocumentModal';
 import DocumentPreviewModal from '../components/vault/DocumentPreviewModal';
+import ExpiringDocumentsAlert from '../components/vault/ExpiringDocumentsAlert';
+import VaultBackupRestoreModal from '../components/vault/VaultBackupRestoreModal';
+import ServiceTaggingModal from '../components/vault/ServiceTaggingModal';
 
 const CATEGORIES = ['All', 'Identity', 'Finance', 'Transport', 'Education', 'Welfare'];
 
@@ -38,19 +42,30 @@ const Vault = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
+  const [taggingDoc, setTaggingDoc] = useState(null);
+  const [expiringDocs, setExpiringDocs] = useState(() => getExpiringDocuments());
+
+  const refreshVault = () => {
+    const docs = getDocuments();
+    setDocuments(docs);
+    setExpiringDocs(getExpiringDocuments());
+  };
 
   useEffect(() => {
-    setDocuments(getDocuments());
+    refreshVault();
   }, []);
 
   const handleSaveDocument = (docData) => {
     const updated = saveDocument(docData);
     setDocuments(updated);
+    setExpiringDocs(getExpiringDocuments());
   };
 
   const handleDeleteDocument = (id) => {
     const updated = deleteDocument(id);
     setDocuments(updated);
+    setExpiringDocs(getExpiringDocuments());
   };
 
   const filteredDocuments = useMemo(() => {
@@ -113,16 +128,30 @@ const Vault = () => {
             )}
           </div>
 
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => setIsModalOpen(true)}
-            style={{ padding: '0.75rem 1.75rem', fontSize: '1rem' }}
-          >
-            <Plus size={18} />
-            <span>Add Document</span>
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setIsBackupModalOpen(true)}
+              style={{ padding: '0.75rem 1.25rem', fontSize: '0.95rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+            >
+              <Download size={18} />
+              <span>Backup & Restore</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setIsModalOpen(true)}
+              style={{ padding: '0.75rem 1.75rem', fontSize: '1rem' }}
+            >
+              <Plus size={18} />
+              <span>Add Document</span>
+            </button>
+          </div>
         </div>
+
+        {/* Document Expiration Warnings */}
+        <ExpiringDocumentsAlert expiringList={expiringDocs} />
 
         {/* Vault Stats Cards */}
         <VaultStats documents={documents} />
@@ -243,6 +272,17 @@ const Vault = () => {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setTaggingDoc(doc);
+                      }}
+                      style={{ color: 'var(--accent-main)', padding: '0.35rem', background: 'none', border: 'none', cursor: 'pointer' }}
+                      title="Tag to Civic Services"
+                    >
+                      <Tag size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setSelectedDoc(doc);
                       }}
                       style={{ color: 'var(--text-tertiary)', padding: '0.35rem', background: 'none', border: 'none', cursor: 'pointer' }}
@@ -281,6 +321,26 @@ const Vault = () => {
                   >
                     {doc.number}
                   </p>
+
+                  {doc.taggedServices && doc.taggedServices.length > 0 && (
+                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                      {doc.taggedServices.map((srvId) => (
+                        <span
+                          key={srvId}
+                          style={{
+                            fontSize: '0.68rem',
+                            padding: '0.1rem 0.45rem',
+                            borderRadius: '99px',
+                            background: 'rgba(56, 189, 248, 0.15)',
+                            color: 'var(--accent-main)',
+                            fontWeight: '600',
+                          }}
+                        >
+                          #{srvId}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div
@@ -419,6 +479,21 @@ const Vault = () => {
           isOpen={Boolean(selectedDoc)}
           onClose={() => setSelectedDoc(null)}
           onDelete={handleDeleteDocument}
+        />
+
+        {/* Secure Backup & Restore Modal */}
+        <VaultBackupRestoreModal
+          isOpen={isBackupModalOpen}
+          onClose={() => setIsBackupModalOpen(false)}
+          onVaultUpdated={refreshVault}
+        />
+
+        {/* Service Mapping / Tagging Modal */}
+        <ServiceTaggingModal
+          isOpen={Boolean(taggingDoc)}
+          onClose={() => setTaggingDoc(null)}
+          document={taggingDoc}
+          onUpdated={refreshVault}
         />
       </div>
     </div>
