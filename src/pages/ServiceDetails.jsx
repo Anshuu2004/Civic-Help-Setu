@@ -122,26 +122,72 @@ const ServiceDetails = () => {
                 <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '600px' }}>{service.shortDescription}</p>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flexShrink: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flexShrink: 0 }}>
                 <button 
                   onClick={() => user ? setShowApplyModal(true) : navigate('/login')}
                   className="btn btn-primary"
-                  style={{ padding: '1rem 2rem', fontSize: '1.125rem', background: 'var(--accent-main)', color: 'var(--bg-main)' }}
+                  style={{ padding: '0.85rem 1.75rem', fontSize: '1.05rem', background: 'var(--accent-main)', color: 'var(--bg-main)' }}
                 >
-                  <Zap size={20} fill="currentColor" />
+                  <Zap size={18} fill="currentColor" />
                   Fast-Track Apply
                 </button>
-                <button 
-                  onClick={toggleSave}
-                  className="btn btn-secondary"
-                  style={{ 
-                    background: isSaved ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
-                    borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-main)',
-                    color: isSaved ? 'var(--accent-main)' : 'var(--text-primary)'
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button 
+                    onClick={toggleSave}
+                    className="btn btn-secondary"
+                    style={{ 
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: isSaved ? 'rgba(56, 189, 248, 0.1)' : 'var(--glass-bg)',
+                      borderColor: isSaved ? 'var(--accent-main)' : 'var(--border-main)',
+                      color: isSaved ? 'var(--accent-main)' : 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    <Bookmark size={16} fill={isSaved ? 'currentColor' : 'none'} />
+                    {isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button 
+                    onClick={handleToggleCompare}
+                    className="btn btn-secondary"
+                    style={{ 
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: 'var(--glass-bg)',
+                      color: 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                    title="Compare side-by-side with other services"
+                  >
+                    <Scale size={16} color="var(--accent-main)" />
+                    Compare
+                  </button>
+                </div>
+                <button
+                  onClick={() => setIsGrievanceModalOpen(true)}
+                  style={{
+                    padding: '0.45rem',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.35rem'
                   }}
+                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--error, #ef4444)'}
+                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                 >
-                  <Bookmark size={20} fill={isSaved ? 'currentColor' : 'none'} />
-                  {isSaved ? 'Saved' : 'Save Guide'}
+                  <ShieldAlert size={14} />
+                  <span>Report Delays or Grievance</span>
                 </button>
               </div>
             </div>
