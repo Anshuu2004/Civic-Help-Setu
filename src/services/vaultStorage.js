@@ -1,0 +1,99 @@
+const STORAGE_KEY = 'civicbridge_vault_docs';
+
+const DEFAULT_DOCUMENTS = [
+  {
+    id: 'doc-1',
+    type: 'Aadhaar Card',
+    category: 'Identity',
+    number: 'XXXX XXXX 1234',
+    issuer: 'UIDAI',
+    issueDate: '2018-04-12',
+    expiryDate: null,
+    verified: true,
+    notes: 'Primary demographic proof with verified biometrics.',
+    fileName: 'aadhaar_card_masked.pdf',
+    fileSize: '420 KB',
+  },
+  {
+    id: 'doc-2',
+    type: 'PAN Card',
+    category: 'Finance',
+    number: 'ABCDE1234F',
+    issuer: 'Income Tax Department',
+    issueDate: '2019-11-20',
+    expiryDate: null,
+    verified: true,
+    notes: 'Linked to bank account and tax filings.',
+    fileName: 'pan_card_copy.pdf',
+    fileSize: '280 KB',
+  },
+  {
+    id: 'doc-3',
+    type: 'Driving License',
+    category: 'Transport',
+    number: 'DL-142022019',
+    issuer: 'Ministry of Road Transport',
+    issueDate: '2022-03-01',
+    expiryDate: '2027-03-01',
+    verified: false,
+    notes: 'Valid for LMV and motorcycle with gear.',
+    fileName: 'driving_license.jpg',
+    fileSize: '1.2 MB',
+  },
+];
+
+export const getExpiryStatus = (expiryDate) => {
+  if (!expiryDate) return 'none';
+  const today = new Date();
+  const exp = new Date(expiryDate);
+  const diffTime = exp.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return 'expired';
+  if (diffDays <= 60) return 'expiring-soon';
+  return 'active';
+};
+
+export const getDocuments = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DOCUMENTS));
+      return DEFAULT_DOCUMENTS;
+    }
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Failed to load documents from vault storage', err);
+    return DEFAULT_DOCUMENTS;
+  }
+};
+
+export const saveDocument = (doc) => {
+  const current = getDocuments();
+  let updated;
+  if (doc.id && current.some((d) => d.id === doc.id)) {
+    updated = current.map((d) => (d.id === doc.id ? { ...d, ...doc } : d));
+  } else {
+    const newDoc = {
+      ...doc,
+      id: doc.id || `doc-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      verified: Boolean(doc.verified),
+    };
+    updated = [newDoc, ...current];
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return updated;
+};
+
+export const deleteDocument = (id) => {
+  const current = getDocuments();
+  const updated = current.filter((d) => d.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return updated;
+};
+
+export const resetVaultToDefaults = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DOCUMENTS));
+  return DEFAULT_DOCUMENTS;
+};
