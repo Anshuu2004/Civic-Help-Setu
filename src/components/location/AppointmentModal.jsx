@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AccessibleModal from '../common/AccessibleModal';
+import CalendarSyncModal from './CalendarSyncModal';
 import {
   Calendar,
   Clock,
@@ -33,6 +34,7 @@ const AppointmentModal = ({
   });
   const [timeSlot, setTimeSlot] = useState('10:00 AM - 11:30 AM (Morning)');
   const [confirmedToken, setConfirmedToken] = useState(null);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const timeSlots = [
@@ -58,6 +60,10 @@ const AppointmentModal = ({
       const booked = bookOfficeAppointment({
         officeId: office?.id || 'office-default',
         officeName: office?.name || 'Civic Center',
+        address: office?.address || '',
+        city: office?.city || '',
+        state: office?.state || '',
+        directionsUrl: office?.directionsUrl || '',
         serviceName: selectedService || 'General Inquiry & Document Submission',
         applicantName: applicantName.trim(),
         contactNumber: contactNumber.trim(),
@@ -88,8 +94,9 @@ const AppointmentModal = ({
   if (!office) return null;
 
   return (
-    <AccessibleModal
-      isOpen={isOpen}
+    <>
+      <AccessibleModal
+        isOpen={isOpen}
       onClose={handleResetAndClose}
       title={confirmedToken ? 'Citizen Electronic Visit Pass' : 'Schedule Office Visit & Token'}
       subtitle={
@@ -216,26 +223,44 @@ const AppointmentModal = ({
           </div>
 
           {/* Footer Actions */}
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="btn btn-secondary"
-              style={{
-                flex: 1,
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.4rem',
-              }}
-            >
-              <Printer size={16} /> Print Token
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="btn btn-secondary"
+                style={{
+                  flex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                <Printer size={16} /> Print Token
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowCalendarModal(true)}
+                className="btn btn-outline"
+                style={{
+                  flex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  borderColor: 'var(--accent-main)',
+                  color: 'var(--accent-main)'
+                }}
+              >
+                <Calendar size={16} /> Sync to Calendar
+              </button>
+            </div>
             <button
               type="button"
               onClick={handleResetAndClose}
               className="btn btn-primary"
-              style={{ flex: 1 }}
+              style={{ width: '100%', padding: '0.65rem' }}
             >
               Done & Return
             </button>
@@ -413,6 +438,22 @@ const AppointmentModal = ({
         </form>
       )}
     </AccessibleModal>
+
+    {/* Dedicated Calendar Export & Sync Modal */}
+    <CalendarSyncModal
+      isOpen={showCalendarModal}
+      onClose={() => setShowCalendarModal(false)}
+      appointment={confirmedToken ? {
+        officeName: confirmedToken.officeName,
+        address: confirmedToken.address || office?.address,
+        serviceName: confirmedToken.serviceName,
+        date: confirmedToken.appointmentDate,
+        timeSlot: confirmedToken.timeSlot,
+        token: confirmedToken.tokenNumber,
+        directionsUrl: confirmedToken.directionsUrl || office?.directionsUrl
+      } : null}
+    />
+  </>
   );
 };
 

@@ -43,6 +43,32 @@ const Navbar = () => {
           {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
 
+          {/* Quick Command Palette Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setIsPaletteOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.35rem 0.65rem',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--border-light)',
+              borderRadius: '999px',
+              color: 'var(--text-secondary)',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--accent-main)'}
+            onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
+            title="Open Civic Command Palette (Ctrl + K)"
+          >
+            <Search size={14} color="var(--accent-main)" />
+            <span>Search</span>
+            <KbdBadge>Ctrl K</KbdBadge>
+          </button>
+
           <PlainLanguageToggle />
           <LanguageSwitcher />
 
