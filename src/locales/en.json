@@ -57,5 +57,17 @@
     "privacy": "Privacy Policy",
     "openSource": "Open Source",
     "disclaimer": "CivicBridge is an independent, non-governmental civic tech platform. We provide guidance and direct citizens to official government portals."
+  },
+  "rejection_guide": {
+    "title": "Rejection Prevention Guide",
+    "subtitle": "Avoid the top reasons government offices reject civic applications",
+    "pre_submit_audit": "Pre-Submission Audit",
+    "verified": "Verified"
+  },
+  "faqs": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Verified official answers for citizen procedures",
+    "was_helpful": "Was this answer helpful?",
+    "search_placeholder": "Search questions..."
   }
 }
