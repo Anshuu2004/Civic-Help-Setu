@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
+import { LanguageProvider } from './context/LanguageContext';
 import ToastContainer from './components/toast/ToastContainer';
 import SkipToContent from './components/common/SkipToContent';
 import AccessibilityToolbar from './components/common/AccessibilityToolbar';
@@ -55,63 +56,65 @@ function App() {
       <AccessibilityProvider>
         <ToastProvider>
           <AuthProvider>
-            <BrowserRouter>
-              <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <SkipToContent />
-                <Navbar />
-                <main id="main-content" style={{ flex: 1 }} tabIndex="-1">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login/*" element={<Login />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup/*" element={<SignUpPage />} />
-                  <Route path="/signup" element={<SignUpPage />} />
-                  <Route path="/sso-callback" element={<SSOCallback />} />
-                  <Route path="/signup/sso-callback" element={<SSOCallback />} />
-                  <Route path="/assistant" element={<Assistant />} />
-                  <Route path="/services" element={<Services />} />
-                  <Route path="/services/:id" element={<ServiceDetails />} />
-                  <Route path="/nearby" element={<NearbyOffices />} />
-                  <Route path="/nearby-offices" element={<NearbyOffices />} />
-                  <Route path="/track" element={<Track />} />
+            <LanguageProvider>
+              <BrowserRouter>
+                <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                  <SkipToContent />
+                  <Navbar />
+                  <main id="main-content" style={{ flex: 1 }} tabIndex="-1">
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login/*" element={<Login />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup/*" element={<SignUpPage />} />
+                      <Route path="/signup" element={<SignUpPage />} />
+                      <Route path="/sso-callback" element={<SSOCallback />} />
+                      <Route path="/signup/sso-callback" element={<SSOCallback />} />
+                      <Route path="/assistant" element={<Assistant />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/services/:id" element={<ServiceDetails />} />
+                      <Route path="/nearby" element={<NearbyOffices />} />
+                      <Route path="/nearby-offices" element={<NearbyOffices />} />
+                      <Route path="/track" element={<Track />} />
 
-                  <Route path="/saved" element={
-                    <ProtectedRoute>
-                      <Saved />
-                    </ProtectedRoute>
-                  } />
+                      <Route path="/saved" element={
+                        <ProtectedRoute>
+                          <Saved />
+                        </ProtectedRoute>
+                      } />
 
-                  <Route path="/vault" element={
-                    <ProtectedRoute>
-                      <Vault />
-                    </ProtectedRoute>
-                  } />
+                      <Route path="/vault" element={
+                        <ProtectedRoute>
+                          <Vault />
+                        </ProtectedRoute>
+                      } />
 
-                  <Route path="/profile" element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  } />
+                      <Route path="/profile" element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      } />
 
-                  <Route path="/open-source" element={<OpenSource />} />
-                  <Route path="/privacy" element={<Privacy />} />
+                      <Route path="/open-source" element={<OpenSource />} />
+                      <Route path="/privacy" element={<Privacy />} />
 
-                  <Route path="/admin" element={
-                    <ProtectedRoute requiredRole="admin">
-                      <Admin />
-                    </ProtectedRoute>
-                  } />
+                      <Route path="/admin" element={
+                        <ProtectedRoute requiredRole="admin">
+                          <Admin />
+                        </ProtectedRoute>
+                      } />
 
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </main>
-              <Footer />
-              <ToastContainer />
-              <AccessibilityToolbar />
-            </div>
-          </BrowserRouter>
-        </AuthProvider>
-      </ToastProvider>
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                  <ToastContainer />
+                  <AccessibilityToolbar />
+                </div>
+              </BrowserRouter>
+            </LanguageProvider>
+          </AuthProvider>
+        </ToastProvider>
       </AccessibilityProvider>
     </ThemeProvider>
   );
