@@ -51,6 +51,7 @@ export const askCivicAssistant = async (query, conversationContext = []) => {
         summary: dynamicSummary,
         steps: serviceMatch.steps || [],
         officialSources: serviceMatch.officialSources || [],
+        documents: serviceMatch.documents || [],
         category: serviceMatch.category,
         processingTime: serviceMatch.processingTime,
         fees: serviceMatch.fees,
