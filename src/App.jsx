@@ -10,7 +10,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ToastContainer from './components/toast/ToastContainer';
 import AccessibilityToolbar from './components/common/AccessibilityToolbar';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -19,6 +19,7 @@ import SSOCallback from './pages/SSOCallback';
 import Assistant from './pages/Assistant';
 import Services from './pages/Services';
 import ServiceDetails from './pages/ServiceDetails';
+import Eligibility from './pages/Eligibility';
 import NearbyOffices from './pages/NearbyOffices';
 import Track from './pages/Track';
 import Saved from './pages/Saved';
@@ -51,6 +52,7 @@ function App() {
                       <Route path="/assistant" element={<Assistant />} />
                       <Route path="/services" element={<Services />} />
                       <Route path="/services/:id" element={<ServiceDetails />} />
+                      <Route path="/eligibility" element={<Eligibility />} />
                       <Route path="/nearby" element={<NearbyOffices />} />
                       <Route path="/nearby-offices" element={<NearbyOffices />} />
                       <Route path="/track" element={<Track />} />
