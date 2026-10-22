@@ -1,27 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
 import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { createApplication } from '../services/trackingService';
 
 const ServiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [service, setService] = useState(null);
-  const [isSaved, setIsSaved] = useState(false);
+  const [service, setService] = useState(() => MOCK_SERVICES.find(s => s.id === id) || null);
+  const [isSaved, setIsSaved] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
+      return saved.some(s => s.id === id);
+    } catch {
+      return false;
+    }
+  });
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
+  const [applyForm, setApplyForm] = useState({ fullName: '', aadhaarNumber: '' });
 
   useEffect(() => {
     const found = MOCK_SERVICES.find(s => s.id === id);
-    setService(found);
-    const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
-    if (saved.some(s => s.id === id)) setIsSaved(true);
+    setService(found || null);
+    try {
+      const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
+      setIsSaved(saved.some(s => s.id === id));
+    } catch {
+      setIsSaved(false);
+    }
   }, [id]);
 
   const toggleSave = () => {
@@ -35,8 +48,15 @@ const ServiceDetails = () => {
 
   const handleApplySubmit = (e) => {
     e.preventDefault();
+    const app = createApplication({
+      serviceId: service.id,
+      serviceName: service.name,
+      category: service.category,
+      applicantName: applyForm.fullName || user?.username || 'Citizen Applicant',
+      aadhaarId: applyForm.aadhaarNumber,
+    });
+    setGeneratedAppId(app.id);
     setApplyStep(2);
-    setGeneratedAppId('SRV-' + Math.floor(10000000 + Math.random() * 90000000));
   };
 
   if (!service) return (
@@ -191,11 +211,25 @@ const ServiceDetails = () => {
                 <form onSubmit={handleApplySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Full Name (as per ID)</label>
-                    <input type="text" className="input-field" required placeholder="John Doe" />
+                    <input
+                      type="text"
+                      className="input-field"
+                      required
+                      placeholder="e.g. Ramesh Patel"
+                      value={applyForm.fullName}
+                      onChange={(e) => setApplyForm({ ...applyForm, fullName: e.target.value })}
+                    />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Aadhaar Number / Virtual ID</label>
-                    <input type="text" className="input-field" required placeholder="XXXX XXXX XXXX" />
+                    <input
+                      type="text"
+                      className="input-field"
+                      required
+                      placeholder="XXXX XXXX 1234"
+                      value={applyForm.aadhaarNumber}
+                      onChange={(e) => setApplyForm({ ...applyForm, aadhaarNumber: e.target.value })}
+                    />
                   </div>
                   <div style={{ padding: '1.5rem', border: '1px dashed var(--border-main)', borderRadius: '1rem', textAlign: 'center', background: 'var(--glass-bg-subtle)' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>Upload the Required Documents mentioned in the guide</p>
@@ -221,7 +255,7 @@ const ServiceDetails = () => {
                     {generatedAppId}
                   </p>
                 </div>
-                <Link to="/track" className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
+                <Link to={`/track?id=${generatedAppId}`} className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
                   Track Application Status
                 </Link>
               </div>
