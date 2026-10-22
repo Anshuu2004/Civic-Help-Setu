@@ -1,5 +1,5 @@
 import { useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
-import { Shield, Users, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { Shield, Sparkles, UserCheck, ShieldCheck, ArrowRight } from 'lucide-react';
 import { SignIn, useSignIn } from '@clerk/clerk-react';
 import { dark } from '@clerk/themes';
 import { useAuth } from '../context/AuthContext';
@@ -54,7 +54,7 @@ const ClerkGoogleButton = ({ disabled }) => {
           gap: '0.75rem',
           padding: '0.9rem 1.25rem',
           borderRadius: '0.85rem',
-          background: 'rgba(255,255,1,0.08)',
+          background: 'rgba(255,255,255,0.08)',
           border: '1px solid var(--border-light)',
           color: 'var(--text-primary)',
           fontSize: '1rem',
@@ -86,16 +86,38 @@ const ClerkGoogleButton = ({ disabled }) => {
 };
 
 const Login = () => {
-  const { user, isClerkConfigured } = useAuth();
+  const { user, isClerkConfigured, signInAsDemo } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
+  const [demoName, setDemoName] = useState('');
+  const [demoRole, setDemoRole] = useState('citizen');
+
   // Redirect if already signed in
   if (user) {
     return <Navigate to={from} replace />;
   }
+
+  const handleDemoSubmit = (e) => {
+    e.preventDefault();
+    if (!signInAsDemo) return;
+    const name = demoName.trim() || (demoRole === 'admin' ? 'Demo Admin' : 'Demo Citizen');
+    signInAsDemo({
+      username: name,
+      fullName: name,
+      email: `${name.toLowerCase().replace(/\s+/g, '.')}@civicbridge.demo`,
+      role: demoRole,
+    });
+    navigate(from, { replace: true });
+  };
+
+  const handleQuickDemo = (role) => {
+    if (!signInAsDemo) return;
+    signInAsDemo({ role });
+    navigate(from, { replace: true });
+  };
 
   return (
     <div className="section flex-center" style={{ minHeight: '85vh', position: 'relative' }}>
@@ -113,7 +135,16 @@ const Login = () => {
 
       {/* Main glass panel */}
       <div className="glass-panel animate-fade-in delay-100" style={{ width: '100%', maxWidth: '480px', padding: '2.5rem', position: 'relative', zIndex: 10 }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: '800', textAlign: 'center', marginBottom: '1rem' }}>Sign In</h2>
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+          <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', background: 'var(--accent-light)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.75rem' }}>
+            <Shield size={24} color="var(--accent-main)" />
+          </div>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: '800' }}>Sign In to CivicBridge</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+            Access saved guides, track applications, and view your digital vault.
+          </p>
+        </div>
+
         {isClerkConfigured ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <ClerkGoogleButton />
@@ -129,11 +160,90 @@ const Login = () => {
             />
           </div>
         ) : (
-          <div style={{ padding: '1rem', background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.25)', borderRadius: '0.75rem', marginBottom: '1.5rem', fontSize: '0.85rem' }}>
-            <p style={{ fontWeight: '600', color: 'var(--accent-main)' }}>Clerk Auth Not Configured</p>
-            <p>Add <code>VITE_CLERK_PUBLISHABLE_KEY</code> in <code>.env</code> to enable login.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ padding: '0.9rem', background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.25)', borderRadius: '0.75rem', fontSize: '0.85rem' }}>
+              <p style={{ fontWeight: '600', color: 'var(--accent-main)', marginBottom: '0.25rem' }}>Local Demo Authentication Mode</p>
+              <p style={{ color: 'var(--text-secondary)' }}>
+                Clerk publishable key is not active. You can sign in using quick evaluation accounts below to test all citizen and admin flows.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('citizen')}
+                className="btn btn-secondary"
+                style={{ padding: '0.75rem 0.5rem', fontSize: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'center' }}
+              >
+                <UserCheck size={18} color="var(--accent-main)" />
+                <span style={{ fontWeight: '600' }}>Citizen Demo</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>Standard access</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('admin')}
+                className="btn btn-secondary"
+                style={{ padding: '0.75rem 0.5rem', fontSize: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'center' }}
+              >
+                <ShieldCheck size={18} color="var(--success)" />
+                <span style={{ fontWeight: '600' }}>Admin Demo</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>Moderator access</span>
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border-light)' }}></div>
+              <span>Or customize session</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border-light)' }}></div>
+            </div>
+
+            <form onSubmit={handleDemoSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <input
+                type="text"
+                placeholder="Custom Display Name (e.g. Ramesh Kumar)"
+                className="input-field"
+                value={demoName}
+                onChange={(e) => setDemoName(e.target.value)}
+                style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
+              />
+
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--glass-bg)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', cursor: 'pointer', fontSize: '0.85rem' }}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="citizen"
+                    checked={demoRole === 'citizen'}
+                    onChange={() => setDemoRole('citizen')}
+                  />
+                  <span>Citizen Role</span>
+                </label>
+
+                <label style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--glass-bg)', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', cursor: 'pointer', fontSize: '0.85rem' }}>
+                  <input
+                    type="radio"
+                    name="role"
+                    value="admin"
+                    checked={demoRole === 'admin'}
+                    onChange={() => setDemoRole('admin')}
+                  />
+                  <span>Admin Role</span>
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: '100%', padding: '0.75rem', fontSize: '0.95rem', marginTop: '0.5rem' }}
+              >
+                <span>Launch Demo Session</span>
+                <ArrowRight size={16} />
+              </button>
+            </form>
           </div>
         )}
+
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
           Don’t have an account? <Link to="/signup" style={{ color: 'var(--accent-main)', fontWeight: '600' }}>Sign up</Link>
         </div>
