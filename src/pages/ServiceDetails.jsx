@@ -6,6 +6,7 @@ import SourceCard from '../components/SourceCard';
 import EligibilityWizard from '../components/eligibility/EligibilityWizard';
 import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 
 const ServiceDetails = () => {
@@ -25,6 +26,23 @@ const ServiceDetails = () => {
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+
+  const handleReportInaccuracy = () => {
+    if (!service) return;
+    const comment = window.prompt(`Describe any inaccuracy or broken links on the "${service.name}" guide:`, 'Outdated portal link or fee structure.');
+    if (comment && comment.trim()) {
+      submitErrorReport({
+        serviceId: service.id,
+        serviceName: service.name,
+        issueType: 'Community Report',
+        description: comment.trim(),
+        reporterEmail: user?.email || 'citizen.reporter@civicbridge.org',
+      });
+      setReportSubmitted(true);
+      setTimeout(() => setReportSubmitted(false), 4000);
+    }
+  };
   const [applyForm, setApplyForm] = useState({ fullName: '', aadhaarNumber: '' });
 
   useEffect(() => {
@@ -187,9 +205,21 @@ const ServiceDetails = () => {
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Last Verified: {service.lastVerified}</div>
-              <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--error)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}>
-                <Flag size={14} /> Report incorrect information
-              </button>
+              {reportSubmitted ? (
+                <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
+                  ✓ Report submitted to moderator queue. Thank you!
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleReportInaccuracy}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = 'var(--error)')}
+                  onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+                >
+                  <Flag size={14} /> Report incorrect information
+                </button>
+              )}
             </div>
           </div>
         </div>
