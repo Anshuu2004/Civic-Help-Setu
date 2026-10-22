@@ -1,54 +1,33 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import AuthFallbackBanner from './components/AuthFallbackBanner';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
-import { LanguageProvider } from './context/LanguageContext';
-import ToastContainer from './components/toast/ToastContainer';
-import SkipToContent from './components/common/SkipToContent';
-import AccessibilityToolbar from './components/common/AccessibilityToolbar';
+import { ThemeProvider } from './context/ThemeProvider';
 
-// Pages
+import SkipToContent from './components/SkipToContent';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ToastContainer from './components/ToastContainer';
+import AccessibilityToolbar from './components/AccessibilityToolbar';
+import ProtectedRoute from './components/ProtectedRoute';
+
 import Home from './pages/Home';
+import Login from './pages/Login';
+import SignUpPage from './pages/SignUpPage';
+import SSOCallback from './pages/SSOCallback';
 import Assistant from './pages/Assistant';
 import Services from './pages/Services';
 import ServiceDetails from './pages/ServiceDetails';
+import NearbyOffices from './pages/NearbyOffices';
+import Track from './pages/Track';
 import Saved from './pages/Saved';
+import Vault from './pages/Vault';
+import Profile from './pages/Profile';
 import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
-import Login from './pages/Login';
-import SignUpPage from './pages/SignUp';
-import SSOCallback from './pages/SSOCallback';
-import Track from './pages/Track';
-import Vault from './pages/Vault';
-import Profile from './pages/Profile';
-import NearbyOffices from './pages/NearbyOffices';
-
-const ProtectedRoute = ({ children, requiredRole }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="animate-spin" style={{ width: '32px', height: '32px', border: '3px solid var(--border-light)', borderTopColor: 'var(--accent-main)', borderRadius: '50%' }} />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
 
 function App() {
   return (
@@ -76,7 +55,7 @@ function App() {
                       <Route path="/nearby" element={<NearbyOffices />} />
                       <Route path="/nearby-offices" element={<NearbyOffices />} />
                       <Route path="/track" element={<Track />} />
-
+                      
                       <Route path="/saved" element={
                         <ProtectedRoute>
                           <Saved />
