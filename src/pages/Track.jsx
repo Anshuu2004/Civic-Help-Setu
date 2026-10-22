@@ -1,67 +1,189 @@
-import { useState } from 'react';
-import { Search, CheckCircle2, Circle, Clock, FileText, ArrowRight, Copy } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import {
+  Search,
+  CheckCircle2,
+  Circle,
+  Clock,
+  FileText,
+  ArrowRight,
+  Copy,
+  Plus,
+  AlertTriangle,
+  ShieldCheck,
+  CheckSquare,
+  MessageSquare,
+  Calendar,
+  Send,
+  Sparkles,
+} from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import {
+  getApplications,
+  getApplicationById,
+  addNoteToApplication,
+  resolveApplicationPendingAction,
+  getTrackingMetrics,
+} from '../services/trackingService';
+import ActiveApplicationsSummaryGrid from '../components/tracking/ActiveApplicationsSummaryGrid';
+import ActionRequiredAlert from '../components/tracking/ActionRequiredAlert';
+import LinkedDocumentsManager from '../components/tracking/LinkedDocumentsManager';
+import ManualAddApplicationModal from '../components/tracking/ManualAddApplicationModal';
 
 const Track = () => {
   const location = useLocation();
-  const [appId, setAppId] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [result, setResult] = useState(null);
   const { toast } = useToast();
 
+  const [applications, setApplications] = useState(() => getApplications());
+  const [metrics, setMetrics] = useState(() => getTrackingMetrics());
+  const [appIdInput, setAppIdInput] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeApp, setActiveApp] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+
+  // Note addition state
+  const [newNoteText, setNewNoteText] = useState('');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // Initialize or handle URL query parameters
+  useEffect(() => {
+    const freshApps = getApplications();
+    setApplications(freshApps);
+    setMetrics(getTrackingMetrics());
+
+    const searchParams = new URLSearchParams(location.search);
+    const queryId = searchParams.get('id') || searchParams.get('ref');
+
+    if (queryId) {
+      setAppIdInput(queryId);
+      const match = getApplicationById(queryId);
+      if (match) {
+        setActiveApp(match);
+      } else {
+        setNotFound(true);
+      }
+    } else if (freshApps.length > 0) {
+      setActiveApp(freshApps[0]);
+    }
+  }, [location.search]);
+
   const handleSearch = (e) => {
-    e.preventDefault();
-    if (!appId.trim()) {
+    e?.preventDefault();
+    const query = appIdInput.trim();
+    if (!query) {
       toast.warning('Please enter an application reference ID to track status.');
       return;
     }
-    
+
     setIsSearching(true);
     setNotFound(false);
-    setResult(null);
-    
-    // Simulate network lookup
+
     setTimeout(() => {
-      setResult({
-        id: appId.toUpperCase().trim(),
-        service: 'Income Certificate',
-        date: 'Oct 02, 2024',
-        status: 'in-progress',
-        estimatedCompletion: 'Oct 12, 2024'
-      });
+      const match = getApplicationById(query);
+      if (match) {
+        setActiveApp(match);
+        setNotFound(false);
+        toast.success(`Application record ${match.id} loaded successfully.`);
+      } else {
+        setActiveApp(null);
+        setNotFound(true);
+        toast.error(`No record found matching "${query}".`);
+      }
       setIsSearching(false);
-      toast.success('Application record retrieved successfully.', 'Record Found');
-    }, 900);
+    }, 400);
   };
 
   const handleCopyId = () => {
-    if (!result) return;
-    navigator.clipboard?.writeText(result.id);
-    toast.info(`Reference ID ${result.id} copied to clipboard.`);
+    if (!activeApp) return;
+    navigator.clipboard?.writeText(activeApp.id);
+    toast.info(`Reference ID ${activeApp.id} copied to clipboard.`);
+  };
+
+  const handleSelectApp = (app) => {
+    setActiveApp(app);
+    setAppIdInput(app.id);
+    setNotFound(false);
+  };
+
+  const handleAddNote = (e) => {
+    e.preventDefault();
+    if (!activeApp || !newNoteText.trim()) return;
+
+    const updated = addNoteToApplication(activeApp.id, newNoteText);
+    if (updated) {
+      setActiveApp({ ...updated });
+      setApplications(getApplications());
+      setNewNoteText('');
+      toast.success('Note added to application timeline.');
+    }
+  };
+
+  const handleResolveAction = (appId, resolutionText) => {
+    const updated = resolveApplicationPendingAction(appId, resolutionText);
+    if (updated) {
+      setActiveApp({ ...updated });
+      setApplications(getApplications());
+      setMetrics(getTrackingMetrics());
+      toast.success('Action marked as resolved! Application moved to in-progress verification.');
+    }
+  };
+
+  const handleDocumentsUpdated = (updatedApp) => {
+    setActiveApp({ ...updatedApp });
+    setApplications(getApplications());
+  };
+
+  const handleApplicationAdded = (newApp) => {
+    setApplications(getApplications());
+    setMetrics(getTrackingMetrics());
+    setActiveApp(newApp);
+    setAppIdInput(newApp.id);
   };
 
   return (
     <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
-      <div className="container" style={{ maxWidth: '850px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent-main)', fontSize: '0.875rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>
-            <ShieldCheck size={18} /> Live Service Tracker
+      <div className="container" style={{ maxWidth: '900px' }}>
+        {/* Header Section */}
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              color: 'var(--accent-main)',
+              fontSize: '0.875rem',
+              fontWeight: '700',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginBottom: '0.5rem',
+            }}
+          >
+            <ShieldCheck size={18} /> Official Civic Service Tracker
           </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
-            Track Application Status
+          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
+            Application Status & Progress
           </h1>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)' }}>
-            Enter your application reference number (e.g. SRV-98234710) for real-time progress.
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
+            Monitor real-time verification stages, departmental approvals, and action deadlines in one place.
           </p>
         </div>
 
-        {/* Search Bar */}
+        {/* High-level status dashboard metrics */}
+        <ActiveApplicationsSummaryGrid
+          metrics={metrics}
+          applications={applications}
+          selectedId={activeApp?.id}
+          onSelectApplication={handleSelectApp}
+          onOpenAddModal={() => setIsAddModalOpen(true)}
+        />
+
+        {/* Reference ID Search Bar */}
         <form
           onSubmit={handleSearch}
           style={{
             display: 'flex',
             gap: '0.75rem',
-            marginBottom: '1.5rem',
+            marginBottom: '2rem',
             background: 'var(--glass-bg)',
             padding: '0.6rem 0.75rem',
             borderRadius: '99px',
@@ -74,210 +196,310 @@ const Track = () => {
           </div>
           <input
             type="text"
-            placeholder="Enter reference ID (e.g. SRV-98234710)"
-            value={appId}
-            onChange={(e) => setAppId(e.target.value)}
+            placeholder="Search by Reference ID (e.g. SRV-98234710)"
+            value={appIdInput}
+            onChange={(e) => setAppIdInput(e.target.value)}
             className="input-field"
             style={{
               border: 'none',
               background: 'transparent',
-              boxShadow: 'none',
-              padding: '0.5rem',
-              fontSize: '1.1rem',
+              fontSize: '1.05rem',
               flex: 1,
+              padding: '0.5rem 0',
+              outline: 'none',
             }}
           />
           <button
             type="submit"
             className="btn btn-primary"
             disabled={isSearching}
-            style={{ padding: '0 1.75rem', borderRadius: '99px', fontSize: '1rem' }}
+            style={{ padding: '0.75rem 1.75rem', borderRadius: '99px' }}
           >
-            {isSearching ? 'Checking...' : 'Track Now'}
+            {isSearching ? 'Checking...' : 'Track Status'}
           </button>
         </form>
 
-        {/* Quick select recent applications */}
-        {recentApps.length > 0 && (
-          <div style={{ marginBottom: '3rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', fontWeight: '600' }}>Recent records:</span>
-            {recentApps.map((app) => (
-              <button
-                key={app.id}
-                type="button"
-                onClick={() => handleSelectRecent(app.id)}
-                style={{
-                  fontSize: '0.75rem',
-                  fontFamily: 'monospace',
-                  padding: '0.25rem 0.65rem',
-                  borderRadius: '99px',
-                  background: 'var(--glass-bg)',
-                  border: '1px solid var(--border-light)',
-                  color: 'var(--accent-main)',
-                  cursor: 'pointer',
-                  transition: 'border-color 0.2s',
-                }}
-              >
-                {app.id} ({app.serviceName})
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Not Found Alert */}
+        {/* Not Found View */}
         {notFound && (
           <div
-            className="glass-panel animate-fade-in"
+            className="card animate-fade-in"
             style={{
-              padding: '2rem',
               textAlign: 'center',
-              borderLeft: '4px solid var(--error, #ef4444)',
+              padding: '2.5rem',
               marginBottom: '2rem',
+              borderColor: 'rgba(239, 68, 68, 0.3)',
             }}
           >
-            <div style={{ display: 'inline-flex', padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '50%', color: 'var(--error, #ef4444)', marginBottom: '0.75rem' }}>
-              <AlertCircle size={28} />
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.35rem' }}>
-              No Application Found
+            <AlertTriangle size={36} color="#ef4444" style={{ margin: '0 auto 1rem' }} />
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '0.5rem' }}>
+              Application Reference Not Found
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.925rem' }}>
-              We could not find an application with reference number <strong>"{appId}"</strong>. Please verify the ID or submit a fast-track application through any service guide.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '480px', margin: '0 auto 1.5rem' }}>
+              We could not find an active filing with reference ID <strong>"{appIdInput}"</strong>. If you applied at an offline office or state portal, you can register it manually.
             </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setIsAddModalOpen(true)}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <Plus size={16} /> Register Application Manually
+            </button>
           </div>
         )}
 
-        {/* Active Application Result Panel */}
-        {result && (
-          <div className="glass-panel animate-fade-in" style={{ padding: '2.5rem' }}>
+        {/* Active Application Detail Card */}
+        {activeApp && (
+          <div className="card animate-fade-in" style={{ padding: '2rem', borderRadius: '1.25rem' }}>
+            {/* Header info */}
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-                marginBottom: '2rem',
-                paddingBottom: '1.5rem',
                 borderBottom: '1px solid var(--border-light)',
+                paddingBottom: '1.5rem',
+                marginBottom: '1.5rem',
                 flexWrap: 'wrap',
                 gap: '1rem',
               }}
             >
               <div>
-                <span
-                  style={{
-                    fontSize: '0.8rem',
-                    fontWeight: '700',
-                    color: 'var(--accent-main)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  Application Status
-                </span>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginTop: '0.5rem', color: 'var(--text-primary)' }}>{result.service}</h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
-                  <p style={{ color: 'var(--text-tertiary)', margin: 0, fontSize: '1rem' }}>Ref ID: {result.id}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+                  <span
+                    style={{
+                      fontFamily: 'monospace',
+                      fontWeight: '800',
+                      fontSize: '1.25rem',
+                      color: 'var(--accent-main)',
+                      letterSpacing: '0.5px',
+                    }}
+                  >
+                    {activeApp.id}
+                  </span>
                   <button
                     type="button"
                     onClick={handleCopyId}
-                    title="Copy Reference ID"
-                    aria-label="Copy Reference ID"
+                    title="Copy reference number"
                     style={{
-                      background: 'var(--border-light)',
+                      background: 'none',
                       border: 'none',
-                      borderRadius: '0.375rem',
-                      padding: '0.2rem 0.4rem',
+                      color: 'var(--text-tertiary)',
                       cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                      fontSize: '0.75rem',
-                      color: 'var(--text-secondary)'
+                      padding: '0.2rem',
                     }}
                   >
-                    <Copy size={13} /> Copy
+                    <Copy size={16} />
                   </button>
+                </div>
+                <h2 style={{ fontSize: '1.65rem', fontWeight: '800', margin: '0 0 0.35rem' }}>
+                  {activeApp.serviceName}
+                </h2>
+                <div style={{ display: 'flex', gap: '0.85rem', color: 'var(--text-secondary)', fontSize: '0.85rem', flexWrap: 'wrap' }}>
+                  <span>Applicant: <strong>{activeApp.applicantName}</strong></span>
+                  <span>•</span>
+                  <span>Category: <strong>{activeApp.category}</strong></span>
+                  <span>•</span>
+                  <span>Applied: <strong>{activeApp.appliedDate}</strong></span>
                 </div>
               </div>
 
               <div style={{ textAlign: 'right' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>Target Completion</span>
-                <p style={{ fontWeight: '700', color: 'var(--accent-main)', fontSize: '1.1rem' }}>
-                  {result.estimatedCompletion}
-                </p>
                 <span
                   style={{
                     display: 'inline-block',
-                    marginTop: '0.35rem',
-                    padding: '0.2rem 0.65rem',
+                    padding: '0.35rem 0.85rem',
                     borderRadius: '99px',
-                    fontSize: '0.75rem',
+                    fontSize: '0.8rem',
                     fontWeight: '700',
                     textTransform: 'uppercase',
-                    background: result.status === 'completed' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(56, 189, 248, 0.15)',
-                    color: result.status === 'completed' ? 'var(--success, #10b981)' : 'var(--accent-main)',
+                    letterSpacing: '0.5px',
+                    background:
+                      activeApp.status === 'completed'
+                        ? 'rgba(16, 185, 129, 0.2)'
+                        : activeApp.status === 'action-required'
+                        ? 'rgba(239, 68, 68, 0.2)'
+                        : 'rgba(56, 189, 248, 0.2)',
+                    color:
+                      activeApp.status === 'completed'
+                        ? '#10b981'
+                        : activeApp.status === 'action-required'
+                        ? '#ef4444'
+                        : 'var(--accent-main)',
+                    border:
+                      activeApp.status === 'completed'
+                        ? '1px solid #10b981'
+                        : activeApp.status === 'action-required'
+                        ? '1px solid #ef4444'
+                        : '1px solid var(--accent-main)',
                   }}
                 >
-                  {result.status === 'completed' ? 'Dispatched / Ready' : 'In Progress'}
+                  {activeApp.status === 'action-required'
+                    ? 'Action Required'
+                    : activeApp.status === 'in-progress'
+                    ? 'In Progress'
+                    : activeApp.status}
                 </span>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginTop: '0.5rem' }}>
+                  Target Delivery: <strong>{activeApp.estimatedCompletion}</strong>
+                </div>
               </div>
             </div>
 
-            {/* Dynamic Stage Timeline */}
-            <ApplicationTimeline stages={result.stages} />
+            {/* Action Required Banner if present */}
+            {activeApp.pendingAction && (
+              <ActionRequiredAlert
+                action={activeApp.pendingAction}
+                appId={activeApp.id}
+                onResolve={handleResolveAction}
+              />
+            )}
 
-            {/* Receipt and Details Footer */}
+            {/* Application Progress Timeline */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>
+                Verification & Approval Workflow
+              </h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+                {activeApp.stages?.map((stage, idx) => {
+                  const isDone = stage.completed;
+                  const isInProgress = stage.inProgress;
+                  const isAction = stage.actionRequired;
+
+                  return (
+                    <div key={idx} style={{ display: 'flex', gap: '1.25rem', position: 'relative' }}>
+                      {/* Vertical line connector */}
+                      {idx !== activeApp.stages.length - 1 && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            left: '14px',
+                            top: '30px',
+                            bottom: '-25px',
+                            width: '2px',
+                            background: isDone ? 'var(--accent-main)' : 'var(--border-light)',
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
+
+                      {/* Icon indicator */}
+                      <div style={{ zIndex: 2, background: 'var(--bg-main)', borderRadius: '50%' }}>
+                        {isDone ? (
+                          <CheckCircle2 size={30} color="var(--accent-main)" />
+                        ) : isAction ? (
+                          <AlertTriangle size={30} color="#ef4444" />
+                        ) : isInProgress ? (
+                          <Clock size={30} color="#38bdf8" />
+                        ) : (
+                          <Circle size={30} color="var(--text-tertiary)" />
+                        )}
+                      </div>
+
+                      {/* Stage details */}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                          <h4
+                            style={{
+                              margin: 0,
+                              fontSize: '1rem',
+                              fontWeight: '700',
+                              color: isDone || isInProgress ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                            }}
+                          >
+                            {stage.title}
+                          </h4>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+                            {stage.timestamp}
+                          </span>
+                        </div>
+                        <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                          {stage.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Linked Documents Manager */}
+            <LinkedDocumentsManager
+              appId={activeApp.id}
+              linkedDocs={activeApp.linkedDocs || []}
+              onDocumentsUpdated={handleDocumentsUpdated}
+            />
+
+            {/* Notes & Activity Log Section */}
             <div
               style={{
-                marginTop: '2.5rem',
-                paddingTop: '1.5rem',
-                borderTop: '1px solid var(--border-light)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '1rem',
+                marginTop: '1.75rem',
+                padding: '1.25rem',
+                borderRadius: '0.85rem',
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid var(--border-light)',
               }}
             >
-              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                <FileText size={20} color="var(--text-secondary)" />
-                <span style={{ fontWeight: '500', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                  Applied: {result.appliedDate}
-                </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <MessageSquare size={18} color="var(--accent-main)" />
+                <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: '800', color: 'var(--text-primary)' }}>
+                  Citizen Filing Notes & Updates ({activeApp.notes?.length || 0})
+                </h4>
               </div>
 
-              <div style={{ position: 'relative', display: 'flex', gap: '2rem', zIndex: 1 }}>
-                <div style={{ background: 'var(--bg-main)', borderRadius: '50%', padding: '0.25rem' }}>
-                  <Circle size={32} color="var(--text-tertiary)" />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-tertiary)' }}>Final Approval & Issuance</h3>
-                  <p style={{ color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>Awaiting clearance from verification officer.</p>
-                </div>
+              {/* Existing notes */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1rem' }}>
+                {activeApp.notes?.length === 0 ? (
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', fontStyle: 'italic', margin: 0 }}>
+                    No personal notes recorded yet.
+                  </p>
+                ) : (
+                  activeApp.notes?.map((n) => (
+                    <div
+                      key={n.id}
+                      style={{
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: '0.5rem',
+                        background: 'var(--glass-bg)',
+                        border: '1px solid var(--border-light)',
+                        fontSize: '0.85rem',
+                      }}
+                    >
+                      <div style={{ color: 'var(--text-primary)', marginBottom: '0.2rem' }}>{n.text}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>{n.date}</div>
+                    </div>
+                  ))
+                )}
               </div>
-            </div>
-            
-            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <FileText size={24} color="var(--text-secondary)" />
-                <span style={{ fontWeight: '500', color: 'var(--text-secondary)' }}>View submitted documents</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => toast.info('Official receipt copy available in your Documents Vault.', 'Receipt Available')}
-                style={{ background: 'none', border: 'none', color: 'var(--accent-main)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '1rem' }}
-              >
-                View Receipt <ArrowRight size={18} />
-              </button>
+
+              {/* Add note input */}
+              <form onSubmit={handleAddNote} style={{ display: 'flex', gap: '0.5rem' }}>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="Add a progress note, official name, or token reminder..."
+                  value={newNoteText}
+                  onChange={(e) => setNewNoteText(e.target.value)}
+                  style={{ flex: 1, fontSize: '0.85rem' }}
+                />
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ padding: '0.45rem 1rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  <Send size={14} /> Add
+                </button>
+              </form>
             </div>
           </div>
         )}
 
-        {/* Digital Receipt Modal */}
-        <TrackingReceiptModal
-          app={result}
-          isOpen={showReceipt}
-          onClose={() => setShowReceipt(false)}
+        {/* Modal for registering external / manual application */}
+        <ManualAddApplicationModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onApplicationAdded={handleApplicationAdded}
         />
       </div>
     </div>

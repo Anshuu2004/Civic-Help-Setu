@@ -11,6 +11,15 @@ const DEFAULT_APPLICATIONS = [
     estimatedCompletion: 'Oct 22, 2026',
     status: 'in-progress',
     currentStageIndex: 1,
+    notes: [
+      { id: 'n1', text: 'Submitted salary slips from employer via Tahsildar portal.', date: 'Oct 12, 2026 • 10:30 AM' },
+      { id: 'n2', text: 'Revenue inspector scheduled site verification visit.', date: 'Oct 15, 2026 • 02:00 PM' },
+    ],
+    linkedDocs: [
+      { id: 'd1', name: 'Salary_Slip_Aug2026.pdf', size: '1.2 MB', linkedAt: 'Oct 12, 2026' },
+      { id: 'd2', name: 'Aadhaar_Card_Copy.pdf', size: '850 KB', linkedAt: 'Oct 12, 2026' },
+    ],
+    pendingAction: null,
     stages: [
       {
         title: 'Application Submitted',
@@ -49,6 +58,14 @@ const DEFAULT_APPLICATIONS = [
     estimatedCompletion: 'Oct 10, 2026',
     status: 'completed',
     currentStageIndex: 3,
+    notes: [
+      { id: 'n3', text: 'Track test cleared with zero negative marks on 8-track.', date: 'Oct 02, 2026 • 03:15 PM' },
+    ],
+    linkedDocs: [
+      { id: 'd3', name: 'Learner_License_Extract.pdf', size: '540 KB', linkedAt: 'Sep 24, 2026' },
+      { id: 'd4', name: 'Medical_Certificate_Form1A.pdf', size: '720 KB', linkedAt: 'Sep 24, 2026' },
+    ],
+    pendingAction: null,
     stages: [
       {
         title: 'Application & Learner Pass Recorded',
@@ -84,8 +101,20 @@ const DEFAULT_APPLICATIONS = [
     applicantName: 'Aarav Kumar',
     appliedDate: 'Oct 19, 2026',
     estimatedCompletion: 'Nov 02, 2026',
-    status: 'submitted',
-    currentStageIndex: 0,
+    status: 'action-required',
+    currentStageIndex: 1,
+    notes: [
+      { id: 'n4', text: 'Hospital discharge certificate requires clearer stamp copy.', date: 'Oct 20, 2026 • 11:30 AM' },
+    ],
+    linkedDocs: [
+      { id: 'd5', name: 'Hospital_Discharge_Summary.pdf', size: '920 KB', linkedAt: 'Oct 19, 2026' },
+    ],
+    pendingAction: {
+      title: 'Upload Clearer Hospital Birth Record',
+      description: 'The municipal registrar rejected hospital discharge slip due to illegible physician seal. Please upload a re-scanned copy.',
+      deadline: 'Oct 28, 2026',
+      documentRequired: 'Hospital Birth Card (Seal visible)',
+    },
     stages: [
       {
         title: 'Application Submitted',
@@ -96,9 +125,9 @@ const DEFAULT_APPLICATIONS = [
       {
         title: 'Municipal Record Matching',
         description: 'Verification with hospital birth registers.',
-        timestamp: 'Scheduled for Oct 23',
+        timestamp: 'Action Needed: Re-upload seal copy',
         completed: false,
-        inProgress: true,
+        actionRequired: true,
       },
       {
         title: 'Registrar Authentication',
@@ -166,6 +195,11 @@ export const createApplication = ({ serviceId, serviceName, category, applicantN
     status: 'submitted',
     currentStageIndex: 0,
     aadhaarMasked: aadhaarId ? `XXXX-XXXX-${aadhaarId.slice(-4)}` : 'XXXX-XXXX-8921',
+    notes: [
+      { id: `n-${Date.now()}`, text: 'Application initiated digitally via Civic Help Setu.', date: `${dateStr} • Just now` },
+    ],
+    linkedDocs: [],
+    pendingAction: null,
     stages: [
       {
         title: 'Application Submitted',
@@ -198,4 +232,160 @@ export const createApplication = ({ serviceId, serviceName, category, applicantN
   const updated = [newApp, ...all];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   return newApp;
+};
+
+export const addManualApplication = ({
+  referenceId,
+  serviceName,
+  category = 'General',
+  appliedDate,
+  estimatedCompletion,
+  status = 'submitted',
+  initialNote = '',
+  applicantName = 'Citizen Applicant',
+}) => {
+  const all = getApplications();
+  const cleanId = referenceId.trim().toUpperCase();
+
+  const stages = [
+    {
+      title: 'Application Submitted',
+      description: 'Submitted at district portal / physical center.',
+      timestamp: appliedDate || 'Submitted',
+      completed: true,
+    },
+    {
+      title: 'Document Verification',
+      description: 'Scrutiny of applicant credentials and attachments.',
+      timestamp: status === 'submitted' ? 'Pending initiation' : 'In review',
+      completed: status !== 'submitted',
+      inProgress: status === 'in-progress',
+      actionRequired: status === 'action-required',
+    },
+    {
+      title: 'Departmental Processing',
+      description: 'Officer evaluation and statutory approvals.',
+      timestamp: status === 'completed' ? 'Cleared' : 'Pending prior stages',
+      completed: status === 'completed',
+    },
+    {
+      title: 'Final Issuance / Dispatch',
+      description: 'Ready for collection, digital download, or courier delivery.',
+      timestamp: status === 'completed' ? 'Issued' : (estimatedCompletion ? `Est: ${estimatedCompletion}` : 'Pending'),
+      completed: status === 'completed',
+    },
+  ];
+
+  let currentStageIndex = 0;
+  if (status === 'in-progress' || status === 'action-required') currentStageIndex = 1;
+  else if (status === 'completed') currentStageIndex = 3;
+
+  const newApp = {
+    id: cleanId,
+    serviceId: cleanId.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+    serviceName: serviceName.trim(),
+    category,
+    applicantName,
+    appliedDate: appliedDate || 'Recent',
+    estimatedCompletion: estimatedCompletion || 'Within 15 days',
+    status,
+    currentStageIndex,
+    notes: initialNote
+      ? [{ id: `n-${Date.now()}`, text: initialNote, date: `${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` }]
+      : [],
+    linkedDocs: [],
+    pendingAction: status === 'action-required' ? {
+      title: 'Additional Documentation or Clarification Needed',
+      description: 'Department requested supplementary records for reference ' + cleanId,
+      deadline: 'Within 7 business days',
+      documentRequired: 'Supplementary Proof Document',
+    } : null,
+    stages,
+  };
+
+  const updated = [newApp, ...all.filter((a) => a.id.toUpperCase() !== cleanId)];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return newApp;
+};
+
+export const addNoteToApplication = (appId, noteText) => {
+  const all = getApplications();
+  const target = all.find((a) => a.id.toUpperCase() === appId.toUpperCase());
+  if (!target) return null;
+
+  const newNote = {
+    id: `n-${Date.now()}`,
+    text: noteText.trim(),
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+  };
+
+  target.notes = [...(target.notes || []), newNote];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  return target;
+};
+
+export const linkDocumentToApplication = (appId, doc) => {
+  const all = getApplications();
+  const target = all.find((a) => a.id.toUpperCase() === appId.toUpperCase());
+  if (!target) return null;
+
+  const newDoc = {
+    id: `doc-${Date.now()}`,
+    name: doc.name || 'Citizen_Attachment.pdf',
+    size: doc.size || '750 KB',
+    linkedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  };
+
+  target.linkedDocs = [...(target.linkedDocs || []), newDoc];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  return target;
+};
+
+export const unlinkDocumentFromApplication = (appId, docId) => {
+  const all = getApplications();
+  const target = all.find((a) => a.id.toUpperCase() === appId.toUpperCase());
+  if (!target) return null;
+
+  target.linkedDocs = (target.linkedDocs || []).filter((d) => d.id !== docId);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  return target;
+};
+
+export const resolveApplicationPendingAction = (appId, resolutionNote = '') => {
+  const all = getApplications();
+  const target = all.find((a) => a.id.toUpperCase() === appId.toUpperCase());
+  if (!target) return null;
+
+  target.pendingAction = null;
+  target.status = 'in-progress';
+  if (target.stages && target.stages[1]) {
+    target.stages[1].actionRequired = false;
+    target.stages[1].inProgress = true;
+    target.stages[1].timestamp = 'Action resolved • Resumed verification';
+  }
+
+  if (resolutionNote) {
+    target.notes = [
+      ...(target.notes || []),
+      {
+        id: `n-${Date.now()}`,
+        text: `Action Resolved: ${resolutionNote}`,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      },
+    ];
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  return target;
+};
+
+export const getTrackingMetrics = () => {
+  const all = getApplications();
+  return {
+    total: all.length,
+    inProgress: all.filter((a) => a.status === 'in-progress').length,
+    actionRequired: all.filter((a) => a.status === 'action-required').length,
+    completed: all.filter((a) => a.status === 'completed').length,
+    submitted: all.filter((a) => a.status === 'submitted').length,
+  };
 };
