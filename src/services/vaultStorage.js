@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'civicbridge_vault_docs';
+const VAULT_LOCK_KEY = 'civicbridge_vault_pin';
 
 const DEFAULT_DOCUMENTS = [
   {
@@ -13,6 +14,7 @@ const DEFAULT_DOCUMENTS = [
     notes: 'Primary demographic proof with verified biometrics.',
     fileName: 'aadhaar_card_masked.pdf',
     fileSize: '420 KB',
+    taggedServices: ['birth-certificate', 'pan-card', 'voter-id', 'passport'],
   },
   {
     id: 'doc-2',
@@ -26,6 +28,7 @@ const DEFAULT_DOCUMENTS = [
     notes: 'Linked to bank account and tax filings.',
     fileName: 'pan_card_copy.pdf',
     fileSize: '280 KB',
+    taggedServices: ['income-certificate', 'udyam-registration'],
   },
   {
     id: 'doc-3',
@@ -34,11 +37,12 @@ const DEFAULT_DOCUMENTS = [
     number: 'DL-142022019',
     issuer: 'Ministry of Road Transport',
     issueDate: '2022-03-01',
-    expiryDate: '2027-03-01',
+    expiryDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // expiring in 45 days
     verified: false,
-    notes: 'Valid for LMV and motorcycle with gear.',
+    notes: 'Valid for LMV and motorcycle with gear. Needs renewal soon.',
     fileName: 'driving_license.jpg',
     fileSize: '1.2 MB',
+    taggedServices: ['driving-license'],
   },
 ];
 
@@ -51,7 +55,16 @@ export const getExpiryStatus = (expiryDate) => {
 
   if (diffDays < 0) return 'expired';
   if (diffDays <= 60) return 'expiring-soon';
+  if (diffDays <= 180) return 'expiring-6m';
   return 'active';
+};
+
+export const getDaysUntilExpiry = (expiryDate) => {
+  if (!expiryDate) return null;
+  const today = new Date();
+  const exp = new Date(expiryDate);
+  const diffTime = exp.getTime() - today.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
 export const getDocuments = () => {
@@ -79,6 +92,7 @@ export const saveDocument = (doc) => {
       id: doc.id || `doc-${Date.now()}`,
       createdAt: new Date().toISOString(),
       verified: Boolean(doc.verified),
+      taggedServices: doc.taggedServices || [],
     };
     updated = [newDoc, ...current];
   }
@@ -91,6 +105,80 @@ export const deleteDocument = (id) => {
   const updated = current.filter((d) => d.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   return updated;
+};
+
+export const tagDocumentToService = (docId, serviceId) => {
+  const current = getDocuments();
+  const target = current.find((d) => d.id === docId);
+  if (!target) return current;
+
+  const tags = new Set(target.taggedServices || []);
+  tags.add(serviceId);
+  target.taggedServices = Array.from(tags);
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  return current;
+};
+
+export const untagDocumentFromService = (docId, serviceId) => {
+  const current = getDocuments();
+  const target = current.find((d) => d.id === docId);
+  if (!target) return current;
+
+  target.taggedServices = (target.taggedServices || []).filter((s) => s !== serviceId);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  return current;
+};
+
+export const getExpiringDocuments = () => {
+  const all = getDocuments();
+  return all
+    .map((doc) => ({
+      doc,
+      daysLeft: getDaysUntilExpiry(doc.expiryDate),
+      status: getExpiryStatus(doc.expiryDate),
+    }))
+    .filter((item) => item.status === 'expired' || item.status === 'expiring-soon' || item.status === 'expiring-6m')
+    .sort((a, b) => (a.daysLeft ?? 999) - (b.daysLeft ?? 999));
+};
+
+export const exportVaultData = () => {
+  const docs = getDocuments();
+  const backup = {
+    app: 'CivicBridge Vault',
+    version: '2.0',
+    exportDate: new Date().toISOString(),
+    documentsCount: docs.length,
+    checksum: btoa(unescape(encodeURIComponent(JSON.stringify(docs)))).slice(0, 32),
+    documents: docs,
+  };
+  return JSON.stringify(backup, null, 2);
+};
+
+export const importVaultData = (jsonString) => {
+  try {
+    const parsed = JSON.parse(jsonString);
+    if (!parsed || !Array.isArray(parsed.documents)) {
+      throw new Error('Invalid vault backup format.');
+    }
+    const current = getDocuments();
+    const existingIds = new Set(current.map((d) => d.id));
+
+    const merged = [...current];
+    for (const incoming of parsed.documents) {
+      if (existingIds.has(incoming.id)) {
+        const idx = merged.findIndex((d) => d.id === incoming.id);
+        merged[idx] = { ...merged[idx], ...incoming };
+      } else {
+        merged.push(incoming);
+      }
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    return { success: true, count: parsed.documents.length };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 };
 
 export const resetVaultToDefaults = () => {
