@@ -8,6 +8,7 @@ import {
   Sliders,
   X,
   Check,
+  Keyboard,
 } from 'lucide-react';
 import { useAccessibility } from '../../context/AccessibilityContext';
 import { useToast } from '../../context/ToastContext';
@@ -209,6 +210,34 @@ const AccessibilityToolbar = () => {
                   {isSpeaking ? <VolumeX size={16} /> : <Volume2 size={16} />}
                   {isSpeaking ? 'Stop Reading' : 'Read Page Aloud'}
                 </span>
+              </button>
+
+              {/* Keyboard Shortcuts Trigger */}
+              <button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(new KeyboardEvent('keydown', { key: '?' }));
+                }}
+                style={{
+                  width: '100%',
+                  padding: '0.65rem 0.85rem',
+                  borderRadius: '0.6rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  border: '1.5px solid var(--border-light)',
+                  background: 'var(--glass-bg)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                  fontSize: '0.85rem',
+                  marginTop: '0.5rem'
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Keyboard size={16} color="var(--accent-main)" />
+                  <span>Keyboard Shortcuts</span>
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', padding: '0.1rem 0.4rem', background: 'var(--glass-bg-subtle)', borderRadius: '4px' }}>?</span>
               </button>
             </div>
 
