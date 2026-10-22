@@ -5,7 +5,10 @@ import AuthFallbackBanner from './components/AuthFallbackBanner';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { AccessibilityProvider } from './context/AccessibilityContext';
 import ToastContainer from './components/toast/ToastContainer';
+import SkipToContent from './components/common/SkipToContent';
+import AccessibilityToolbar from './components/common/AccessibilityToolbar';
 
 // Pages
 import Home from './pages/Home';
@@ -49,12 +52,14 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 function App() {
   return (
     <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-              <Navbar />
-              <main style={{ flex: 1 }}>
+      <AccessibilityProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <SkipToContent />
+                <Navbar />
+                <main id="main-content" style={{ flex: 1 }} tabIndex="-1">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/login/*" element={<Login />} />
@@ -102,10 +107,12 @@ function App() {
               </main>
               <Footer />
               <ToastContainer />
+              <AccessibilityToolbar />
             </div>
           </BrowserRouter>
         </AuthProvider>
       </ToastProvider>
+      </AccessibilityProvider>
     </ThemeProvider>
   );
 }

@@ -291,3 +291,69 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-left: 4px;
 }
 @keyframes blink-cursor { 50% { opacity: 0; } }
+
+/* --- ACCESSIBILITY, FONT SCALING & HIGH CONTRAST (WCAG 2.1 AA) --- */
+html[data-font-scale="large"] {
+  font-size: 118%;
+}
+
+html[data-font-scale="xlarge"] {
+  font-size: 135%;
+}
+
+/* High Contrast Mode Overrides */
+html[data-high-contrast="true"] {
+  --bg-main: #000000 !important;
+  --bg-secondary: #0a0a0a !important;
+  --card-bg: #121212 !important;
+  --glass-bg: #111111 !important;
+  --text-primary: #ffffff !important;
+  --text-secondary: #e2e8f0 !important;
+  --text-tertiary: #cbd5e1 !important;
+  --accent-main: #facc15 !important;
+  --border-main: #facc15 !important;
+  --border-light: #ffffff !important;
+  --shadow-sm: none !important;
+  --shadow-md: none !important;
+  --shadow-lg: 0 0 0 2px #facc15 !important;
+}
+
+html[data-high-contrast="true"] .btn-primary {
+  background: #facc15 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+  border: 2px solid #ffffff !important;
+}
+
+html[data-high-contrast="true"] .btn-secondary {
+  background: #000000 !important;
+  color: #facc15 !important;
+  border: 2px solid #facc15 !important;
+  font-weight: 700 !important;
+}
+
+html[data-high-contrast="true"] .card,
+html[data-high-contrast="true"] .glass-panel {
+  border: 2px solid #ffffff !important;
+  background: #0a0a0a !important;
+}
+
+/* Visible Keyboard Focus Ring */
+:focus-visible {
+  outline: 3px solid var(--accent-main) !important;
+  outline-offset: 3px !important;
+}
+
+/* Mobile Touch Target Expansion (>= 44x44px minimum) */
+@media (max-width: 768px) {
+  button,
+  .btn,
+  .nav-link,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
