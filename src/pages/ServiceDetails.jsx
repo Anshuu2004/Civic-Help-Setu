@@ -1,27 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
+import EligibilityWizard from '../components/eligibility/EligibilityWizard';
 import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { submitErrorReport } from '../services/adminService';
+import { createApplication } from '../services/trackingService';
 
 const ServiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [service, setService] = useState(null);
-  const [isSaved, setIsSaved] = useState(false);
+  const [service, setService] = useState(() => MOCK_SERVICES.find(s => s.id === id) || null);
+  const [isSaved, setIsSaved] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
+      return saved.some(s => s.id === id);
+    } catch {
+      return false;
+    }
+  });
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+
+  const handleReportInaccuracy = () => {
+    if (!service) return;
+    const comment = window.prompt(`Describe any inaccuracy or broken links on the "${service.name}" guide:`, 'Outdated portal link or fee structure.');
+    if (comment && comment.trim()) {
+      submitErrorReport({
+        serviceId: service.id,
+        serviceName: service.name,
+        issueType: 'Community Report',
+        description: comment.trim(),
+        reporterEmail: user?.email || 'citizen.reporter@civicbridge.org',
+      });
+      setReportSubmitted(true);
+      setTimeout(() => setReportSubmitted(false), 4000);
+    }
+  };
+  const [applyForm, setApplyForm] = useState({ fullName: '', aadhaarNumber: '' });
 
   useEffect(() => {
     const found = MOCK_SERVICES.find(s => s.id === id);
-    setService(found);
-    const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
-    if (saved.some(s => s.id === id)) setIsSaved(true);
+    setService(found || null);
+    try {
+      const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
+      setIsSaved(saved.some(s => s.id === id));
+    } catch {
+      setIsSaved(false);
+    }
   }, [id]);
 
   const toggleSave = () => {
@@ -35,8 +67,15 @@ const ServiceDetails = () => {
 
   const handleApplySubmit = (e) => {
     e.preventDefault();
+    const app = createApplication({
+      serviceId: service.id,
+      serviceName: service.name,
+      category: service.category,
+      applicantName: applyForm.fullName || user?.username || 'Citizen Applicant',
+      aadhaarId: applyForm.aadhaarNumber,
+    });
+    setGeneratedAppId(app.id);
     setApplyStep(2);
-    setGeneratedAppId('SRV-' + Math.floor(10000000 + Math.random() * 90000000));
   };
 
   if (!service) return (
@@ -124,10 +163,12 @@ const ServiceDetails = () => {
 
             <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '4rem' }}>
               <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility</h2>
-                <ul style={{ paddingLeft: '1.5rem', color: 'var(--text-secondary)', fontSize: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {service.eligibility.map((item, idx) => <li key={idx} style={{ listStyleType: 'disc' }}>{item}</li>)}
-                </ul>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility Criteria</h2>
+                <EligibilityWizard
+                  serviceId={service.id}
+                  staticCriteria={service.eligibility}
+                  onApplyClick={() => (user ? setShowApplyModal(true) : navigate('/login'))}
+                />
               </section>
 
               <section>
@@ -164,9 +205,21 @@ const ServiceDetails = () => {
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Last Verified: {service.lastVerified}</div>
-              <button style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--error)'} onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}>
-                <Flag size={14} /> Report incorrect information
-              </button>
+              {reportSubmitted ? (
+                <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
+                  ✓ Report submitted to moderator queue. Thank you!
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleReportInaccuracy}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }}
+                  onMouseOver={(e) => (e.currentTarget.style.color = 'var(--error)')}
+                  onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+                >
+                  <Flag size={14} /> Report incorrect information
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -191,11 +244,25 @@ const ServiceDetails = () => {
                 <form onSubmit={handleApplySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Full Name (as per ID)</label>
-                    <input type="text" className="input-field" required placeholder="John Doe" />
+                    <input
+                      type="text"
+                      className="input-field"
+                      required
+                      placeholder="e.g. Ramesh Patel"
+                      value={applyForm.fullName}
+                      onChange={(e) => setApplyForm({ ...applyForm, fullName: e.target.value })}
+                    />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Aadhaar Number / Virtual ID</label>
-                    <input type="text" className="input-field" required placeholder="XXXX XXXX XXXX" />
+                    <input
+                      type="text"
+                      className="input-field"
+                      required
+                      placeholder="XXXX XXXX 1234"
+                      value={applyForm.aadhaarNumber}
+                      onChange={(e) => setApplyForm({ ...applyForm, aadhaarNumber: e.target.value })}
+                    />
                   </div>
                   <div style={{ padding: '1.5rem', border: '1px dashed var(--border-main)', borderRadius: '1rem', textAlign: 'center', background: 'var(--glass-bg-subtle)' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>Upload the Required Documents mentioned in the guide</p>
@@ -221,7 +288,7 @@ const ServiceDetails = () => {
                     {generatedAppId}
                   </p>
                 </div>
-                <Link to="/track" className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
+                <Link to={`/track?id=${generatedAppId}`} className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
                   Track Application Status
                 </Link>
               </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import AuthFallbackBanner from './components/AuthFallbackBanner';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -51,6 +52,7 @@ function App() {
           <BrowserRouter>
             <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
               <Navbar />
+              <AuthFallbackBanner />
               <main style={{ flex: 1 }}>
                 <Routes>
                   <Route path="/" element={<Home />} />
