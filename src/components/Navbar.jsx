@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, LogOut, User, Sun, Moon } from 'lucide-react';
+import { Shield, Menu, X, LogOut, User, Sun, Moon, WifiOff, Wifi, HardDrive } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNetwork } from '../context/NetworkContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
+import OfflineCacheStatusModal from './common/OfflineCacheStatusModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
+  const { isOnline } = useNetwork();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -41,6 +45,38 @@ const Navbar = () => {
 
           <PlainLanguageToggle />
           <LanguageSwitcher />
+
+          <button
+            type="button"
+            onClick={() => setShowOfflineModal(true)}
+            style={{
+              padding: '0.3rem 0.65rem',
+              background: isOnline ? 'var(--glass-bg)' : 'rgba(239, 68, 68, 0.15)',
+              border: `1px solid ${isOnline ? 'var(--border-main)' : 'rgba(239, 68, 68, 0.35)'}`,
+              borderRadius: '99px',
+              color: isOnline ? 'var(--text-secondary)' : '#ef4444',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              transition: 'all 0.2s'
+            }}
+            title={isOnline ? 'Network Online - Click for Offline Office Cache' : 'Offline Mode Active'}
+          >
+            {isOnline ? (
+              <>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                <span>Online</span>
+              </>
+            ) : (
+              <>
+                <WifiOff size={13} />
+                <span>Offline</span>
+              </>
+            )}
+          </button>
 
           <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title={t('nav.toggleTheme', 'Toggle Theme')}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -144,6 +180,11 @@ const Navbar = () => {
           .md-hidden { display: none !important; }
         }
       `}</style>
+
+      <OfflineCacheStatusModal
+        isOpen={showOfflineModal}
+        onClose={() => setShowOfflineModal(false)}
+      />
     </nav>
   );
 };
