@@ -22,6 +22,7 @@ import SSOCallback from './pages/SSOCallback';
 import Track from './pages/Track';
 import Vault from './pages/Vault';
 import Profile from './pages/Profile';
+import NearbyOffices from './pages/NearbyOffices';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, loading } = useAuth();
@@ -65,6 +66,8 @@ function App() {
                   <Route path="/assistant" element={<Assistant />} />
                   <Route path="/services" element={<Services />} />
                   <Route path="/services/:id" element={<ServiceDetails />} />
+                  <Route path="/nearby" element={<NearbyOffices />} />
+                  <Route path="/nearby-offices" element={<NearbyOffices />} />
                   <Route path="/track" element={<Track />} />
 
                   <Route path="/saved" element={
