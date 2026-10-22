@@ -1,15 +1,20 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import ServiceCard from '../components/ServiceCard';
 import FilterToolbar from '../components/services/FilterToolbar';
 import DirectoryEmptyState from '../components/services/DirectoryEmptyState';
 import SearchAnalyticsBar from '../components/services/SearchAnalyticsBar';
+import ServiceComparisonModal from '../components/services/ServiceComparisonModal';
+import ComparisonFloatingTray from '../components/services/ComparisonFloatingTray';
+import { comparisonService } from '../services/comparisonService';
 import { rankAndFilterServices } from '../services/searchRankingEngine';
 import { Sparkles, Layers } from 'lucide-react';
 
 const Services = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [comparedServices, setComparedServices] = useState(() => comparisonService.getComparedServices());
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
 
   // Read URL params or set defaults
   const activeCategory = searchParams.get('cat') || 'All';
@@ -208,6 +213,28 @@ const Services = () => {
             onReset={handleResetFilters}
           />
         )}
+
+        {/* Floating Comparison Tray */}
+        <ComparisonFloatingTray
+          comparedServices={comparedServices}
+          onOpenModal={() => setIsCompareModalOpen(true)}
+          onClear={() => {
+            comparisonService.clearAll();
+            setComparedServices([]);
+          }}
+          onRemove={(id) => {
+            comparisonService.removeService(id);
+            setComparedServices(comparisonService.getComparedServices());
+          }}
+        />
+
+        {/* Service Comparison Matrix Modal */}
+        <ServiceComparisonModal
+          isOpen={isCompareModalOpen}
+          onClose={() => setIsCompareModalOpen(false)}
+          comparedServices={comparedServices}
+          onUpdateList={(newList) => setComparedServices(newList)}
+        />
       </div>
     </div>
   );

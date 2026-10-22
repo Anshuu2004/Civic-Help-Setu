@@ -32,6 +32,16 @@ const ServiceDetails = () => {
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
+  const [comparedList, setComparedList] = useState(() => comparisonService.getComparedServices());
+
+  const handleToggleCompare = () => {
+    if (!service) return;
+    comparisonService.addService(service.id);
+    setComparedList(comparisonService.getComparedServices());
+    setIsCompareModalOpen(true);
+  };
 
   const handleReportInaccuracy = () => {
     if (!service) return;
@@ -114,13 +124,13 @@ const ServiceDetails = () => {
                 <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '600px' }}>{service.shortDescription}</p>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flexShrink: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flexShrink: 0 }}>
                 <button 
                   onClick={() => user ? setShowApplyModal(true) : navigate('/login')}
                   className="btn btn-primary"
-                  style={{ padding: '1rem 2rem', fontSize: '1.125rem', background: 'var(--accent-main)', color: 'var(--bg-main)' }}
+                  style={{ padding: '0.85rem 1.75rem', fontSize: '1.05rem', background: 'var(--accent-main)', color: 'var(--bg-main)' }}
                 >
-                  <Zap size={20} fill="currentColor" />
+                  <Zap size={18} fill="currentColor" />
                   Fast-Track Apply
                 </button>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
