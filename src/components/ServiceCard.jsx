@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Clock, Gauge } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, Gauge, Sparkles } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const getDifficultyBadge = (diff = '') => {
   const d = diff.toLowerCase();
@@ -13,6 +14,7 @@ const getDifficultyBadge = (diff = '') => {
 };
 
 const ServiceCard = ({ service }) => {
+  const { isPlainLanguage } = useLanguage();
   const diffStyle = getDifficultyBadge(service.difficulty);
 
   return (
