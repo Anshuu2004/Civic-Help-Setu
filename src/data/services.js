@@ -6,6 +6,7 @@ export const MOCK_SERVICES = [
     category: 'Certificates',
     type: 'Online / Offline',
     difficulty: 'Medium',
+    eligibilityRuleKey: 'birth-certificate',
     eligibility: ['Parents of the newborn', 'Individuals without a birth certificate'],
     documents: [
       'Proof of birth from hospital (if born in hospital)',
