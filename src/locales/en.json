@@ -1,0 +1,44 @@
+{
+  "nav": {
+    "brand": "CivicBridge",
+    "services": "Services",
+    "track": "Track Status",
+    "assistant": "AI Assistant",
+    "vault": "Doc Vault",
+    "saved": "Saved Guides",
+    "profile": "My Profile",
+    "admin": "Admin Portal",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "toggleTheme": "Toggle Theme"
+  },
+  "common": {
+    "citizen": "Citizen",
+    "admin": "Admin",
+    "search": "Search",
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "verified": "Govt. Verified",
+    "official": "Official",
+    "all": "All"
+  },
+  "hero": {
+    "tagline": "The New Standard for Civic Assistance",
+    "title": "Simplify Complex Public Systems",
+    "subtitle": "CivicBridge translates bureaucratic procedures into clear, actionable steps using verified official sources. No jargon, just direct answers.",
+    "exploreBtn": "Explore All Guides",
+    "tryAiBtn": "Try AI Assistant"
+  },
+  "footer": {
+    "tagline": "A civic-tech bridge helping citizens navigate public services with clarity, dignity, and verified official guidance.",
+    "navigation": "Navigation",
+    "categories": "Categories",
+    "community": "Community & Legal",
+    "privacy": "Privacy Policy",
+    "openSource": "Open Source",
+    "disclaimer": "CivicBridge is an independent, non-governmental civic tech platform. We provide guidance and direct citizens to official government portals."
+  }
+}
