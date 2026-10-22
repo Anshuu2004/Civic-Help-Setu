@@ -1,9 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import ServiceCard from '../components/ServiceCard';
 import FilterToolbar from '../components/services/FilterToolbar';
 import DirectoryEmptyState from '../components/services/DirectoryEmptyState';
+import SearchAnalyticsBar from '../components/services/SearchAnalyticsBar';
+import { rankAndFilterServices } from '../services/searchRankingEngine';
 import { Sparkles, Layers } from 'lucide-react';
 
 const Services = () => {
@@ -14,10 +16,17 @@ const Services = () => {
   const searchQuery = searchParams.get('q') || '';
   const selectedMode = searchParams.get('mode') || 'All';
   const selectedDifficulty = searchParams.get('diff') || 'All';
-  const sortBy = searchParams.get('sort') || 'featured';
+  const selectedDepartment = searchParams.get('dept') || 'All';
+  const selectedFee = searchParams.get('fee') || 'All';
+  const selectedSpeed = searchParams.get('speed') || 'All';
+  const sortBy = searchParams.get('sort') || 'relevance';
 
   const categories = useMemo(() => {
     return ['All', ...new Set(MOCK_SERVICES.map((s) => s.category))];
+  }, []);
+
+  const departments = useMemo(() => {
+    return [...new Set(MOCK_SERVICES.map((s) => s.department).filter(Boolean))];
   }, []);
 
   const updateParam = (key, value, defaultValue = 'All') => {
@@ -34,10 +43,21 @@ const Services = () => {
   const handleSearchChange = (query) => updateParam('q', query, '');
   const handleModeChange = (mode) => updateParam('mode', mode, 'All');
   const handleDifficultyChange = (diff) => updateParam('diff', diff, 'All');
-  const handleSortChange = (sort) => updateParam('sort', sort, 'featured');
+  const handleDepartmentChange = (dept) => updateParam('dept', dept, 'All');
+  const handleFeeChange = (fee) => updateParam('fee', fee, 'All');
+  const handleSpeedChange = (speed) => updateParam('speed', speed, 'All');
+  const handleSortChange = (sort) => updateParam('sort', sort, 'relevance');
 
   const handleResetFilters = () => {
     setSearchParams({}, { replace: true });
+  };
+
+  const handleSelectChip = (chip) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (chip.query) nextParams.set('q', chip.query);
+    if (chip.feeType) nextParams.set('fee', chip.feeType);
+    if (chip.speed) nextParams.set('speed', chip.speed);
+    setSearchParams(nextParams, { replace: true });
   };
 
   const hasActiveFilters = Boolean(
@@ -45,130 +65,108 @@ const Services = () => {
     searchQuery ||
     selectedMode !== 'All' ||
     selectedDifficulty !== 'All' ||
-    sortBy !== 'featured'
+    selectedDepartment !== 'All' ||
+    selectedFee !== 'All' ||
+    selectedSpeed !== 'All' ||
+    sortBy !== 'relevance'
   );
 
   const filteredServices = useMemo(() => {
-    let result = [...MOCK_SERVICES];
-
-    // 1. Category Filter
-    if (activeCategory !== 'All') {
-      result = result.filter(
-        (s) => s.category.toLowerCase() === activeCategory.toLowerCase()
-      );
-    }
-
-    // 2. Keyword Search (title, description, eligibility, documents)
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        (s) =>
-          s.name.toLowerCase().includes(q) ||
-          s.shortDescription.toLowerCase().includes(q) ||
-          s.category.toLowerCase().includes(q) ||
-          s.documents.some((doc) => doc.toLowerCase().includes(q)) ||
-          s.eligibility.some((el) => el.toLowerCase().includes(q))
-      );
-    }
-
-    // 3. Application Mode Filter (Online / Offline)
-    if (selectedMode !== 'All') {
-      result = result.filter((s) => {
-        const type = (s.type || '').toLowerCase();
-        if (selectedMode === 'Online') return type.includes('online');
-        if (selectedMode === 'Offline') return type.includes('offline');
-        return true;
-      });
-    }
-
-    // 4. Difficulty Filter
-    if (selectedDifficulty !== 'All') {
-      result = result.filter(
-        (s) => (s.difficulty || '').toLowerCase() === selectedDifficulty.toLowerCase()
-      );
-    }
-
-    // 5. Sorting
-    if (sortBy === 'name-asc') {
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === 'name-desc') {
-      result.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (sortBy === 'difficulty-asc') {
-      const rank = { easy: 1, medium: 2, hard: 3 };
-      result.sort((a, b) => (rank[a.difficulty?.toLowerCase()] || 2) - (rank[b.difficulty?.toLowerCase()] || 2));
-    }
-
-    return result;
-  }, [activeCategory, searchQuery, selectedMode, selectedDifficulty, sortBy]);
+    return rankAndFilterServices(MOCK_SERVICES, {
+      searchQuery,
+      category: activeCategory,
+      department: selectedDepartment,
+      mode: selectedMode,
+      difficulty: selectedDifficulty,
+      feeType: selectedFee,
+      speedFilter: selectedSpeed,
+      sortBy,
+    });
+  }, [
+    searchQuery,
+    activeCategory,
+    selectedDepartment,
+    selectedMode,
+    selectedDifficulty,
+    selectedFee,
+    selectedSpeed,
+    sortBy,
+  ]);
 
   return (
     <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
-      <div className="container" style={{ maxWidth: '1200px' }}>
-        {/* Header */}
-        <div style={{ marginBottom: '2.5rem' }}>
+      <div className="container">
+        {/* Header Section */}
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
               color: 'var(--accent-main)',
-              fontSize: '0.85rem',
+              fontSize: '0.875rem',
               fontWeight: '700',
               textTransform: 'uppercase',
               letterSpacing: '1px',
               marginBottom: '0.5rem',
             }}
           >
-            <Layers size={16} /> Public Service Directory
+            <Layers size={18} /> Verified Government Roadmaps
           </div>
-          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
-            Browse Civic Guides
+          <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '800', marginBottom: '1rem' }}>
+            Public Service Directory
           </h1>
-          <p
-            style={{
-              fontSize: '1.2rem',
-              color: 'var(--text-secondary)',
-              maxWidth: '750px',
-              lineHeight: '1.6',
-            }}
-          >
-            Explore verified government service roadmaps with prerequisite checklists, eligibility rules, and official submission links.
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
+            Official requirements, eligibility criteria, and step-by-step procedures to obtain essential Indian civic services.
           </p>
         </div>
 
-        {/* Category Pills Bar */}
+        {/* Category Pills Navigation */}
         <div
           style={{
             display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.65rem',
-            marginBottom: '2rem',
+            gap: '0.5rem',
+            overflowX: 'auto',
+            paddingBottom: '1rem',
+            marginBottom: '1rem',
+            scrollbarWidth: 'none',
           }}
         >
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => handleCategoryChange(cat)}
-              style={{
-                padding: '0.6rem 1.4rem',
-                borderRadius: '99px',
-                fontSize: '0.95rem',
-                fontWeight: '600',
-                transition: 'all 0.25s ease',
-                background: activeCategory.toLowerCase() === cat.toLowerCase() ? 'var(--text-primary)' : 'var(--glass-bg)',
-                color: activeCategory.toLowerCase() === cat.toLowerCase() ? 'var(--bg-main)' : 'var(--text-secondary)',
-                border: activeCategory.toLowerCase() === cat.toLowerCase() ? '1px solid transparent' : '1px solid var(--border-main)',
-                cursor: 'pointer',
-                boxShadow: activeCategory.toLowerCase() === cat.toLowerCase() ? '0 0 15px var(--glass-border-strong)' : 'none',
-              }}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => handleCategoryChange(cat)}
+                style={{
+                  padding: '0.5rem 1.25rem',
+                  borderRadius: '99px',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  border: isActive ? '1px solid var(--accent-main)' : '1px solid var(--border-light)',
+                  background: isActive ? 'var(--accent-main)' : 'var(--glass-bg)',
+                  color: isActive ? 'var(--bg-main)' : 'var(--text-secondary)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: isActive ? '0 4px 12px rgba(56, 189, 248, 0.25)' : 'none',
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Multi-facet Filter and Search Toolbar */}
+        {/* Search Analytics Bar (Did you mean & Trending chips) */}
+        <SearchAnalyticsBar
+          searchQuery={searchQuery}
+          onSelectSuggestion={(sugg) => handleSearchChange(sugg)}
+          onSelectChip={handleSelectChip}
+        />
+
+        {/* Multi-Faceted Filter & Search Toolbar */}
         <FilterToolbar
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
@@ -176,6 +174,13 @@ const Services = () => {
           onModeChange={handleModeChange}
           selectedDifficulty={selectedDifficulty}
           onDifficultyChange={handleDifficultyChange}
+          departments={departments}
+          selectedDepartment={selectedDepartment}
+          onDepartmentChange={handleDepartmentChange}
+          feeType={selectedFee}
+          onFeeTypeChange={handleFeeChange}
+          speedFilter={selectedSpeed}
+          onSpeedFilterChange={handleSpeedChange}
           sortBy={sortBy}
           onSortChange={handleSortChange}
           totalResults={filteredServices.length}
@@ -183,23 +188,23 @@ const Services = () => {
           hasActiveFilters={hasActiveFilters}
         />
 
-        {/* Service Cards Grid or Empty State */}
+        {/* Services Grid or Empty State */}
         {filteredServices.length > 0 ? (
-          <div className="grid-3 pb-12">
-            {filteredServices.map((service, index) => (
-              <div
-                key={service.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${Math.min(index * 40, 400)}ms` }}
-              >
-                <ServiceCard service={service} />
-              </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+              gap: '1.75rem',
+            }}
+          >
+            {filteredServices.map((service) => (
+              <ServiceCard key={service.id} service={service} />
             ))}
           </div>
         ) : (
           <DirectoryEmptyState
-            activeCategory={activeCategory}
             searchQuery={searchQuery}
+            activeCategory={activeCategory}
             onReset={handleResetFilters}
           />
         )}
