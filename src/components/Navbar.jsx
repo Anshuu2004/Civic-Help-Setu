@@ -31,6 +31,7 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div style={{ display: 'none', gap: '0.5rem', alignItems: 'center' }} className="md-flex">
           <Link to="/services" className="nav-link">{t('nav.services', 'Services')}</Link>
+          <Link to="/eligibility" className="nav-link">Eligibility</Link>
           <Link to="/track" className="nav-link">{t('nav.track', 'Track Status')}</Link>
           <Link to="/assistant" className="nav-link">{t('nav.assistant', 'AI Assistant')}</Link>
           {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
@@ -116,6 +117,7 @@ const Navbar = () => {
             </div>
           )}
           <Link to="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.services', 'Services')}</Link>
+          <Link to="/eligibility" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>Eligibility Checker</Link>
           <Link to="/track" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.track', 'Track Status')}</Link>
           <Link to="/assistant" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.assistant', 'AI Assistant')}</Link>
           {user && <Link to="/vault" onClick={() => setIsOpen(false)} style={{ fontSize: '1.125rem', fontWeight: '600', color: 'var(--text-primary)' }}>{t('nav.vault', 'Document Vault')}</Link>}

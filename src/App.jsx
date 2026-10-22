@@ -22,6 +22,7 @@ import SSOCallback from './pages/SSOCallback';
 import Track from './pages/Track';
 import Vault from './pages/Vault';
 import Profile from './pages/Profile';
+import Eligibility from './pages/Eligibility';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, loading } = useAuth();
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/services" element={<Services />} />
                   <Route path="/services/:id" element={<ServiceDetails />} />
                   <Route path="/track" element={<Track />} />
+                  <Route path="/eligibility" element={<Eligibility />} />
 
                   <Route path="/saved" element={
                     <ProtectedRoute>
