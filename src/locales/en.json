@@ -57,5 +57,11 @@
     "privacy": "Privacy Policy",
     "openSource": "Open Source",
     "disclaimer": "CivicBridge is an independent, non-governmental civic tech platform. We provide guidance and direct citizens to official government portals."
+  },
+  "appointment": {
+    "sync_calendar": "Sync to Calendar",
+    "ics_download": "Download .ICS File",
+    "google_calendar": "Add to Google Calendar",
+    "confirmed": "Appointment Confirmed"
   }
 }
