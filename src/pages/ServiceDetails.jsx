@@ -4,10 +4,11 @@ import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
 import EligibilityWizard from '../components/eligibility/EligibilityWizard';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
+import { CIVIC_OFFICES } from '../data/locationOffices';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -191,6 +192,77 @@ const ServiceDetails = () => {
                     </div>
                   ))}
                 </div>
+              </section>
+
+              {/* Nearby Facilitation Centers */}
+              <section>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <MapPin size={22} color="var(--accent-main)" /> Nearby Facilitation Centers
+                  </h2>
+                  <Link
+                    to={`/nearby?service=${service.id}`}
+                    className="btn btn-secondary"
+                    style={{ fontSize: '0.85rem', padding: '0.4rem 0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                  >
+                    <Compass size={15} /> Find Centers on Interactive Map
+                  </Link>
+                </div>
+
+                {(() => {
+                  const matchingOffices = CIVIC_OFFICES.filter(o => o.serviceIds?.includes(service.id)).slice(0, 3);
+                  if (matchingOffices.length === 0) {
+                    return (
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        Multiple district magistrate, municipal, and e-Seva centers provide this service. Use our location-aware directory to locate the nearest center to your pin code.
+                      </p>
+                    );
+                  }
+                  return (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                      {matchingOffices.map((office) => (
+                        <div
+                          key={office.id}
+                          className="glass-panel"
+                          style={{
+                            padding: '1.1rem',
+                            borderRadius: '0.75rem',
+                            border: '1px solid var(--border-light)',
+                            background: 'rgba(0, 0, 0, 0.1)',
+                          }}
+                        >
+                          <span style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--accent-main)', textTransform: 'uppercase' }}>
+                            {office.type}
+                          </span>
+                          <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0.25rem 0', color: 'var(--text-primary)' }}>
+                            {office.name}
+                          </h4>
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.6rem' }}>
+                            {office.city}, {office.state} • {office.officeHours?.hours}
+                          </p>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <a
+                              href={office.directionsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-secondary"
+                              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', flex: 1, textAlign: 'center' }}
+                            >
+                              Directions
+                            </a>
+                            <Link
+                              to={`/nearby?service=${service.id}`}
+                              className="btn btn-primary"
+                              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', flex: 1, textAlign: 'center' }}
+                            >
+                              Book Token
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </section>
 
               <section>

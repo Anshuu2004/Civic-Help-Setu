@@ -105,6 +105,15 @@ export const clearAllSaved = () => {
   return [];
 };
 
+export const toggleFavoriteItem = (serviceId) => {
+  const current = getSavedItems();
+  const updated = current.map((item) =>
+    item.serviceId === serviceId ? { ...item, isFavorite: !item.isFavorite } : item
+  );
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return updated;
+};
+
 export const getFolders = (items = []) => {
   const found = new Set(items.map((i) => i.folder || 'General'));
   return ['All', ...Array.from(found)];
