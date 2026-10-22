@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
@@ -6,16 +5,16 @@ import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ThemeProvider } from './context/ThemeContext';
 
-import SkipToContent from './components/SkipToContent';
+import SkipToContent from './components/common/SkipToContent';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ToastContainer from './components/ToastContainer';
-import AccessibilityToolbar from './components/AccessibilityToolbar';
+import ToastContainer from './components/toast/ToastContainer';
+import AccessibilityToolbar from './components/common/AccessibilityToolbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
-import SignUpPage from './pages/SignUpPage';
+import SignUpPage from './pages/SignUp';
 import SSOCallback from './pages/SSOCallback';
 import Assistant from './pages/Assistant';
 import Services from './pages/Services';
