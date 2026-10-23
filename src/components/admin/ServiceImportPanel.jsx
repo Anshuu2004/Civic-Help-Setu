@@ -85,6 +85,7 @@ const ServiceImportPanel = ({ existingServices, actorName, onImported, onClose }
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0.35rem 0 0' }}>
             Records are checked before anything is saved. Up to {MAX_IMPORT_ROWS} records per file. In CSV, separate
             list values (eligibility, documents, warnings) with <code>|</code>. Steps can only be imported from JSON.
+            Imported official sources are saved as unverified until an admin reviews the service.
           </p>
         </div>
         <button type="button" onClick={onClose} aria-label="Close import panel" style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>

@@ -236,3 +236,48 @@ describe('csvTemplate', () => {
     expect(report.valid).toHaveLength(1);
   });
 });
+
+describe('stricter checks from the #81 review', () => {
+  it('rejects calendar dates that do not exist', () => {
+    for (const date of ['2026-02-30', '2026-04-31', '2025-02-29', '2026-00-10']) {
+      const { errors } = validateRecord(validJsonService({ lastVerified: date }));
+      expect(errors, date).toContainEqual(expect.stringContaining('lastVerified'));
+    }
+    expect(validateRecord(validJsonService({ lastVerified: '2024-02-29' })).errors).toEqual([]);
+  });
+
+  it('rejects lastVerified dates in the future', () => {
+    const { errors } = validateRecord(validJsonService({ lastVerified: '2999-01-01' }));
+    expect(errors).toContainEqual(expect.stringContaining('future'));
+  });
+
+  it('rejects a quote in the middle of an unquoted field instead of swallowing the next rows', () => {
+    // Two stray quotes used to pair up and silently merge the rows between them.
+    expect(() => parseCsv('name,desc\nTV 5" screen,ok\nnext,row\nTV 7" screen,ok\n')).toThrow(/line 2/);
+  });
+
+  it('rejects text after a closing quote', () => {
+    expect(() => parseCsv('name\n"abc"def\n')).toThrow(/line 2/);
+  });
+
+  it('still accepts properly quoted fields next to each other', () => {
+    expect(parseCsv('"a","b ""c""",d\n').map((r) => r.cells)).toEqual([['a', 'b "c"', 'd']]);
+  });
+
+  it('reports malformed quoting as a file error with the line number', () => {
+    const report = buildImportPreview(`${HEADER}\n${row('Fine')}\nTV 5" screen,desc,Identity,https://a.gov.in\n`, { fileName: 'x.csv' });
+    expect(report.fileErrors[0]).toMatch(/line 3/);
+    expect(report.valid).toEqual([]);
+  });
+
+  it('never marks imported official sources as verified', () => {
+    const fromJson = buildImportPreview(
+      JSON.stringify([validJsonService({ officialSources: [{ url: 'https://a.gov.in', verified: true }] })]),
+      { fileName: 'a.json' },
+    );
+    const fromCsv = buildImportPreview(`${HEADER}\n${row('Card')}\n`, { fileName: 'x.csv' });
+
+    expect(fromJson.valid[0].service.officialSources[0].verified).toBe(false);
+    expect(fromCsv.valid[0].service.officialSources[0].verified).toBe(false);
+  });
+});
