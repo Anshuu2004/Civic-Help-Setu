@@ -1,4 +1,5 @@
 import { MOCK_SERVICES } from '../data/services';
+import { normalizeName } from './serviceImportService';
 
 const SERVICES_KEY = 'civicbridge_custom_services';
 const REPORTS_KEY = 'civicbridge_error_reports';
@@ -153,6 +154,61 @@ export const saveAdminService = (serviceData, actorName = 'SuperAdmin') => {
     console.error('Failed to save service', err);
     return getAdminServices();
   }
+};
+
+// Adds validated services from an import in a single localStorage write, so a
+// failed write (e.g. storage full) leaves the existing catalog untouched.
+// Duplicates are checked again here because the catalog can change between the
+// preview and the confirm (another tab or another admin).
+export const importAdminServices = (services, actorName = 'SuperAdmin') => {
+  let custom;
+  try {
+    const raw = localStorage.getItem(SERVICES_KEY);
+    custom = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(custom)) throw new Error('stored services are not a list');
+  } catch (err) {
+    console.error('Failed to read services before import', err);
+    return { ok: false, imported: 0, skipped: [], error: 'Existing service data could not be read, so nothing was imported.' };
+  }
+
+  const current = [...MOCK_SERVICES.filter((b) => !custom.some((c) => c.id === b.id)), ...custom];
+  const ids = new Set(current.map((s) => s.id));
+  const names = new Set(current.map((s) => normalizeName(s.name)));
+  const today = new Date().toISOString().split('T')[0];
+  const accepted = [];
+  const skipped = [];
+
+  for (const svc of services) {
+    const key = normalizeName(svc.name);
+    if (ids.has(svc.id) || names.has(key)) {
+      skipped.push(svc.name);
+      continue;
+    }
+    ids.add(svc.id);
+    names.add(key);
+    accepted.push({ ...svc, lastVerified: svc.lastVerified || today });
+  }
+
+  if (accepted.length === 0) {
+    return { ok: true, imported: 0, skipped, error: null };
+  }
+
+  try {
+    localStorage.setItem(SERVICES_KEY, JSON.stringify([...accepted, ...custom]));
+  } catch (err) {
+    console.error('Failed to save imported services', err);
+    return { ok: false, imported: 0, skipped, error: 'Saving failed (browser storage may be full). No services were imported.' };
+  }
+
+  addAuditLog({
+    action: 'SERVICES_IMPORTED',
+    actor: actorName,
+    target: `${accepted.length} service${accepted.length === 1 ? '' : 's'}`,
+    details:
+      `Bulk import added: ${accepted.map((s) => s.name).join(', ')}.` +
+      (skipped.length ? ` Skipped ${skipped.length} that already existed.` : ''),
+  });
+  return { ok: true, imported: accepted.length, skipped, error: null };
 };
 
 export const deleteAdminService = (id, actorName = 'SuperAdmin') => {

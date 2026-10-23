@@ -13,6 +13,7 @@ import {
   Shield,
   FileCheck,
   History,
+  Upload,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -36,6 +37,7 @@ import ReportResolutionModal from '../components/admin/ReportResolutionModal';
 import RoleManagementModal from '../components/admin/RoleManagementModal';
 import ServiceSubmissionReviewModal from '../components/admin/ServiceSubmissionReviewModal';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
+import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import { useToast } from '../context/ToastContext';
 
 const Admin = () => {
@@ -51,6 +53,7 @@ const Admin = () => {
   const [reportModal, setReportModal] = useState({ isOpen: false, report: null });
   const [roleModal, setRoleModal] = useState({ isOpen: false, targetUser: null });
   const [submissionModal, setSubmissionModal] = useState({ isOpen: false, submission: null });
+  const [importOpen, setImportOpen] = useState(false);
 
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -74,6 +77,23 @@ const Admin = () => {
     setServices(updated);
     setAuditLogs(getAuditLogs());
     toast?.success?.('Service guide saved and published live.');
+  };
+
+  const handleImportResult = (result) => {
+    if (!result.ok) {
+      toast?.error?.(result.error);
+      return;
+    }
+    setServices(getAdminServices());
+    setAuditLogs(getAuditLogs());
+    const skipped = result.skipped.length
+      ? ` ${result.skipped.length} skipped because they were added elsewhere in the meantime.`
+      : '';
+    if (result.imported) {
+      toast?.success?.(`${result.imported} service${result.imported === 1 ? '' : 's'} imported.${skipped}`);
+    } else {
+      toast?.warning?.(`Nothing was imported.${skipped}`);
+    }
   };
 
   const handleDeleteService = (id) => {
@@ -282,15 +302,35 @@ const Admin = () => {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0 }}>Public Service Guides</h2>
-                  <button
-                    type="button"
-                    onClick={() => setServiceModal({ isOpen: true, service: null })}
-                    className="btn btn-primary"
-                    style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-                  >
-                    <Plus size={16} /> Add New Service Guide
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setImportOpen((open) => !open)}
+                      className="btn btn-secondary"
+                      aria-expanded={importOpen}
+                      style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                    >
+                      <Upload size={16} /> Import CSV / JSON
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setServiceModal({ isOpen: true, service: null })}
+                      className="btn btn-primary"
+                      style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+                    >
+                      <Plus size={16} /> Add New Service Guide
+                    </button>
+                  </div>
                 </div>
+
+                {importOpen && (
+                  <ServiceImportPanel
+                    existingServices={services}
+                    actorName={user?.username || 'SuperAdmin'}
+                    onImported={handleImportResult}
+                    onClose={() => setImportOpen(false)}
+                  />
+                )}
 
                 <div className="glass-panel" style={{ borderRadius: '0.85rem', overflow: 'hidden' }}>
                   <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', fontSize: '0.875rem' }}>

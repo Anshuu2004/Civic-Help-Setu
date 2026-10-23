@@ -57,6 +57,7 @@ const AuditLogViewer = ({ auditLogs = [] }) => {
       case 'role_changed':
         return { bg: 'rgba(245, 158, 11, 0.15)', text: '#f59e0b' };
       case 'service_created':
+      case 'services_imported':
         return { bg: 'rgba(16, 185, 129, 0.15)', text: '#10b981' };
       case 'service_updated':
         return { bg: 'rgba(56, 189, 248, 0.15)', text: 'var(--accent-main)' };
@@ -175,6 +176,7 @@ const AuditLogViewer = ({ auditLogs = [] }) => {
           <option value="all">All Action Types</option>
           <option value="ROLE_CHANGED">Role Changed</option>
           <option value="SERVICE_CREATED">Service Created</option>
+          <option value="SERVICES_IMPORTED">Services Imported</option>
           <option value="SERVICE_UPDATED">Service Updated</option>
           <option value="REPORT_RESOLVED">Report Resolved</option>
           <option value="SERVICE_DELETED">Service Deleted</option>
