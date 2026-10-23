@@ -4,10 +4,15 @@ import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
 import EligibilityWizard from '../components/eligibility/EligibilityWizard';
+import RatingSummaryCard from '../components/services/RatingSummaryCard';
+import CitizenReviewsList from '../components/services/CitizenReviewsList';
+import ReviewSubmissionModal from '../components/services/ReviewSubmissionModal';
+import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Calculator } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Star, Calculator } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
@@ -32,15 +37,13 @@ const ServiceDetails = () => {
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
-  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
-  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
-  const [comparedList, setComparedList] = useState(() => comparisonService.getComparedServices());
+  const [reviews, setReviews] = useState(() => reviewStorage.getReviewsForService(id));
+  const [reviewAggregate, setReviewAggregate] = useState(() => reviewStorage.getAggregate(id));
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  const handleToggleCompare = () => {
-    if (!service) return;
-    comparisonService.addService(service.id);
-    setComparedList(comparisonService.getComparedServices());
-    setIsCompareModalOpen(true);
+  const refreshReviews = () => {
+    setReviews(reviewStorage.getReviewsForService(id));
+    setReviewAggregate(reviewStorage.getAggregate(id));
   };
 
   const handleReportInaccuracy = () => {
@@ -364,6 +367,22 @@ const ServiceDetails = () => {
                   ))}
                 </div>
               </section>
+
+              {/* Citizen Experience & Community Reviews */}
+              <section>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Star size={22} color="#fbbf24" fill="#fbbf24" />
+                  <span>Citizen Experiences & Practical Ratings</span>
+                </h2>
+                <RatingSummaryCard
+                  aggregate={reviewAggregate}
+                  onOpenReviewModal={() => setIsReviewModalOpen(true)}
+                />
+                <CitizenReviewsList
+                  reviews={reviews}
+                  onReviewUpdated={refreshReviews}
+                />
+              </section>
             </div>
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
@@ -459,6 +478,13 @@ const ServiceDetails = () => {
           </div>
         </div>
       )}
+{/* Citizen Review Submission Modal */}
+      <ReviewSubmissionModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        service={service}
+        onReviewAdded={refreshReviews}
+      />
 
       {/* Fee Breakdown & Concession Calculator Modal */}
       <FeeBreakdownModal
