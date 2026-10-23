@@ -26,6 +26,7 @@ Many public services are difficult to understand because they are fragmented acr
 - Digital vault for citizen documents and credentials
 - Theme support and responsive UI
 - Admin route to manage or review platform access
+- Bulk import of service records from CSV or JSON in the admin Service Catalog, with a validation report (row numbers, duplicates) and a preview before anything is saved
 
 ## Tech stack
 
@@ -152,6 +153,12 @@ npm run build
 
 ```bash
 npm run lint
+```
+
+## Tests
+
+```bash
+npm test
 ```
 
 ## Deployment
