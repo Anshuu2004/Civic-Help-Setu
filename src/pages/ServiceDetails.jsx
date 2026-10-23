@@ -13,13 +13,14 @@ import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, History } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
+import ServiceChangelogModal from '../components/services/ServiceChangelogModal';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -39,6 +40,7 @@ const ServiceDetails = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showChangelogModal, setShowChangelogModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
@@ -124,9 +126,30 @@ const ServiceDetails = () => {
             
             <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '2rem', marginBottom: '2rem' }}>
               <div style={{ flex: '1 1 400px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                   <span style={{ padding: '0.25rem 0.75rem', background: 'var(--accent-light)', color: 'var(--accent-main)', borderRadius: '99px', fontSize: '0.875rem', fontWeight: '600' }}>{service.category}</span>
                   <span style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)', fontWeight: '500' }}>{service.type}</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowChangelogModal(true)}
+                    style={{
+                      padding: '0.2rem 0.65rem',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: '99px',
+                      fontSize: '0.78rem',
+                      color: 'var(--text-secondary)',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    title="View official circulars and government order revisions"
+                  >
+                    <History size={13} />
+                    <span>Circular History</span>
+                  </button>
                 </div>
                 <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '800', lineHeight: '1.2', marginBottom: '1rem' }}>{service.name}</h1>
                 <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '600px' }}>{service.shortDescription}</p>
@@ -520,6 +543,13 @@ const ServiceDetails = () => {
       <FeeBreakdownModal
         isOpen={showFeeModal}
         onClose={() => setShowFeeModal(false)}
+        service={service}
+      />
+
+      {/* Official Revisions & Circular Changelog Modal */}
+      <ServiceChangelogModal
+        isOpen={showChangelogModal}
+        onClose={() => setShowChangelogModal(false)}
         service={service}
       />
     </>
