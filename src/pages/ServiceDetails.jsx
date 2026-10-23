@@ -20,6 +20,7 @@ import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
+import ReportOutdatedInfoModal from '../components/services/ReportOutdatedInfoModal';
 import OfficialSourcesList from '../components/services/OfficialSourcesList';
 import { formatVerificationDate } from '../services/sourceVerificationService';
 
@@ -41,6 +42,7 @@ const ServiceDetails = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
@@ -55,18 +57,7 @@ const ServiceDetails = () => {
 
   const handleReportInaccuracy = () => {
     if (!service) return;
-    const comment = window.prompt(`Describe any inaccuracy or broken links on the "${service.name}" guide:`, 'Outdated portal link or fee structure.');
-    if (comment && comment.trim()) {
-      submitErrorReport({
-        serviceId: service.id,
-        serviceName: service.name,
-        issueType: 'Community Report',
-        description: comment.trim(),
-        reporterEmail: user?.email || 'citizen.reporter@civicbridge.org',
-      });
-      setReportSubmitted(true);
-      setTimeout(() => setReportSubmitted(false), 4000);
-    }
+    setShowReportModal(true);
   };
   const [applyForm, setApplyForm] = useState({ fullName: '', aadhaarNumber: '' });
 
@@ -524,6 +515,14 @@ const ServiceDetails = () => {
         isOpen={showFeeModal}
         onClose={() => setShowFeeModal(false)}
         service={service}
+      />
+
+      {/* Outdated Information Reporting Modal */}
+      <ReportOutdatedInfoModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        service={service}
+        initialUserEmail={user?.email || ''}
       />
     </>
   );
