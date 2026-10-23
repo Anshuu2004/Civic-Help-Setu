@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, CheckSquare, Plus, Save } from 'lucide-react';
-
-const CATEGORIES = ['Certificates', 'Identity', 'Transport', 'Finance', 'Health', 'Welfare', 'Business'];
+import { SERVICE_CATEGORIES } from '../../data/serviceCategories';
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const MODES = ['Online', 'Offline', 'Online / Offline'];
 
@@ -197,9 +196,16 @@ const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 style={{ padding: '0.65rem 0.5rem', fontSize: '0.85rem', background: 'var(--glass-bg)' }}
               >
-                {CATEGORIES.map((c) => (
+                {SERVICE_CATEGORIES.map((c) => (
                   <option key={c} value={c} style={{ background: 'var(--bg-main)' }}>{c}</option>
                 ))}
+                {/* Keep a category saved before the shared list existed (e.g. "Welfare")
+                    visible, so editing doesn't silently change it */}
+                {form.category && !SERVICE_CATEGORIES.includes(form.category) && (
+                  <option value={form.category} style={{ background: 'var(--bg-main)' }}>
+                    {form.category} (not in the category list)
+                  </option>
+                )}
               </select>
             </div>
 

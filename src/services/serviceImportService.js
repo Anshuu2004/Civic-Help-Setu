@@ -3,14 +3,10 @@
 // accepted records is done by importAdminServices in adminService.js.
 
 import { MOCK_SERVICES } from '../data/services';
+import { SERVICE_CATEGORIES } from '../data/serviceCategories';
 
 export const MAX_IMPORT_BYTES = 1024 * 1024;
 export const MAX_IMPORT_ROWS = 500;
-
-// The service data uses some categories the admin form doesn't list yet
-// (and the other way round), so accept both sets.
-const FORM_CATEGORIES = ['Certificates', 'Identity', 'Transport', 'Finance', 'Health', 'Welfare', 'Business'];
-export const SERVICE_CATEGORIES = [...new Set([...MOCK_SERVICES.map((s) => s.category), ...FORM_CATEGORIES])];
 
 const DELIVERY_TYPES = [...new Set(['Online', 'Offline', 'Online / Offline', ...MOCK_SERVICES.map((s) => s.type)])];
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
