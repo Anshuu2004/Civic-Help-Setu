@@ -9,12 +9,14 @@ import ServiceComparisonModal from '../components/services/ServiceComparisonModa
 import ComparisonFloatingTray from '../components/services/ComparisonFloatingTray';
 import { comparisonService } from '../services/comparisonService';
 import { rankAndFilterServices } from '../services/searchRankingEngine';
-import { Sparkles, Layers } from 'lucide-react';
+import { Sparkles, Layers, Scale } from 'lucide-react';
+import RtiBuilderModal from '../components/services/RtiBuilderModal';
 
 const Services = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [comparedServices, setComparedServices] = useState(() => comparisonService.getComparedServices());
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+  const [isRtiModalOpen, setIsRtiModalOpen] = useState(false);
 
   // Read URL params or set defaults
   const activeCategory = searchParams.get('cat') || 'All';
@@ -124,6 +126,30 @@ const Services = () => {
           <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
             Official requirements, eligibility criteria, and step-by-step procedures to obtain essential Indian civic services.
           </p>
+
+          <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'center' }}>
+            <button
+              type="button"
+              onClick={() => setIsRtiModalOpen(true)}
+              style={{
+                padding: '0.6rem 1.4rem',
+                borderRadius: '99px',
+                border: '1px solid #2563eb',
+                background: '#eff6ff',
+                color: '#1d4ed8',
+                fontWeight: 700,
+                fontSize: '0.88rem',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 2px 4px rgba(37,99,235,0.08)'
+              }}
+            >
+              <Scale size={16} />
+              <span>Citizen RTI Request Builder (Section 6(1))</span>
+            </button>
+          </div>
         </div>
 
         {/* Category Pills Navigation */}
@@ -234,6 +260,12 @@ const Services = () => {
           onClose={() => setIsCompareModalOpen(false)}
           comparedServices={comparedServices}
           onUpdateList={(newList) => setComparedServices(newList)}
+        />
+
+        {/* Citizen RTI Request Builder Modal */}
+        <RtiBuilderModal
+          isOpen={isRtiModalOpen}
+          onClose={() => setIsRtiModalOpen(false)}
         />
       </div>
     </div>
