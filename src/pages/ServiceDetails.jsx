@@ -18,6 +18,8 @@ import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
+import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
+import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -356,6 +358,20 @@ const ServiceDetails = () => {
                     </div>
                   );
                 })()}
+              </section>
+
+              {/* Application Rejection Prevention Guide */}
+              <section>
+                <CommonRejectionReasonsCard 
+                  serviceId={service.id}
+                  serviceCategory={service.category}
+                  serviceName={service.name}
+                />
+              </section>
+
+              {/* Service FAQ Knowledge Base */}
+              <section>
+                <ServiceFAQAccordion service={service} />
               </section>
 
               <section>
