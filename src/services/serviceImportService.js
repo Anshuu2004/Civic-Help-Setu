@@ -12,7 +12,23 @@ const DELIVERY_TYPES = [...new Set(['Online', 'Offline', 'Online / Offline', ...
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const FEE_TYPES = ['free', 'paid'];
 const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Date.parse rolls invalid days over (2026-02-30 becomes March 2), so rebuild
+// the date and compare each part. A day of slack keeps "today" valid in time
+// zones ahead of UTC.
+function checkLastVerified(value) {
+  const match = typeof value === 'string' && DATE_PATTERN.exec(value);
+  if (!match) return 'lastVerified must be a date in YYYY-MM-DD format';
+  const [year, month, day] = match.slice(1).map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+    return `lastVerified "${value}" is not a real date`;
+  }
+  if (date.getTime() > Date.now() + DAY_MS) return `lastVerified "${value}" is in the future`;
+  return null;
+}
 
 // CSV columns in template order. Array columns hold pipe separated values;
 // steps are nested objects, so they can only be imported from JSON.
@@ -67,6 +83,8 @@ export function parseCsv(text) {
   let line = 1;
   let rowStartLine = 1;
   let inQuotes = false;
+  // true right after a closing quote: only a comma or a line break may follow
+  let afterQuote = false;
   const src = text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
 
   const endRow = () => {
@@ -84,20 +102,31 @@ export function parseCsv(text) {
         i++;
       } else if (ch === '"') {
         inQuotes = false;
+        afterQuote = true;
       } else {
         if (ch === '\n') line++;
         field += ch;
       }
-    } else if (ch === '"') {
-      inQuotes = true;
     } else if (ch === ',') {
       row.push(field);
       field = '';
+      afterQuote = false;
     } else if (ch === '\n' || ch === '\r') {
       if (ch === '\r' && src[i + 1] === '\n') i++;
       endRow();
       line++;
       rowStartLine = line;
+      afterQuote = false;
+    } else if (afterQuote) {
+      throw new Error(`Unexpected text after a closing quote on line ${line}; quote the whole field`);
+    } else if (ch === '"') {
+      // A quote only starts a quoted field at the very beginning of the field.
+      // Anywhere else it's malformed, and two stray quotes would otherwise pair
+      // up and silently merge the rows between them.
+      if (field !== '') {
+        throw new Error(`Unexpected quote in the middle of a field on line ${line}; wrap the field in quotes and double the inner quote ("")`);
+      }
+      inQuotes = true;
     } else {
       field += ch;
     }
@@ -141,7 +170,7 @@ function csvToRecords(text, warnings) {
     });
     if (raw.officialSourceUrl || raw.officialSourceName) {
       raw.officialSources = [
-        { name: raw.officialSourceName || 'Official Government Portal', url: raw.officialSourceUrl || '', verified: true },
+        { name: raw.officialSourceName || 'Official Government Portal', url: raw.officialSourceUrl || '' },
       ];
     }
     delete raw.officialSourceUrl;
@@ -248,8 +277,9 @@ export function validateRecord(raw) {
   ) {
     errors.push('popularityScore must be a number from 0 to 100');
   }
-  if (raw.lastVerified !== undefined && !(DATE_PATTERN.test(raw.lastVerified) && !Number.isNaN(Date.parse(raw.lastVerified)))) {
-    errors.push('lastVerified must be a date in YYYY-MM-DD format');
+  if (raw.lastVerified !== undefined) {
+    const problem = checkLastVerified(raw.lastVerified);
+    if (problem) errors.push(problem);
   }
   for (const field of ['department', 'fees', 'processingTime']) {
     if (raw[field] !== undefined && typeof raw[field] !== 'string') errors.push(`${field} must be text`);
@@ -283,7 +313,9 @@ export function validateRecord(raw) {
     officialSources = raw.officialSources.map((src) => ({
       name: isNonEmptyString(src?.name) ? src.name.trim() : 'Official Government Portal',
       url: typeof src?.url === 'string' ? src.url.trim() : '',
-      verified: src?.verified !== false,
+      // An import can't confirm a source, so it starts unverified until an
+      // admin reviews and saves the service.
+      verified: false,
     }));
   }
 
