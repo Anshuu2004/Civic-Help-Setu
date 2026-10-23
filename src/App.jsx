@@ -5,6 +5,7 @@ import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { NetworkProvider } from './context/NetworkContext';
+import { ConfirmationDialogProvider } from './context/ConfirmationDialogContext';
 
 import SkipToContent from './components/common/SkipToContent';
 import Navbar from './components/Navbar';
@@ -41,8 +42,9 @@ function App() {
           <AuthProvider>
             <LanguageProvider>
               <NetworkProvider>
-                <BrowserRouter>
-                  <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <ConfirmationDialogProvider>
+                  <BrowserRouter>
+                    <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                     <OfflineBanner />
                     <SkipToContent />
                     <Navbar />
@@ -99,8 +101,9 @@ function App() {
                   <AccessibilityToolbar />
                 </div>
               </BrowserRouter>
-            </NetworkProvider>
-          </LanguageProvider>
+            </ConfirmationDialogProvider>
+          </NetworkProvider>
+        </LanguageProvider>
           </AuthProvider>
         </ToastProvider>
       </AccessibilityProvider>
