@@ -17,6 +17,7 @@ import DocumentPreviewModal from '../components/vault/DocumentPreviewModal';
 import ExpiringDocumentsAlert from '../components/vault/ExpiringDocumentsAlert';
 import VaultBackupRestoreModal from '../components/vault/VaultBackupRestoreModal';
 import ServiceTaggingModal from '../components/vault/ServiceTaggingModal';
+import DocumentPreflightChecker from '../components/vault/DocumentPreflightChecker';
 
 const CATEGORIES = ['All', 'Identity', 'Finance', 'Transport', 'Education', 'Welfare'];
 
@@ -152,6 +153,9 @@ const Vault = () => {
 
         {/* Document Expiration Warnings */}
         <ExpiringDocumentsAlert expiringList={expiringDocs} />
+
+        {/* Pre-flight Inspection & Format Check */}
+        <DocumentPreflightChecker onAuditComplete={refreshVault} />
 
         {/* Vault Stats Cards */}
         <VaultStats documents={documents} />
