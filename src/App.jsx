@@ -13,6 +13,7 @@ import ToastContainer from './components/ToastContainer';
 import AccessibilityToolbar from './components/AccessibilityToolbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import OfflineBanner from './components/common/OfflineBanner';
+import BackToTop from './components/common/BackToTop';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -92,6 +93,7 @@ function App() {
                     </Routes>
                   </main>
                   <Footer />
+                  <BackToTop />
                   <ToastContainer />
                   <AccessibilityToolbar />
                 </div>

@@ -14,6 +14,7 @@
     "toggleTheme": "Toggle Theme"
   },
   "common": {
+    "backToTop": "Back to top",
     "citizen": "Citizen",
     "admin": "Admin",
     "search": "Search",
