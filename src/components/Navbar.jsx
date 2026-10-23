@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, LogOut, User, Sun, Moon, Search } from 'lucide-react';
+import { Shield, Menu, X, LogOut, User, Sun, Moon, PhoneCall } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
-import CommandPaletteModal from './common/CommandPaletteModal';
-import KeyboardShortcutsHelpModal from './common/KeyboardShortcutsHelpModal';
-import KbdBadge from './common/KbdBadge';
-import { useCommandPalette } from '../hooks/useCommandPalette';
+import EmergencyHelplineModal from './emergency/EmergencyHelplineModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isPaletteOpen, setIsPaletteOpen, isShortcutsOpen, setIsShortcutsOpen } = useCommandPalette();
+  const [showSosModal, setShowSosModal] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -72,6 +69,28 @@ const Navbar = () => {
 
           <PlainLanguageToggle />
           <LanguageSwitcher />
+
+          <button
+            type="button"
+            onClick={() => setShowSosModal(true)}
+            style={{
+              padding: '0.35rem 0.65rem',
+              borderRadius: '999px',
+              border: '1px solid #ef4444',
+              background: 'rgba(239, 68, 68, 0.12)',
+              color: '#ef4444',
+              fontSize: '0.78rem',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}
+            title="Rapid Emergency Helplines (112, 1930, 1091)"
+          >
+            <PhoneCall size={13} />
+            <span>SOS</span>
+          </button>
 
           <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title={t('nav.toggleTheme', 'Toggle Theme')}>
             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -176,17 +195,10 @@ const Navbar = () => {
         }
       `}</style>
 
-      {/* Global Civic Command Palette Modal */}
-      <CommandPaletteModal
-        isOpen={isPaletteOpen}
-        onClose={() => setIsPaletteOpen(false)}
-        onOpenShortcuts={() => setIsShortcutsOpen(true)}
-      />
-
-      {/* Keyboard Shortcuts Cheatsheet Modal */}
-      <KeyboardShortcutsHelpModal
-        isOpen={isShortcutsOpen}
-        onClose={() => setIsShortcutsOpen(false)}
+      {/* 24x7 Emergency SOS Modal */}
+      <EmergencyHelplineModal
+        isOpen={showSosModal}
+        onClose={() => setShowSosModal(false)}
       />
     </nav>
   );

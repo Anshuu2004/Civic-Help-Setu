@@ -58,10 +58,10 @@
     "openSource": "Open Source",
     "disclaimer": "CivicBridge is an independent, non-governmental civic tech platform. We provide guidance and direct citizens to official government portals."
   },
-  "appointment": {
-    "sync_calendar": "Sync to Calendar",
-    "ics_download": "Download .ICS File",
-    "google_calendar": "Add to Google Calendar",
-    "confirmed": "Appointment Confirmed"
+  "emergency": {
+    "sos": "Emergency SOS",
+    "title": "Citizen Emergency SOS & Rapid Helplines",
+    "subtitle": "Verified 24x7 Government Emergency Call Centers",
+    "dial_now": "Dial Now"
   }
 }
