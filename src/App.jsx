@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -30,6 +30,7 @@ import Profile from './pages/Profile';
 import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -88,7 +89,7 @@ function App() {
                         </ProtectedRoute>
                       } />
 
-                      <Route path="*" element={<Navigate to="/" replace />} />
+                      <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
                   <Footer />
