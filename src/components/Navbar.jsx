@@ -1,19 +1,23 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, LogOut, User, Sun, Moon, PhoneCall } from 'lucide-react';
+import { Shield, Menu, X, LogOut, User, Sun, Moon, WifiOff, Wifi, HardDrive, PhoneCall, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useNetwork } from '../context/NetworkContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
+import OfflineCacheStatusModal from './common/OfflineCacheStatusModal';
 import EmergencyHelplineModal from './emergency/EmergencyHelplineModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [showSosModal, setShowSosModal] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
+  const { isOnline } = useNetwork();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -41,35 +45,43 @@ const Navbar = () => {
           {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
 
-          {/* Quick Command Palette Trigger Button */}
-          <button
-            type="button"
-            onClick={() => setIsPaletteOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.35rem 0.65rem',
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--border-light)',
-              borderRadius: '999px',
-              color: 'var(--text-secondary)',
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              transition: 'border-color 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--accent-main)'}
-            onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
-            title="Open Civic Command Palette (Ctrl + K)"
-          >
-            <Search size={14} color="var(--accent-main)" />
-            <span>Search</span>
-            <KbdBadge>Ctrl K</KbdBadge>
-          </button>
-
           <PlainLanguageToggle />
           <LanguageSwitcher />
 
+          {/* Offline Status Badge */}
+          <button
+            type="button"
+            onClick={() => setShowOfflineModal(true)}
+            style={{
+              padding: '0.3rem 0.65rem',
+              background: isOnline ? 'var(--glass-bg)' : 'rgba(239, 68, 68, 0.15)',
+              border: `1px solid ${isOnline ? 'var(--border-main)' : 'rgba(239, 68, 68, 0.35)'}`,
+              borderRadius: '99px',
+              color: isOnline ? 'var(--text-secondary)' : '#ef4444',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              transition: 'all 0.2s'
+            }}
+            title={isOnline ? 'Network Online - Click for Offline Office Cache' : 'Offline Mode Active'}
+          >
+            {isOnline ? (
+              <>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                <span>Online</span>
+              </>
+            ) : (
+              <>
+                <WifiOff size={13} />
+                <span>Offline</span>
+              </>
+            )}
+          </button>
+
+          {/* Emergency SOS Button */}
           <button
             type="button"
             onClick={() => setShowSosModal(true)}
@@ -194,6 +206,12 @@ const Navbar = () => {
           .md-hidden { display: none !important; }
         }
       `}</style>
+
+      {/* Offline Cache Status Modal */}
+      <OfflineCacheStatusModal
+        isOpen={showOfflineModal}
+        onClose={() => setShowOfflineModal(false)}
+      />
 
       {/* 24x7 Emergency SOS Modal */}
       <EmergencyHelplineModal

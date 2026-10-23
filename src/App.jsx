@@ -4,13 +4,15 @@ import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { NetworkProvider } from './context/NetworkContext';
 
 import SkipToContent from './components/common/SkipToContent';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ToastContainer from './components/toast/ToastContainer';
-import AccessibilityToolbar from './components/common/AccessibilityToolbar';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import ToastContainer from './components/ToastContainer';
+import AccessibilityToolbar from './components/AccessibilityToolbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import OfflineBanner from './components/common/OfflineBanner';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -36,10 +38,12 @@ function App() {
         <ToastProvider>
           <AuthProvider>
             <LanguageProvider>
-              <BrowserRouter>
-                <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                  <SkipToContent />
-                  <Navbar />
+              <NetworkProvider>
+                <BrowserRouter>
+                  <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                    <OfflineBanner />
+                    <SkipToContent />
+                    <Navbar />
                   <main id="main-content" style={{ flex: 1 }} tabIndex="-1">
                     <Routes>
                       <Route path="/" element={<Home />} />
@@ -92,7 +96,8 @@ function App() {
                   <AccessibilityToolbar />
                 </div>
               </BrowserRouter>
-            </LanguageProvider>
+            </NetworkProvider>
+          </LanguageProvider>
           </AuthProvider>
         </ToastProvider>
       </AccessibilityProvider>
