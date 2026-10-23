@@ -13,7 +13,6 @@ import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWid
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
 import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Star, Calculator } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
