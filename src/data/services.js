@@ -372,3 +372,6 @@ export const MOCK_SERVICES = [
     lastVerified: '2024-01-20'
   }
 ];
+
+export const services = MOCK_SERVICES;
+export default services;

@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, LogOut, User, Sun, Moon } from 'lucide-react';
+import { Shield, Menu, X, LogOut, User, Sun, Moon, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
+import CommandPaletteModal from './common/CommandPaletteModal';
+import KeyboardShortcutsHelpModal from './common/KeyboardShortcutsHelpModal';
+import KbdBadge from './common/KbdBadge';
+import { useCommandPalette } from '../hooks/useCommandPalette';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isPaletteOpen, setIsPaletteOpen, isShortcutsOpen, setIsShortcutsOpen } = useCommandPalette();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -38,6 +43,32 @@ const Navbar = () => {
           <Link to="/assistant" className="nav-link">{t('nav.assistant', 'AI Assistant')}</Link>
           {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
+
+          {/* Quick Command Palette Trigger Button */}
+          <button
+            type="button"
+            onClick={() => setIsPaletteOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.35rem 0.65rem',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--border-light)',
+              borderRadius: '999px',
+              color: 'var(--text-secondary)',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--accent-main)'}
+            onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
+            title="Open Civic Command Palette (Ctrl + K)"
+          >
+            <Search size={14} color="var(--accent-main)" />
+            <span>Search</span>
+            <KbdBadge>Ctrl K</KbdBadge>
+          </button>
 
           <PlainLanguageToggle />
           <LanguageSwitcher />
@@ -144,6 +175,19 @@ const Navbar = () => {
           .md-hidden { display: none !important; }
         }
       `}</style>
+
+      {/* Global Civic Command Palette Modal */}
+      <CommandPaletteModal
+        isOpen={isPaletteOpen}
+        onClose={() => setIsPaletteOpen(false)}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+      />
+
+      {/* Keyboard Shortcuts Cheatsheet Modal */}
+      <KeyboardShortcutsHelpModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
     </nav>
   );
 };
