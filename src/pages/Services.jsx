@@ -9,12 +9,14 @@ import ServiceComparisonModal from '../components/services/ServiceComparisonModa
 import ComparisonFloatingTray from '../components/services/ComparisonFloatingTray';
 import { comparisonService } from '../services/comparisonService';
 import { rankAndFilterServices } from '../services/searchRankingEngine';
-import { Sparkles, Layers } from 'lucide-react';
+import ServiceRecommendationWizard from '../components/recommendations/ServiceRecommendationWizard';
+import { Sparkles, Layers, Compass } from 'lucide-react';
 
 const Services = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [comparedServices, setComparedServices] = useState(() => comparisonService.getComparedServices());
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   // Read URL params or set defaults
   const activeCategory = searchParams.get('cat') || 'All';
@@ -121,9 +123,28 @@ const Services = () => {
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '800', marginBottom: '1rem' }}>
             Public Service Directory
           </h1>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto 1.25rem' }}>
             Official requirements, eligibility criteria, and step-by-step procedures to obtain essential Indian civic services.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setIsWizardOpen(true)}
+            className="btn btn-primary animate-fade-in"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.625rem 1.25rem',
+              fontSize: '0.95rem',
+              fontWeight: '700',
+              borderRadius: '9999px',
+              boxShadow: 'var(--shadow-glow, 0 0 20px rgba(56, 189, 248, 0.2))',
+            }}
+          >
+            <Sparkles size={16} />
+            <span>Find Services For You (Explainable Recommender)</span>
+          </button>
         </div>
 
         {/* Category Pills Navigation */}
@@ -234,6 +255,12 @@ const Services = () => {
           onClose={() => setIsCompareModalOpen(false)}
           comparedServices={comparedServices}
           onUpdateList={(newList) => setComparedServices(newList)}
+        />
+
+        {/* Explainable Service Recommendation Wizard Modal */}
+        <ServiceRecommendationWizard
+          isOpen={isWizardOpen}
+          onClose={() => setIsWizardOpen(false)}
         />
       </div>
     </div>

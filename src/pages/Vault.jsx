@@ -17,6 +17,7 @@ import DocumentPreviewModal from '../components/vault/DocumentPreviewModal';
 import ExpiringDocumentsAlert from '../components/vault/ExpiringDocumentsAlert';
 import VaultBackupRestoreModal from '../components/vault/VaultBackupRestoreModal';
 import ServiceTaggingModal from '../components/vault/ServiceTaggingModal';
+import { useConfirm } from '../context/ConfirmationDialogContext';
 
 const CATEGORIES = ['All', 'Identity', 'Finance', 'Transport', 'Education', 'Welfare'];
 
@@ -37,6 +38,7 @@ const getDocumentIcon = (type = '', category = '') => {
 
 const Vault = () => {
   const { user } = useAuth();
+  const confirm = useConfirm();
   const [documents, setDocuments] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,10 +64,25 @@ const Vault = () => {
     setExpiringDocs(getExpiringDocuments());
   };
 
-  const handleDeleteDocument = (id) => {
+  const handleDeleteDocument = async (id) => {
+    const targetDoc = documents.find((d) => d.id === id);
+    const docName = targetDoc ? `${targetDoc.type} (${targetDoc.number})` : 'this document';
+
+    const shouldDelete = await confirm({
+      title: 'Permanently Delete Document?',
+      message: `Are you sure you want to delete ${docName} from your secure document vault? All associated document files and service tags will be permanently removed.`,
+      itemName: docName,
+      confirmLabel: 'Permanently Delete',
+      cancelLabel: 'Keep Document',
+      variant: 'danger',
+    });
+
+    if (!shouldDelete) return;
+
     const updated = deleteDocument(id);
     setDocuments(updated);
     setExpiringDocs(getExpiringDocuments());
+    setSelectedDoc(null);
   };
 
   const filteredDocuments = useMemo(() => {

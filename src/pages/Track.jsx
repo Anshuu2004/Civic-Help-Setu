@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   MessageSquare,
   Send,
+  Compass,
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import {
@@ -27,6 +28,7 @@ import ActionRequiredAlert from '../components/tracking/ActionRequiredAlert';
 import LinkedDocumentsManager from '../components/tracking/LinkedDocumentsManager';
 import ManualAddApplicationModal from '../components/tracking/ManualAddApplicationModal';
 import TrackingReceiptModal from '../components/tracking/TrackingReceiptModal';
+import JourneyPlannerModal from '../components/journey/JourneyPlannerModal';
 
 const Track = () => {
   const location = useLocation();
@@ -43,6 +45,7 @@ const Track = () => {
   // Note addition state
   const [newNoteText, setNewNoteText] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isJourneyModalOpen, setIsJourneyModalOpen] = useState(false);
 
   // Initialize or handle URL query parameters
   useEffect(() => {
@@ -162,9 +165,28 @@ const Track = () => {
           <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
             Application Status & Progress
           </h1>
-          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
             Monitor real-time verification stages, departmental approvals, and action deadlines in one place.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setIsJourneyModalOpen(true)}
+            className="btn btn-primary animate-fade-in"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.625rem 1.25rem',
+              fontSize: '0.95rem',
+              fontWeight: '700',
+              borderRadius: '9999px',
+              boxShadow: 'var(--shadow-glow, 0 0 20px rgba(56, 189, 248, 0.2))',
+            }}
+          >
+            <Compass size={17} />
+            <span>Multi-Service Application Journey Planner (Ordered Checklist)</span>
+          </button>
         </div>
 
         {/* High-level status dashboard metrics */}
@@ -529,6 +551,12 @@ const Track = () => {
             onClose={() => setShowReceipt(false)}
           />
         )}
+
+        {/* Multi-Service Application Journey Planner Modal */}
+        <JourneyPlannerModal
+          isOpen={isJourneyModalOpen}
+          onClose={() => setIsJourneyModalOpen(false)}
+        />
       </div>
     </div>
   );

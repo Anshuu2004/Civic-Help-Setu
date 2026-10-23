@@ -21,6 +21,8 @@ import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
 import ReportOutdatedInfoModal from '../components/services/ReportOutdatedInfoModal';
+import OfficialSourcesList from '../components/services/OfficialSourcesList';
+import { formatVerificationDate } from '../services/sourceVerificationService';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -365,13 +367,12 @@ const ServiceDetails = () => {
                 <ServiceFAQAccordion service={service} />
               </section>
 
+              {/* Official Sources & Verified Portals */}
               <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Official Resources</h2>
-                <div className="grid-2">
-                  {service.officialSources.map((source, idx) => (
-                    <SourceCard key={idx} source={source} />
-                  ))}
-                </div>
+                <OfficialSourcesList
+                  service={service}
+                  onReportMissingSource={handleReportInaccuracy}
+                />
               </section>
 
               {/* Citizen Experience & Community Reviews */}
@@ -392,7 +393,9 @@ const ServiceDetails = () => {
             </div>
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Last Verified: {service.lastVerified}</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
+                Last Verified: {formatVerificationDate(service.lastVerified) || 'Audit Pending'}
+              </div>
               {reportSubmitted ? (
                 <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
                   ✓ Report submitted to moderator queue. Thank you!
