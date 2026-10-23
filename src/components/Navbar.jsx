@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, LogOut, User, Sun, Moon, WifiOff, Wifi, HardDrive } from 'lucide-react';
+import { Shield, Menu, X, LogOut, User, Sun, Moon, WifiOff, Wifi, HardDrive, PhoneCall, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -8,10 +8,12 @@ import { useNetwork } from '../context/NetworkContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
 import OfflineCacheStatusModal from './common/OfflineCacheStatusModal';
+import EmergencyHelplineModal from './emergency/EmergencyHelplineModal';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
+  const [showSosModal, setShowSosModal] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -43,35 +45,10 @@ const Navbar = () => {
           {user && <Link to="/vault" className="nav-link">{t('nav.vault', 'Doc Vault')}</Link>}
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
 
-          {/* Quick Command Palette Trigger Button */}
-          <button
-            type="button"
-            onClick={() => setIsPaletteOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.35rem 0.65rem',
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--border-light)',
-              borderRadius: '999px',
-              color: 'var(--text-secondary)',
-              fontSize: '0.8rem',
-              cursor: 'pointer',
-              transition: 'border-color 0.2s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--accent-main)'}
-            onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border-light)'}
-            title="Open Civic Command Palette (Ctrl + K)"
-          >
-            <Search size={14} color="var(--accent-main)" />
-            <span>Search</span>
-            <KbdBadge>Ctrl K</KbdBadge>
-          </button>
-
           <PlainLanguageToggle />
           <LanguageSwitcher />
 
+          {/* Offline Status Badge */}
           <button
             type="button"
             onClick={() => setShowOfflineModal(true)}
@@ -102,6 +79,29 @@ const Navbar = () => {
                 <span>Offline</span>
               </>
             )}
+          </button>
+
+          {/* Emergency SOS Button */}
+          <button
+            type="button"
+            onClick={() => setShowSosModal(true)}
+            style={{
+              padding: '0.35rem 0.65rem',
+              borderRadius: '999px',
+              border: '1px solid #ef4444',
+              background: 'rgba(239, 68, 68, 0.12)',
+              color: '#ef4444',
+              fontSize: '0.78rem',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}
+            title="Rapid Emergency Helplines (112, 1930, 1091)"
+          >
+            <PhoneCall size={13} />
+            <span>SOS</span>
           </button>
 
           <button onClick={toggleTheme} style={{ padding: '0.5rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', transition: 'color 0.3s' }} title={t('nav.toggleTheme', 'Toggle Theme')}>
@@ -207,9 +207,16 @@ const Navbar = () => {
         }
       `}</style>
 
+      {/* Offline Cache Status Modal */}
       <OfflineCacheStatusModal
         isOpen={showOfflineModal}
         onClose={() => setShowOfflineModal(false)}
+      />
+
+      {/* 24x7 Emergency SOS Modal */}
+      <EmergencyHelplineModal
+        isOpen={showSosModal}
+        onClose={() => setShowSosModal(false)}
       />
     </nav>
   );

@@ -4,14 +4,22 @@ import { MOCK_SERVICES } from '../data/services';
 import Checklist from '../components/Checklist';
 import SourceCard from '../components/SourceCard';
 import EligibilityWizard from '../components/eligibility/EligibilityWizard';
-import ServiceComparisonModal from '../components/services/ServiceComparisonModal';
-import GrievanceSubmissionModal from '../components/services/GrievanceSubmissionModal';
-import { comparisonService } from '../services/comparisonService';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Scale, ShieldAlert } from 'lucide-react';
+import PrintableChecklistModal from '../components/services/PrintableChecklistModal';
+import ShareServiceModal from '../components/services/ShareServiceModal';
+import RatingSummaryCard from '../components/services/RatingSummaryCard';
+import CitizenReviewsList from '../components/services/CitizenReviewsList';
+import ReviewSubmissionModal from '../components/services/ReviewSubmissionModal';
+import { reviewStorage } from '../services/reviewStorage';
+import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
+import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
+import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
+import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
+import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
 
 const ServiceDetails = () => {
   const { id } = useParams();
@@ -28,18 +36,19 @@ const ServiceDetails = () => {
     }
   });
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showFeeModal, setShowFeeModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
-  const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
-  const [isGrievanceModalOpen, setIsGrievanceModalOpen] = useState(false);
-  const [comparedList, setComparedList] = useState(() => comparisonService.getComparedServices());
+  const [reviews, setReviews] = useState(() => reviewStorage.getReviewsForService(id));
+  const [reviewAggregate, setReviewAggregate] = useState(() => reviewStorage.getAggregate(id));
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  const handleToggleCompare = () => {
-    if (!service) return;
-    comparisonService.addService(service.id);
-    setComparedList(comparisonService.getComparedServices());
-    setIsCompareModalOpen(true);
+  const refreshReviews = () => {
+    setReviews(reviewStorage.getReviewsForService(id));
+    setReviewAggregate(reviewStorage.getAggregate(id));
   };
 
   const handleReportInaccuracy = () => {
@@ -152,7 +161,7 @@ const ServiceDetails = () => {
                     {isSaved ? 'Saved' : 'Save'}
                   </button>
                   <button 
-                    onClick={handleToggleCompare}
+                    onClick={() => setShowShareModal(true)}
                     className="btn btn-secondary"
                     style={{ 
                       padding: '0.65rem',
@@ -164,50 +173,77 @@ const ServiceDetails = () => {
                       justifyContent: 'center',
                       gap: '0.35rem'
                     }}
-                    title="Compare side-by-side with other services"
+                    title="Share checklist with family or WhatsApp"
                   >
-                    <Scale size={16} color="var(--accent-main)" />
-                    Compare
+                    <Share2 size={16} color="var(--accent-main)" />
+                    Share
                   </button>
                 </div>
                 <button
-                  onClick={() => setIsGrievanceModalOpen(true)}
+                  onClick={() => setShowPrintModal(true)}
+                  className="btn btn-outline"
                   style={{
-                    padding: '0.45rem',
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
+                    padding: '0.6rem 1rem',
+                    fontSize: '0.85rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.35rem'
+                    gap: '0.45rem'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--error, #ef4444)'}
-                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                  title="Generate ink-friendly office visit dossier"
                 >
-                  <ShieldAlert size={14} />
-                  <span>Report Delays or Grievance</span>
+                  <Printer size={16} />
+                  <span>Print Visit Dossier</span>
                 </button>
               </div>
             </div>
 
-            <div className="grid-2" style={{ position: 'relative', zIndex: 1, marginBottom: '2.5rem' }}>
+            <div className="grid-2" style={{ position: 'relative', zIndex: 1, marginBottom: '1.5rem' }}>
               <div style={{ background: 'var(--glass-bg-subtle)', border: '1px solid var(--border-light)', padding: '1.5rem', borderRadius: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <CreditCard size={24} color="var(--text-tertiary)" />
-                <div>
-                  <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Expected Fees</h4>
-                  <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-primary)' }}>{service.fees}</p>
+                <CreditCard size={24} color="var(--accent-main)" />
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                    <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)' }}>Expected Fees</h4>
+                    <button
+                      type="button"
+                      onClick={() => setShowFeeModal(true)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--accent-main)',
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        padding: 0
+                      }}
+                    >
+                      <Calculator size={14} />
+                      <span>Calculator</span>
+                    </button>
+                  </div>
+                  <p style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>{service.fees}</p>
+                  <ConcessionEligibilityBadge onOpenCalculator={() => setShowFeeModal(true)} />
                 </div>
               </div>
               <div style={{ background: 'var(--glass-bg-subtle)', border: '1px solid var(--border-light)', padding: '1.5rem', borderRadius: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <Clock size={24} color="var(--text-tertiary)" />
+                <Clock size={24} color="var(--accent-main)" />
                 <div>
                   <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Processing Time</h4>
-                  <p style={{ fontSize: '1rem', fontWeight: '500', color: 'var(--text-primary)' }}>{service.processingTime}</p>
+                  <p style={{ fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-primary)' }}>{service.processingTime}</p>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Statutory citizen charter turnaround</span>
                 </div>
               </div>
+            </div>
+
+            {/* Estimated Turnaround Milestones */}
+            <div style={{ position: 'relative', zIndex: 1, marginBottom: '2.5rem' }}>
+              <EstimatedTimelineWidget
+                processingTime={service.processingTime}
+                onOpenCalculator={() => setShowFeeModal(true)}
+              />
             </div>
 
             {service.warnings && service.warnings.length > 0 && (
@@ -324,6 +360,20 @@ const ServiceDetails = () => {
                 })()}
               </section>
 
+              {/* Application Rejection Prevention Guide */}
+              <section>
+                <CommonRejectionReasonsCard 
+                  serviceId={service.id}
+                  serviceCategory={service.category}
+                  serviceName={service.name}
+                />
+              </section>
+
+              {/* Service FAQ Knowledge Base */}
+              <section>
+                <ServiceFAQAccordion service={service} />
+              </section>
+
               <section>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Official Resources</h2>
                 <div className="grid-2">
@@ -331,6 +381,22 @@ const ServiceDetails = () => {
                     <SourceCard key={idx} source={source} />
                   ))}
                 </div>
+              </section>
+
+              {/* Citizen Experience & Community Reviews */}
+              <section>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Star size={22} color="#fbbf24" fill="#fbbf24" />
+                  <span>Citizen Experiences & Practical Ratings</span>
+                </h2>
+                <RatingSummaryCard
+                  aggregate={reviewAggregate}
+                  onOpenReviewModal={() => setIsReviewModalOpen(true)}
+                />
+                <CitizenReviewsList
+                  reviews={reviews}
+                  onReviewUpdated={refreshReviews}
+                />
               </section>
             </div>
 
@@ -428,18 +494,32 @@ const ServiceDetails = () => {
         </div>
       )}
 
-      {/* Service Comparison Matrix Modal */}
-      <ServiceComparisonModal
-        isOpen={isCompareModalOpen}
-        onClose={() => setIsCompareModalOpen(false)}
-        comparedServices={comparedList}
-        onUpdateList={(newList) => setComparedList(newList)}
+      {/* Printable Office Visit Dossier Modal */}
+      <PrintableChecklistModal
+        isOpen={showPrintModal}
+        onClose={() => setShowPrintModal(false)}
+        service={service}
       />
 
-      {/* Citizen Grievance Redressal Modal */}
-      <GrievanceSubmissionModal
-        isOpen={isGrievanceModalOpen}
-        onClose={() => setIsGrievanceModalOpen(false)}
+      {/* Share Checklist Modal */}
+      <ShareServiceModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        service={service}
+      />
+
+      {/* Citizen Review Submission Modal */}
+      <ReviewSubmissionModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        service={service}
+        onReviewAdded={refreshReviews}
+      />
+
+      {/* Fee Breakdown & Concession Calculator Modal */}
+      <FeeBreakdownModal
+        isOpen={showFeeModal}
+        onClose={() => setShowFeeModal(false)}
         service={service}
       />
     </>
