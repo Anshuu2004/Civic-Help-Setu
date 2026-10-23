@@ -357,3 +357,38 @@ html[data-high-contrast="true"] .glass-panel {
   }
 }
 
+/* --- PRINT MEDIA STYLES FOR CIVIC DOSSIERS --- */
+@media print {
+  nav,
+  footer,
+  .no-print,
+  .nav-glass,
+  .app-layout > header,
+  .accessibility-toolbar,
+  .toast-container {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 12pt !important;
+  }
+
+  .print-dossier-card {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+  }
+
+  .print-content {
+    padding: 0 !important;
+    color: #000000 !important;
+  }
+}
+
+

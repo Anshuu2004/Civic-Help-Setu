@@ -69,5 +69,11 @@
     "subtitle": "Verified official answers for citizen procedures",
     "was_helpful": "Was this answer helpful?",
     "search_placeholder": "Search questions..."
+  },
+  "emergency": {
+    "sos": "Emergency SOS",
+    "title": "Citizen Emergency SOS & Rapid Helplines",
+    "subtitle": "Verified 24x7 Government Emergency Call Centers",
+    "dial_now": "Dial Now"
   }
 }
