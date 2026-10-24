@@ -20,9 +20,11 @@ import SavedItemCard from '../components/saved/SavedItemCard';
 import ReminderScheduleModal from '../components/saved/ReminderScheduleModal';
 import FavoritesQuickBar from '../components/saved/FavoritesQuickBar';
 import { useToast } from '../context/ToastContext';
+import { useConfirm } from '../context/ConfirmationDialogContext';
 
 const Saved = () => {
   const { toast } = useToast();
+  const confirm = useConfirm();
   const [savedItems, setSavedItems] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [activeFolder, setActiveFolder] = useState('All');
@@ -71,7 +73,21 @@ const Saved = () => {
     toast?.success?.('Notes and folder details updated.');
   };
 
-  const handleRemoveItem = (serviceId) => {
+  const handleRemoveItem = async (serviceId) => {
+    const service = MOCK_SERVICES.find((s) => s.id === serviceId);
+    const serviceName = service?.name || 'this service guide';
+
+    const shouldRemove = await confirm({
+      title: 'Remove Saved Guide?',
+      message: `Are you sure you want to remove "${serviceName}" from your saved guides? Any custom notes or reminders attached to this guide will be detached.`,
+      itemName: serviceName,
+      confirmLabel: 'Remove Guide',
+      cancelLabel: 'Cancel',
+      variant: 'warning',
+    });
+
+    if (!shouldRemove) return;
+
     const updated = removeItem(serviceId);
     setSavedItems(updated);
     toast?.info?.('Service guide removed from saved hub.');
@@ -81,12 +97,20 @@ const Saved = () => {
     setReminders(getAllReminders());
   };
 
-  const clearSaved = () => {
-    if (window.confirm('Are you sure you want to clear all your saved service guides?')) {
-      const reset = clearAllSaved();
-      setSavedItems(reset);
-      toast?.info?.('All saved service guides cleared.');
-    }
+  const clearSaved = async () => {
+    const shouldClear = await confirm({
+      title: 'Clear All Saved Guides?',
+      message: 'Are you sure you want to clear your entire saved guides collection? All custom folder organization and reminders will be reset.',
+      confirmLabel: 'Clear All Guides',
+      cancelLabel: 'Cancel',
+      variant: 'danger',
+    });
+
+    if (!shouldClear) return;
+
+    const reset = clearAllSaved();
+    setSavedItems(reset);
+    toast?.info?.('All saved service guides cleared.');
   };
 
   // Match saved items with mock services

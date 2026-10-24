@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { AccessibilityProvider } from './context/AccessibilityContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { NetworkProvider } from './context/NetworkContext';
+import { ConfirmationDialogProvider } from './context/ConfirmationDialogContext';
 
 import SkipToContent from './components/common/SkipToContent';
 import Navbar from './components/Navbar';
@@ -13,6 +14,7 @@ import ToastContainer from './components/ToastContainer';
 import AccessibilityToolbar from './components/AccessibilityToolbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import OfflineBanner from './components/common/OfflineBanner';
+import BackToTop from './components/common/BackToTop';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -30,6 +32,7 @@ import Profile from './pages/Profile';
 import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -39,8 +42,9 @@ function App() {
           <AuthProvider>
             <LanguageProvider>
               <NetworkProvider>
-                <BrowserRouter>
-                  <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <ConfirmationDialogProvider>
+                  <BrowserRouter>
+                    <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                     <OfflineBanner />
                     <SkipToContent />
                     <Navbar />
@@ -88,16 +92,18 @@ function App() {
                         </ProtectedRoute>
                       } />
 
-                      <Route path="*" element={<Navigate to="/" replace />} />
+                      <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
                   <Footer />
+                  <BackToTop />
                   <ToastContainer />
                   <AccessibilityToolbar />
                 </div>
               </BrowserRouter>
-            </NetworkProvider>
-          </LanguageProvider>
+            </ConfirmationDialogProvider>
+          </NetworkProvider>
+        </LanguageProvider>
           </AuthProvider>
         </ToastProvider>
       </AccessibilityProvider>

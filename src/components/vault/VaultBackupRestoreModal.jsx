@@ -50,8 +50,9 @@ const VaultBackupRestoreModal = ({
 
     const result = importVaultData(importText);
     if (result.success) {
-      toast.success(`Successfully restored ${result.count} documents into your vault!`);
-      setImportStatus({ type: 'success', message: `${result.count} documents imported.` });
+      const skippedNote = result.skipped ? ` ${result.skipped} invalid record(s) were skipped.` : '';
+      toast.success(`Restored ${result.count} documents into your vault.${skippedNote}`);
+      setImportStatus({ type: 'success', message: `${result.count} documents imported.${skippedNote}` });
       onVaultUpdated();
       setTimeout(() => {
         onClose();
