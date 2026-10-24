@@ -1,17 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
-  ShieldCheck,
-  FileText,
-  FileBadge,
-  CreditCard,
-  Car,
-  Plus,
-  Search,
-  Eye,
-  AlertTriangle,
-  Layers,
-  Download,
-  Tag
+  FileBadge, ShieldCheck, Upload, CreditCard, Car, FileText,
+  Plus, Search, Eye, AlertTriangle, Layers, Download, Tag
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useConfirm } from '../context/ConfirmationDialogContext';
@@ -20,13 +10,13 @@ import {
   saveDocument,
   deleteDocument,
   getExpiryStatus,
-  getExpiringDocuments
-} from '../utils/vaultStorage';
+  getExpiringDocuments,
+} from '../services/vaultStorage';
+import VaultStats from '../components/vault/VaultStats';
 import DocumentModal from '../components/vault/DocumentModal';
 import DocumentPreviewModal from '../components/vault/DocumentPreviewModal';
-import VaultBackupRestoreModal from '../components/vault/VaultBackupRestoreModal';
 import ExpiringDocumentsAlert from '../components/vault/ExpiringDocumentsAlert';
-import VaultStats from '../components/vault/VaultStats';
+import VaultBackupRestoreModal from '../components/vault/VaultBackupRestoreModal';
 import ServiceTaggingModal from '../components/vault/ServiceTaggingModal';
 import DocumentPreflightChecker from '../components/vault/DocumentPreflightChecker';
 
@@ -78,6 +68,7 @@ const Vault = () => {
   }, []);
 
   const handleSaveDocument = (docData) => {
+    // saveDocument throws if browser storage is full; the modal shows the message
     const updated = saveDocument(docData);
     setDocuments(updated);
     setExpiringDocs(getExpiringDocuments());
