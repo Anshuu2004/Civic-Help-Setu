@@ -1,12 +1,17 @@
 import { useSignUp } from '@clerk/clerk-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Sparkles, ArrowRight, UserPlus } from 'lucide-react';
+import AuthRedirectNotice from '../components/common/AuthRedirectNotice';
+import { buildAuthPath, getRedirectTarget } from '../utils/authRedirect';
 
 const SignUpPage = () => {
   const { isClerkConfigured, signInAsDemo } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTarget = getRedirectTarget(location);
+  const redirectState = redirectTarget ? { from: redirectTarget } : undefined;
 
   // Safe clerk hook fallback
   const clerkSignUp = isClerkConfigured ? useSignUp() : { isLoaded: false, signUp: null };
@@ -33,7 +38,7 @@ const SignUpPage = () => {
           email: email.trim(),
           role: 'citizen',
         });
-        navigate('/');
+        navigate(redirectTarget || '/', { replace: true });
       }
       return;
     }
@@ -47,7 +52,7 @@ const SignUpPage = () => {
         await signUp.update({ username });
       }
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
-      navigate('/login');
+      navigate(buildAuthPath('/login', redirectTarget), { state: redirectState });
     } catch (err) {
       console.error(err);
       setError(err?.errors?.[0]?.message || 'Sign‑up failed');
@@ -80,6 +85,8 @@ const SignUpPage = () => {
               : 'Register a local citizen account (Demo Mode active).'}
           </p>
         </div>
+
+        <AuthRedirectNotice redirectTo={redirectTarget} mode="signup" />
 
         {!isClerkConfigured && (
           <div style={{ padding: '0.85rem', background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.25)', borderRadius: '0.75rem', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
@@ -150,7 +157,7 @@ const SignUpPage = () => {
         </form>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--accent-main)', fontWeight: '600' }}>Sign in</Link>
+          Already have an account? <Link to={buildAuthPath('/login', redirectTarget)} state={redirectState} style={{ color: 'var(--accent-main)', fontWeight: '600' }}>Sign in</Link>
         </div>
       </div>
     </div>
