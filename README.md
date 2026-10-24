@@ -130,6 +130,7 @@ VITE_API_BASE_URL=your_backend_base_url
 1. Create an account or sign in at [Clerk](https://dashboard.clerk.com)
 2. Get your publishable key from the Clerk dashboard
 3. Add it to `VITE_CLERK_PUBLISHABLE_KEY` in your `.env` file
+4. To make someone an admin, set `publicMetadata` to `{ "role": "admin" }` on their user in the Clerk dashboard. Every other user is treated as a citizen; the role is never guessed from email or username.
 
 ## Run the app locally
 
