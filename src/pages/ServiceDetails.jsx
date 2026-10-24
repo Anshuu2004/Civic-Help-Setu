@@ -13,7 +13,9 @@ import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, Link2, Check } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { copyServiceLink, getServiceUrl } from '../services/copyLinkService';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
@@ -28,6 +30,8 @@ const ServiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const toast = useToast();
+  const [linkCopied, setLinkCopied] = useState(false);
   
   const [service, setService] = useState(() => MOCK_SERVICES.find(s => s.id === id) || null);
   const [isSaved, setIsSaved] = useState(() => {
@@ -71,6 +75,17 @@ const ServiceDetails = () => {
       setIsSaved(false);
     }
   }, [id]);
+
+  const handleCopyLink = async () => {
+    const ok = await copyServiceLink(getServiceUrl(id));
+    if (ok) {
+      toast.success('Service link copied to clipboard.');
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } else {
+      toast.error('Could not copy the link. Please copy it from the address bar.');
+    }
+  };
 
   const toggleSave = () => {
     if (!service) return;
@@ -171,6 +186,29 @@ const ServiceDetails = () => {
                     <Share2 size={16} color="var(--accent-main)" />
                     Share
                   </button>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="btn btn-secondary"
+                    aria-label="Copy link to this service page"
+                    style={{
+                      gridColumn: '1 / -1',
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: 'var(--glass-bg)',
+                      color: 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    {linkCopied ? <Check size={16} color="var(--accent-main)" /> : <Link2 size={16} color="var(--accent-main)" />}
+                    {linkCopied ? 'Copied' : 'Copy link'}
+                  </button>
+                  <span className="sr-only" role="status" aria-live="polite" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+                    {linkCopied ? 'Link copied to clipboard' : ''}
+                  </span>
                 </div>
                 <button
                   onClick={() => setShowPrintModal(true)}
