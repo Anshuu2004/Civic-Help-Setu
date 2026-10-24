@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react';
 import { useUser, useClerk } from '@clerk/clerk-react';
+import { resolveRole } from '../services/roleService';
 
 const AuthContext = createContext(null);
 const DEMO_STORAGE_KEY = 'civicbridge_demo_user';
@@ -25,11 +26,7 @@ const ClerkAuthProvider = ({ children }) => {
       email.split('@')[0] ||
       'Citizen';
 
-    const defaultRole =
-      clerkUser.publicMetadata?.role ||
-      (email.toLowerCase().includes('admin') || clerkUser.username === 'esha'
-        ? 'admin'
-        : 'citizen');
+    const role = resolveRole(clerkUser.publicMetadata);
 
     return {
       id: clerkUser.id,
@@ -38,7 +35,7 @@ const ClerkAuthProvider = ({ children }) => {
       firstName: clerkUser.firstName || name,
       email,
       imageUrl: clerkUser.imageUrl,
-      role: defaultRole,
+      role,
       isClerk: true,
       raw: clerkUser,
     };
