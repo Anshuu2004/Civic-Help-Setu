@@ -5,6 +5,8 @@ import { dark } from '@clerk/themes';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState } from 'react';
+import AuthRedirectNotice from '../components/common/AuthRedirectNotice';
+import { buildAuthPath, getRedirectTarget } from '../utils/authRedirect';
 
 // Google 4‑color SVG Brand Icon
 const GoogleLogo = ({ size = 20 }) => (
@@ -17,7 +19,7 @@ const GoogleLogo = ({ size = 20 }) => (
 );
 
 // One‑click Google sign‑in button powered by Clerk
-const ClerkGoogleButton = ({ disabled }) => {
+const ClerkGoogleButton = ({ disabled, redirectTo = '/' }) => {
   const { signIn, isLoaded } = useSignIn();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -27,10 +29,16 @@ const ClerkGoogleButton = ({ disabled }) => {
     try {
       setLoading(true);
       setError('');
+      // Router state is gone after the trip to Google, so the destination
+      // rides along in the callback URL (SSOCallback reads these params).
+      const callbackParams = new URLSearchParams({
+        sign_in_force_redirect_url: redirectTo,
+        sign_up_force_redirect_url: redirectTo,
+      });
       await signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/',
+        redirectUrl: `/sso-callback?${callbackParams.toString()}`,
+        redirectUrlComplete: redirectTo,
       });
     } catch (err) {
       console.error('Google Sign‑In Error:', err);
@@ -90,7 +98,9 @@ const Login = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
+  const redirectTarget = getRedirectTarget(location);
+  const from = redirectTarget || '/';
+  const redirectState = redirectTarget ? { from: redirectTarget } : undefined;
 
   const [demoName, setDemoName] = useState('');
   const [demoRole, setDemoRole] = useState('citizen');
@@ -145,14 +155,17 @@ const Login = () => {
           </p>
         </div>
 
+        <AuthRedirectNotice redirectTo={redirectTarget} mode="signin" />
+
         {isClerkConfigured ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <ClerkGoogleButton />
+            <ClerkGoogleButton redirectTo={from} />
             <SignIn
               routing="path"
               path="/login"
-              signUpUrl="/signup"
-              afterSignInUrl="/"
+              signUpUrl={buildAuthPath('/signup', redirectTarget)}
+              fallbackRedirectUrl={from}
+              signUpFallbackRedirectUrl={from}
               appearance={{
                 baseTheme: theme === 'dark' ? dark : undefined,
                 variables: { colorPrimary: '#38bdf8' },
@@ -245,7 +258,7 @@ const Login = () => {
         )}
 
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          Don’t have an account? <Link to="/signup" style={{ color: 'var(--accent-main)', fontWeight: '600' }}>Sign up</Link>
+          Don’t have an account? <Link to={buildAuthPath('/signup', redirectTarget)} state={redirectState} style={{ color: 'var(--accent-main)', fontWeight: '600' }}>Sign up</Link>
         </div>
       </div>
     </div>

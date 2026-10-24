@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="nav-glass animate-fade-in">
+    <nav id="site-navigation" aria-label="Main Navigation" tabIndex="-1" className="nav-glass animate-fade-in">
       <div className="container flex-between" style={{ height: '100%' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '800', fontSize: '1.5rem', color: 'var(--text-primary)' }}>
           <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem', background: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

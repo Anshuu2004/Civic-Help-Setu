@@ -1,5 +1,80 @@
 const STORAGE_KEY = 'civicbridge_applications';
 
+export const STATUS_META = {
+  submitted: { label: 'Submitted', color: '#94a3b8', background: 'rgba(148, 163, 184, 0.2)' },
+  'in-progress': { label: 'In Progress', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.2)' },
+  'action-required': { label: 'Action Required', color: '#ef4444', background: 'rgba(239, 68, 68, 0.2)' },
+  completed: { label: 'Completed', color: '#10b981', background: 'rgba(16, 185, 129, 0.2)' },
+};
+
+export const DEFAULT_STATUS = 'submitted';
+
+// Anything we do not recognise is shown as Submitted.
+export const normalizeStatus = (status) =>
+  Object.prototype.hasOwnProperty.call(STATUS_META, status) ? status : DEFAULT_STATUS;
+
+export const getStatusMeta = (status) => STATUS_META[normalizeStatus(status)];
+
+// Stage 0 is the submission itself, stage 1 is where review happens.
+const REVIEW_STAGE_INDEX = 1;
+
+/**
+ * The only place that turns a status into stage flags.
+ * Stages before the current one are completed, the current one is
+ * in progress or needs action, and the rest stay pending.
+ */
+export const buildStages = (status, stages = []) => {
+  const safeStatus = normalizeStatus(status);
+  const list = Array.isArray(stages) ? stages : [];
+  return list.map((stage, idx) => {
+    const rest = { ...stage };
+    delete rest.completed;
+    delete rest.inProgress;
+    delete rest.actionRequired;
+    let completed = false;
+    let inProgress = false;
+    let actionRequired = false;
+
+    if (safeStatus === 'completed') {
+      completed = true;
+    } else if (idx < REVIEW_STAGE_INDEX) {
+      completed = true;
+    } else if (idx === REVIEW_STAGE_INDEX) {
+      inProgress = safeStatus === 'in-progress';
+      actionRequired = safeStatus === 'action-required';
+    }
+    return { ...rest, completed, inProgress, actionRequired };
+  });
+};
+
+export const getCurrentStageIndex = (status, stageCount = 4) => {
+  const last = Math.max(stageCount - 1, 0);
+  const safeStatus = normalizeStatus(status);
+  if (safeStatus === 'completed') return last;
+  if (safeStatus === 'submitted') return 0;
+  return Math.min(REVIEW_STAGE_INDEX, last);
+};
+
+export const NOT_AVAILABLE = 'Not available';
+
+export const formatDisplayDate = (value) => {
+  if (typeof value !== 'string') return NOT_AVAILABLE;
+  const text = value.trim();
+  if (!text || /^(invalid date|undefined|null|nan)$/i.test(text)) return NOT_AVAILABLE;
+  return text;
+};
+
+const normalizeApplication = (app) => {
+  const status = normalizeStatus(app?.status);
+  const stages = buildStages(status, app?.stages);
+  return {
+    ...app,
+    status,
+    stages,
+    currentStageIndex: getCurrentStageIndex(status, stages.length || 4),
+  };
+};
+
 const DEFAULT_APPLICATIONS = [
   {
     id: 'SRV-98234710',
@@ -150,12 +225,15 @@ export const getApplications = () => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_APPLICATIONS));
-      return DEFAULT_APPLICATIONS;
+      return DEFAULT_APPLICATIONS.map(normalizeApplication);
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return DEFAULT_APPLICATIONS.map(normalizeApplication);
+    // Older saved data can have flags that disagree with the status, so fix them on read.
+    return parsed.filter((a) => a && typeof a.id === 'string').map(normalizeApplication);
   } catch (err) {
     console.error('Failed to parse applications from storage', err);
-    return DEFAULT_APPLICATIONS;
+    return DEFAULT_APPLICATIONS.map(normalizeApplication);
   }
 };
 
@@ -200,33 +278,28 @@ export const createApplication = ({ serviceId, serviceName, category, applicantN
     ],
     linkedDocs: [],
     pendingAction: null,
-    stages: [
+    stages: buildStages('submitted', [
       {
         title: 'Application Submitted',
         description: 'Application submitted digitally via Civic Help Setu Fast-Track.',
         timestamp: `${dateStr} • Just now`,
-        completed: true,
       },
       {
         title: 'Document & Identity Verification',
         description: 'Verifying submitted identity proof and prerequisite documents.',
         timestamp: 'Estimated within 3 business days',
-        completed: false,
-        inProgress: true,
       },
       {
         title: 'Competent Authority Assessment',
         description: 'Departmental review and approval clearance.',
         timestamp: 'Pending document check',
-        completed: false,
       },
       {
         title: 'Final Certificate / Service Issuance',
         description: 'Digital certificate or dispatch tracking notification.',
         timestamp: `Target completion by ${estDateStr}`,
-        completed: false,
       },
-    ],
+    ]),
   };
 
   const updated = [newApp, ...all];
@@ -247,38 +320,31 @@ export const addManualApplication = ({
   const all = getApplications();
   const cleanId = referenceId.trim().toUpperCase();
 
-  const stages = [
+  const safeStatus = normalizeStatus(status);
+  const stages = buildStages(safeStatus, [
     {
       title: 'Application Submitted',
       description: 'Submitted at district portal / physical center.',
       timestamp: appliedDate || 'Submitted',
-      completed: true,
     },
     {
       title: 'Document Verification',
       description: 'Scrutiny of applicant credentials and attachments.',
-      timestamp: status === 'submitted' ? 'Pending initiation' : 'In review',
-      completed: status !== 'submitted',
-      inProgress: status === 'in-progress',
-      actionRequired: status === 'action-required',
+      timestamp: safeStatus === 'submitted' ? 'Pending initiation' : 'In review',
     },
     {
       title: 'Departmental Processing',
       description: 'Officer evaluation and statutory approvals.',
-      timestamp: status === 'completed' ? 'Cleared' : 'Pending prior stages',
-      completed: status === 'completed',
+      timestamp: safeStatus === 'completed' ? 'Cleared' : 'Pending prior stages',
     },
     {
       title: 'Final Issuance / Dispatch',
       description: 'Ready for collection, digital download, or courier delivery.',
-      timestamp: status === 'completed' ? 'Issued' : (estimatedCompletion ? `Est: ${estimatedCompletion}` : 'Pending'),
-      completed: status === 'completed',
+      timestamp: safeStatus === 'completed' ? 'Issued' : (estimatedCompletion ? `Est: ${estimatedCompletion}` : 'Pending'),
     },
-  ];
+  ]);
 
-  let currentStageIndex = 0;
-  if (status === 'in-progress' || status === 'action-required') currentStageIndex = 1;
-  else if (status === 'completed') currentStageIndex = 3;
+  const currentStageIndex = getCurrentStageIndex(safeStatus, stages.length);
 
   const newApp = {
     id: cleanId,
@@ -288,13 +354,13 @@ export const addManualApplication = ({
     applicantName,
     appliedDate: appliedDate || 'Recent',
     estimatedCompletion: estimatedCompletion || 'Within 15 days',
-    status,
+    status: safeStatus,
     currentStageIndex,
     notes: initialNote
       ? [{ id: `n-${Date.now()}`, text: initialNote, date: `${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}` }]
       : [],
     linkedDocs: [],
-    pendingAction: status === 'action-required' ? {
+    pendingAction: safeStatus === 'action-required' ? {
       title: 'Additional Documentation or Clarification Needed',
       description: 'Department requested supplementary records for reference ' + cleanId,
       deadline: 'Within 7 business days',
@@ -356,12 +422,15 @@ export const resolveApplicationPendingAction = (appId, resolutionNote = '') => {
   const target = all.find((a) => a.id.toUpperCase() === appId.toUpperCase());
   if (!target) return null;
 
+  // Already resolved (or never needed action): nothing to change.
+  if (target.status !== 'action-required' && !target.pendingAction) return target;
+
   target.pendingAction = null;
   target.status = 'in-progress';
-  if (target.stages && target.stages[1]) {
-    target.stages[1].actionRequired = false;
-    target.stages[1].inProgress = true;
-    target.stages[1].timestamp = 'Action resolved • Resumed verification';
+  target.stages = buildStages('in-progress', target.stages);
+  target.currentStageIndex = getCurrentStageIndex('in-progress', target.stages.length);
+  if (target.stages[REVIEW_STAGE_INDEX]) {
+    target.stages[REVIEW_STAGE_INDEX].timestamp = 'Action resolved • Resumed verification';
   }
 
   if (resolutionNote) {
