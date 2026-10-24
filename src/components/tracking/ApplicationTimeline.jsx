@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Circle } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, AlertTriangle } from 'lucide-react';
 
 const ApplicationTimeline = ({ stages = [] }) => {
   return (
@@ -19,7 +19,8 @@ const ApplicationTimeline = ({ stages = [] }) => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem', position: 'relative', zIndex: 1 }}>
         {stages.map((stage, idx) => {
           const isDone = stage.completed;
-          const isInProgress = stage.inProgress;
+          const isAction = !isDone && stage.actionRequired;
+          const isInProgress = !isDone && !isAction && stage.inProgress;
 
           return (
             <div key={idx} style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
@@ -37,6 +38,8 @@ const ApplicationTimeline = ({ stages = [] }) => {
               >
                 {isDone ? (
                   <CheckCircle2 size={28} color="var(--success, #10b981)" fill="rgba(16, 185, 129, 0.2)" />
+                ) : isAction ? (
+                  <AlertTriangle size={28} color="#ef4444" />
                 ) : isInProgress ? (
                   <div
                     style={{
@@ -62,6 +65,8 @@ const ApplicationTimeline = ({ stages = [] }) => {
                       fontWeight: '700',
                       color: isDone
                         ? 'var(--text-primary)'
+                        : isAction
+                        ? '#ef4444'
                         : isInProgress
                         ? 'var(--accent-main)'
                         : 'var(--text-tertiary)',
@@ -69,6 +74,23 @@ const ApplicationTimeline = ({ stages = [] }) => {
                   >
                     {stage.title}
                   </h4>
+                  {isAction && (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '99px',
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        color: '#ef4444',
+                      }}
+                    >
+                      <AlertTriangle size={12} /> Action needed
+                    </span>
+                  )}
                   {isInProgress && (
                     <span
                       style={{
@@ -90,7 +112,7 @@ const ApplicationTimeline = ({ stages = [] }) => {
 
                 <p
                   style={{
-                    color: isDone ? 'var(--text-secondary)' : isInProgress ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                    color: isDone ? 'var(--text-secondary)' : isInProgress || isAction ? 'var(--text-primary)' : 'var(--text-tertiary)',
                     fontSize: '0.925rem',
                     marginTop: '0.25rem',
                     lineHeight: '1.5',

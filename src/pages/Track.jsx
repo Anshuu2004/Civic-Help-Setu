@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Search,
-  CheckCircle2,
-  Circle,
-  Clock,
   FileText,
   ArrowRight,
   Copy,
@@ -13,6 +10,7 @@ import {
   ShieldCheck,
   MessageSquare,
   Send,
+  Compass,
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import {
@@ -21,12 +19,16 @@ import {
   addNoteToApplication,
   resolveApplicationPendingAction,
   getTrackingMetrics,
+  getStatusMeta,
+  formatDisplayDate,
 } from '../services/trackingService';
 import ActiveApplicationsSummaryGrid from '../components/tracking/ActiveApplicationsSummaryGrid';
+import ApplicationTimeline from '../components/tracking/ApplicationTimeline';
 import ActionRequiredAlert from '../components/tracking/ActionRequiredAlert';
 import LinkedDocumentsManager from '../components/tracking/LinkedDocumentsManager';
 import ManualAddApplicationModal from '../components/tracking/ManualAddApplicationModal';
 import TrackingReceiptModal from '../components/tracking/TrackingReceiptModal';
+import JourneyPlannerModal from '../components/journey/JourneyPlannerModal';
 
 const Track = () => {
   const location = useLocation();
@@ -43,6 +45,7 @@ const Track = () => {
   // Note addition state
   const [newNoteText, setNewNoteText] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isJourneyModalOpen, setIsJourneyModalOpen] = useState(false);
 
   // Initialize or handle URL query parameters
   useEffect(() => {
@@ -139,6 +142,8 @@ const Track = () => {
     setAppIdInput(newApp.id);
   };
 
+  const statusMeta = getStatusMeta(activeApp?.status);
+
   return (
     <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
       <div className="container" style={{ maxWidth: '900px' }}>
@@ -162,9 +167,28 @@ const Track = () => {
           <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
             Application Status & Progress
           </h1>
-          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
+          <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
             Monitor real-time verification stages, departmental approvals, and action deadlines in one place.
           </p>
+
+          <button
+            type="button"
+            onClick={() => setIsJourneyModalOpen(true)}
+            className="btn btn-primary animate-fade-in"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.625rem 1.25rem',
+              fontSize: '0.95rem',
+              fontWeight: '700',
+              borderRadius: '9999px',
+              boxShadow: 'var(--shadow-glow, 0 0 20px rgba(56, 189, 248, 0.2))',
+            }}
+          >
+            <Compass size={17} />
+            <span>Multi-Service Application Journey Planner (Ordered Checklist)</span>
+          </button>
         </div>
 
         {/* High-level status dashboard metrics */}
@@ -247,6 +271,18 @@ const Track = () => {
           </div>
         )}
 
+        {applications.length === 0 && !activeApp && !notFound && (
+          <div className="card" style={{ textAlign: 'center', padding: '2.5rem', marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '0.5rem' }}>No applications tracked yet</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '480px', margin: '0 auto 1.5rem' }}>
+              Enter a reference ID above, or register an application you filed at an office or state portal.
+            </p>
+            <button type="button" className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>
+              <Plus size={16} /> Add Application
+            </button>
+          </div>
+        )}
+
         {/* Active Application Detail Card */}
         {activeApp && (
           <div className="card animate-fade-in" style={{ padding: '2rem', borderRadius: '1.25rem' }}>
@@ -299,7 +335,7 @@ const Track = () => {
                   <span>•</span>
                   <span>Category: <strong>{activeApp.category}</strong></span>
                   <span>•</span>
-                  <span>Applied: <strong>{activeApp.appliedDate}</strong></span>
+                  <span>Applied: <strong>{formatDisplayDate(activeApp.appliedDate)}</strong></span>
                 </div>
               </div>
 
@@ -313,34 +349,15 @@ const Track = () => {
                     fontWeight: '700',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
-                    background:
-                      activeApp.status === 'completed'
-                        ? 'rgba(16, 185, 129, 0.2)'
-                        : activeApp.status === 'action-required'
-                        ? 'rgba(239, 68, 68, 0.2)'
-                        : 'rgba(56, 189, 248, 0.2)',
-                    color:
-                      activeApp.status === 'completed'
-                        ? '#10b981'
-                        : activeApp.status === 'action-required'
-                        ? '#ef4444'
-                        : 'var(--accent-main)',
-                    border:
-                      activeApp.status === 'completed'
-                        ? '1px solid #10b981'
-                        : activeApp.status === 'action-required'
-                        ? '1px solid #ef4444'
-                        : '1px solid var(--accent-main)',
+                    background: statusMeta.background,
+                    color: statusMeta.color,
+                    border: `1px solid ${statusMeta.color}`,
                   }}
                 >
-                  {activeApp.status === 'action-required'
-                    ? 'Action Required'
-                    : activeApp.status === 'in-progress'
-                    ? 'In Progress'
-                    : activeApp.status}
+                  {statusMeta.label}
                 </span>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', marginTop: '0.5rem' }}>
-                  Target Delivery: <strong>{activeApp.estimatedCompletion}</strong>
+                  Target Delivery: <strong>{formatDisplayDate(activeApp.estimatedCompletion)}</strong>
                 </div>
               </div>
             </div>
@@ -360,67 +377,13 @@ const Track = () => {
                 Verification & Approval Workflow
               </h3>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
-                {activeApp.stages?.map((stage, idx) => {
-                  const isDone = stage.completed;
-                  const isInProgress = stage.inProgress;
-                  const isAction = stage.actionRequired;
-
-                  return (
-                    <div key={idx} style={{ display: 'flex', gap: '1.25rem', position: 'relative' }}>
-                      {/* Vertical line connector */}
-                      {idx !== activeApp.stages.length - 1 && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            left: '14px',
-                            top: '30px',
-                            bottom: '-25px',
-                            width: '2px',
-                            background: isDone ? 'var(--accent-main)' : 'var(--border-light)',
-                            zIndex: 1,
-                          }}
-                        />
-                      )}
-
-                      {/* Icon indicator */}
-                      <div style={{ zIndex: 2, background: 'var(--bg-main)', borderRadius: '50%' }}>
-                        {isDone ? (
-                          <CheckCircle2 size={30} color="var(--accent-main)" />
-                        ) : isAction ? (
-                          <AlertTriangle size={30} color="#ef4444" />
-                        ) : isInProgress ? (
-                          <Clock size={30} color="#38bdf8" />
-                        ) : (
-                          <Circle size={30} color="var(--text-tertiary)" />
-                        )}
-                      </div>
-
-                      {/* Stage details */}
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-                          <h4
-                            style={{
-                              margin: 0,
-                              fontSize: '1rem',
-                              fontWeight: '700',
-                              color: isDone || isInProgress ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                            }}
-                          >
-                            {stage.title}
-                          </h4>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-                            {stage.timestamp}
-                          </span>
-                        </div>
-                        <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                          {stage.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {activeApp.stages?.length > 0 ? (
+                <ApplicationTimeline stages={activeApp.stages} />
+              ) : (
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                  No progress steps are recorded for this application yet.
+                </p>
+              )}
             </div>
 
             {/* Linked Documents Manager */}
@@ -529,6 +492,12 @@ const Track = () => {
             onClose={() => setShowReceipt(false)}
           />
         )}
+
+        {/* Multi-Service Application Journey Planner Modal */}
+        <JourneyPlannerModal
+          isOpen={isJourneyModalOpen}
+          onClose={() => setIsJourneyModalOpen(false)}
+        />
       </div>
     </div>
   );
