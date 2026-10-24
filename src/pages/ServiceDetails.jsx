@@ -13,13 +13,14 @@ import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, FileText } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, Users, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
+import CommunityAuditBoardModal from '../components/services/CommunityAuditBoardModal';
 import CivicFormGeneratorModal from '../components/services/CivicFormGeneratorModal';
 
 const ServiceDetails = () => {
@@ -42,6 +43,7 @@ const ServiceDetails = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showAuditModal, setShowAuditModal] = useState(false);
   const [showFormGenModal, setShowFormGenModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
@@ -222,22 +224,42 @@ const ServiceDetails = () => {
                   <Printer size={16} />
                   <span>Print Visit Dossier</span>
                 </button>
-                <button
-                  onClick={() => setShowFormGenModal(true)}
-                  className="btn btn-outline"
-                  style={{
-                    padding: '0.6rem 1rem',
-                    fontSize: '0.85rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.45rem'
-                  }}
-                  title="Generate pre-filled application or affidavit form"
-                >
-                  <FileText size={16} />
-                  <span>Generate Application Form</span>
-                </button>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => setShowAuditModal(true)}
+                    className="btn btn-outline"
+                    style={{
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.85rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem',
+                      borderColor: 'rgba(239, 68, 68, 0.4)',
+                      color: 'var(--text-primary)'
+                    }}
+                    title="View and report ground-reality discrepancies with community verification"
+                  >
+                    <Users size={16} color="#ef4444" />
+                    <span>Community Audit</span>
+                  </button>
+                  <button
+                    onClick={() => setShowFormGenModal(true)}
+                    className="btn btn-outline"
+                    style={{
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.85rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem'
+                    }}
+                    title="Generate pre-filled application or affidavit form"
+                  >
+                    <FileText size={16} />
+                    <span>Generate Form</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -419,7 +441,7 @@ const ServiceDetails = () => {
 
               {/* Official Sources & Verified Portals */}
               <section>
-                <OfficialSourcesList
+                <SourceCard
                   service={service}
                   onReportMissingSource={handleReportInaccuracy}
                 />
@@ -444,7 +466,7 @@ const ServiceDetails = () => {
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
-                Last Verified: {formatVerificationDate(service.lastVerified) || 'Audit Pending'}
+                Last Verified: {service.lastVerified || 'Audit Pending'}
               </div>
               {reportSubmitted ? (
                 <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
@@ -564,6 +586,13 @@ const ServiceDetails = () => {
       <FeeBreakdownModal
         isOpen={showFeeModal}
         onClose={() => setShowFeeModal(false)}
+        service={service}
+      />
+
+      {/* Community Discrepancy Audit Board Modal */}
+      <CommunityAuditBoardModal
+        isOpen={showAuditModal}
+        onClose={() => setShowAuditModal(false)}
         service={service}
       />
 
