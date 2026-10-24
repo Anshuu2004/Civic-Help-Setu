@@ -1,4 +1,5 @@
 import { X, Shield, Printer, CheckCircle2, Download, QrCode } from 'lucide-react';
+import { formatDisplayDate } from '../../services/trackingService';
 
 const TrackingReceiptModal = ({ app, isOpen, onClose }) => {
   if (!isOpen || !app) return null;
@@ -90,12 +91,12 @@ const TrackingReceiptModal = ({ app, isOpen, onClose }) => {
 
             <div>
               <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Submission Date</span>
-              <strong style={{ color: 'var(--text-primary)' }}>{app.appliedDate}</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>{formatDisplayDate(app.appliedDate)}</strong>
             </div>
 
             <div>
               <span style={{ color: 'var(--text-tertiary)', display: 'block', fontSize: '0.75rem', textTransform: 'uppercase' }}>Target Completion</span>
-              <strong style={{ color: 'var(--text-primary)' }}>{app.estimatedCompletion}</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>{formatDisplayDate(app.estimatedCompletion)}</strong>
             </div>
           </div>
 

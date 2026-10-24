@@ -1,9 +1,15 @@
 import { useState } from 'react';
+import {
+  validateFile,
+  validateDocumentForm,
+  formatFileSize,
+  ALLOWED_TYPES_HINT,
+} from '../../services/vaultValidation';
 import { X, Upload, ShieldCheck, FileText, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = ['Identity', 'Finance', 'Transport', 'Education', 'Welfare', 'Other'];
 
-const DocumentModal = ({ isOpen, onClose, onSave }) => {
+const DocumentModal = ({ isOpen, onClose, onSave, existingDocs = [] }) => {
   const [form, setForm] = useState({
     type: '',
     category: 'Identity',
@@ -13,44 +19,70 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
     notes: '',
     fileName: '',
     fileSize: '',
+    fileType: '',
+    fileSizeBytes: 0,
     verified: false,
   });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [fileError, setFileError] = useState('');
 
   if (!isOpen) return null;
 
   const handleFilePick = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const sizeInKB = Math.round(file.size / 1024);
-    const sizeStr = sizeInKB > 1024 ? `${(sizeInKB / 1024).toFixed(1)} MB` : `${sizeInKB} KB`;
+    const result = validateFile(file);
+    if (!result.valid) {
+      setFileError(result.error);
+      setForm((prev) => ({ ...prev, fileName: '', fileSize: '', fileType: '', fileSizeBytes: 0 }));
+      e.target.value = '';
+      return;
+    }
+    setFileError('');
     setForm((prev) => ({
       ...prev,
       fileName: file.name,
-      fileSize: sizeStr,
-      type: prev.type || file.name.split('.')[0].replace(/[-_]/g, ' '),
+      fileSize: formatFileSize(file.size),
+      fileSizeBytes: file.size,
+      fileType: file.type,
+      type: prev.type || file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.type.trim()) {
-      setError('Document type is required (e.g. Passport, Voter ID)');
-      return;
-    }
-    if (!form.number.trim()) {
-      setError('Document number or identifier is required');
-      return;
-    }
+    setError('');
+    const { valid, errors } = validateDocumentForm(form, existingDocs);
+    setFieldErrors(errors);
+    if (!valid || fileError) return;
 
-    onSave({
-      ...form,
-      type: form.type.trim(),
-      number: form.number.trim(),
-      issuer: form.issuer.trim() || 'Government of India',
-    });
+    try {
+      onSave({
+        ...form,
+        type: form.type.trim(),
+        number: form.number.trim(),
+        issuer: form.issuer.trim() || 'Government of India',
+      });
+    } catch (err) {
+      setError(err.message || 'Could not save the document.');
+      return;
+    }
     onClose();
   };
+
+  const fieldProps = (name) => ({
+    id: `doc-${name}`,
+    'aria-invalid': fieldErrors[name] ? 'true' : undefined,
+    'aria-describedby': fieldErrors[name] ? `doc-${name}-error` : undefined,
+  });
+
+  const renderFieldError = (name) =>
+    fieldErrors[name] ? (
+      <p id={`doc-${name}-error`} role="alert" style={{ color: 'var(--error, #ef4444)', fontSize: '0.8rem', marginTop: '0.3rem' }}>
+        {fieldErrors[name]}
+      </p>
+    ) : null;
 
   return (
     <div
@@ -116,7 +148,7 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
             Add Civic Document
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Store metadata and files securely in your local citizen repository.
+            Only the document details are saved, in this browser on this device. The file itself is not uploaded or stored.
           </p>
         </div>
 
@@ -138,18 +170,19 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+            <label htmlFor="doc-type" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
               Document Name / Type *
             </label>
             <input
+              {...fieldProps('type')}
               type="text"
-              required
               placeholder="e.g. Passport, Voter ID, Ration Card"
               className="input-field"
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
               style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
             />
+            {renderFieldError('type')}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -172,27 +205,29 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
-                Document Number *
+              <label htmlFor="doc-number" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Document Number *
               </label>
               <input
+              {...fieldProps('number')}
                 type="text"
-                required
-                placeholder="e.g. Z1234567"
+                  placeholder="e.g. Z1234567"
                 className="input-field"
                 value={form.number}
                 onChange={(e) => setForm({ ...form, number: e.target.value })}
                 style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
               />
+            {renderFieldError('number')}
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
-                Issuing Authority
+              <label htmlFor="doc-issuer" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Issuing Authority
               </label>
               <input
+              {...fieldProps('issuer')}
                 type="text"
                 placeholder="e.g. UIDAI, Passport Seva"
                 className="input-field"
@@ -200,27 +235,31 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
                 onChange={(e) => setForm({ ...form, issuer: e.target.value })}
                 style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
               />
+            {renderFieldError('issuer')}
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
-                Expiry Date (if applicable)
+              <label htmlFor="doc-expiryDate" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+              Expiry Date (if applicable)
               </label>
               <input
+              {...fieldProps('expiryDate')}
                 type="date"
                 className="input-field"
                 value={form.expiryDate}
                 onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
                 style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
               />
+            {renderFieldError('expiryDate')}
             </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+            <label htmlFor="doc-notes" style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
               Notes or Remarks
             </label>
             <input
+              {...fieldProps('notes')}
               type="text"
               placeholder="e.g. Renewed in Bangalore regional office"
               className="input-field"
@@ -228,6 +267,7 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               style={{ fontSize: '0.95rem', padding: '0.75rem 1rem' }}
             />
+            {renderFieldError('notes')}
           </div>
 
           <div
@@ -243,6 +283,14 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: '600' }}>
               {form.fileName ? `Selected: ${form.fileName} (${form.fileSize})` : 'Attach Document Scan / PDF'}
             </p>
+            <p id="doc-file-hint" style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '0.25rem' }}>
+              Allowed: {ALLOWED_TYPES_HINT}. Optional.
+            </p>
+            {fileError && (
+              <p id="doc-file-error" role="alert" style={{ color: 'var(--error, #ef4444)', fontSize: '0.8rem', marginTop: '0.3rem' }}>
+                {fileError}
+              </p>
+            )}
             <label
               style={{
                 display: 'inline-block',
@@ -257,6 +305,8 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
               <input
                 type="file"
                 onChange={handleFilePick}
+                aria-invalid={fileError ? 'true' : undefined}
+                aria-describedby={fileError ? 'doc-file-hint doc-file-error' : 'doc-file-hint'}
                 accept=".pdf,.jpg,.jpeg,.png"
                 style={{ display: 'none' }}
               />
@@ -278,7 +328,7 @@ const DocumentModal = ({ isOpen, onClose, onSave }) => {
               checked={form.verified}
               onChange={(e) => setForm({ ...form, verified: e.target.checked })}
             />
-            <span>Mark as Government Verified document</span>
+            <span>I have verified this document myself (self-declared, not checked by any authority)</span>
           </label>
 
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>

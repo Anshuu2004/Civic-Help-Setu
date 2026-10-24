@@ -1,5 +1,20 @@
+import { isValidVaultRecord } from './vaultValidation';
+
 const STORAGE_KEY = 'civicbridge_vault_docs';
-const VAULT_LOCK_KEY = 'civicbridge_vault_pin';
+
+const persist = (docs) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
+  } catch (err) {
+    const quota = err && (err.name === 'QuotaExceededError' || err.code === 22);
+    throw new Error(
+      quota
+        ? 'Browser storage is full. Delete some documents and try again.'
+        : 'Could not save to browser storage.',
+      { cause: err }
+    );
+  }
+};
 
 const DEFAULT_DOCUMENTS = [
   {
@@ -71,7 +86,11 @@ export const getDocuments = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DOCUMENTS));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DOCUMENTS));
+      } catch {
+        // storage unavailable, still show the defaults
+      }
       return DEFAULT_DOCUMENTS;
     }
     return JSON.parse(raw);
@@ -96,14 +115,14 @@ export const saveDocument = (doc) => {
     };
     updated = [newDoc, ...current];
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  persist(updated);
   return updated;
 };
 
 export const deleteDocument = (id) => {
   const current = getDocuments();
   const updated = current.filter((d) => d.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  persist(updated);
   return updated;
 };
 
@@ -116,7 +135,7 @@ export const tagDocumentToService = (docId, serviceId) => {
   tags.add(serviceId);
   target.taggedServices = Array.from(tags);
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  persist(current);
   return current;
 };
 
@@ -126,7 +145,7 @@ export const untagDocumentFromService = (docId, serviceId) => {
   if (!target) return current;
 
   target.taggedServices = (target.taggedServices || []).filter((s) => s !== serviceId);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+  persist(current);
   return current;
 };
 
@@ -165,7 +184,12 @@ export const importVaultData = (jsonString) => {
     const existingIds = new Set(current.map((d) => d.id));
 
     const merged = [...current];
+    let skipped = 0;
     for (const incoming of parsed.documents) {
+      if (!isValidVaultRecord(incoming)) {
+        skipped += 1;
+        continue;
+      }
       if (existingIds.has(incoming.id)) {
         const idx = merged.findIndex((d) => d.id === incoming.id);
         merged[idx] = { ...merged[idx], ...incoming };
@@ -174,14 +198,14 @@ export const importVaultData = (jsonString) => {
       }
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    return { success: true, count: parsed.documents.length };
+    persist(merged);
+    return { success: true, count: parsed.documents.length - skipped, skipped };
   } catch (err) {
     return { success: false, error: err.message };
   }
 };
 
 export const resetVaultToDefaults = () => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DOCUMENTS));
+  persist(DEFAULT_DOCUMENTS);
   return DEFAULT_DOCUMENTS;
 };

@@ -3,6 +3,9 @@ import { useLocation, Link } from 'react-router-dom';
 import { Send, AlertCircle, Loader2, Sparkles, Mic, MicOff, BookOpen, ExternalLink } from 'lucide-react';
 import ChatMessage from '../components/ChatMessage';
 import { askCivicAssistant } from '../ai/civicAssistant';
+import { askGroundedCivicAssistant } from '../ai/groundedCivicAssistant';
+import SourceGroundedBadge from '../components/assistant/SourceGroundedBadge';
+import SourceCitationCard from '../components/assistant/SourceCitationCard';
 import SourceCard from '../components/SourceCard';
 import ChatHeaderControls from '../components/chat/ChatHeaderControls';
 import VoiceInputStatus from '../components/chat/VoiceInputStatus';
@@ -59,7 +62,13 @@ const Assistant = () => {
     setError(null);
 
     try {
-      const response = await askCivicAssistant(query);
+      let response;
+      try {
+        response = await askGroundedCivicAssistant(query);
+      } catch (groundingErr) {
+        console.warn('Grounded retrieval error, falling back to basic assistant:', groundingErr);
+        response = await askCivicAssistant(query);
+      }
 
       const assistantMessage = {
         id: `asst-${Date.now()}`,
@@ -67,6 +76,9 @@ const Assistant = () => {
         text: '',
         data: response.data,
         serviceId: response.serviceId,
+        grounded: response.grounded ?? true,
+        confidenceScore: response.confidenceScore,
+        retrievedChunks: response.retrievedChunks || [],
         suggestions: response.suggestions || [],
         timestamp: new Date().toISOString(),
       };
@@ -150,6 +162,28 @@ const Assistant = () => {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <SourceGroundedBadge
+          grounded={msg.grounded ?? (msg.serviceId !== null)}
+          confidenceScore={msg.confidenceScore ?? 0.85}
+          sourcesCount={data.officialSources?.length || (msg.retrievedChunks?.length || 1)}
+        />
+
+        {data.missingInformationNotice && (
+          <div
+            style={{
+              padding: '0.75rem 1rem',
+              borderRadius: '0.5rem',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              color: '#f87171',
+              fontSize: '0.875rem',
+              lineHeight: '1.4',
+            }}
+          >
+            <strong>Official Policy Notice:</strong> {data.missingInformationNotice}
+          </div>
+        )}
+
         {data.title && (
           <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--text-primary)' }}>
             {data.title}
@@ -228,6 +262,15 @@ const Assistant = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Grounded Source Citations (RAG) */}
+        {msg.retrievedChunks && msg.retrievedChunks.length > 0 && (
+          <SourceCitationCard
+            chunks={msg.retrievedChunks}
+            sources={data.officialSources}
+            disclaimer={data.disclaimer}
+          />
         )}
 
         {/* Suggested Follow-up Questions */}

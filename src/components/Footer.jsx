@@ -6,7 +6,7 @@ const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer style={{ borderTop: '1px solid var(--border-main)', padding: '3.5rem 0 2.5rem', marginTop: 'auto', backgroundColor: 'var(--bg-main)' }}>
+    <footer id="site-footer" aria-label="Site Footer" tabIndex="-1" style={{ borderTop: '1px solid var(--border-main)', padding: '3.5rem 0 2.5rem', marginTop: 'auto', backgroundColor: 'var(--bg-main)' }}>
       <div className="container" style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', alignItems: 'center', textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-secondary)' }}>
           <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem', background: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
