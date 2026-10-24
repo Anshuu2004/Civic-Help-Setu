@@ -106,72 +106,6 @@ Clear navigation, readable content, consistent interaction patterns, and a user-
 
 ---
 
-## 🎨 Modern UI, Animations & User Experience
-
-Civic Help Setu aims to make civic technology feel approachable rather than complicated.
-
-Its interface combines modern frontend design with subtle motion and intuitive interactions to create a clean, responsive, and engaging experience.
-
-### Design Highlights
-
-* ✨ Clean layouts with clear visual hierarchy.
-* 🪄 Smooth hover effects on cards and interactive elements.
-* 🎞️ Subtle entrance animations for content sections.
-* 🔄 Smooth transitions between interface states.
-* 💫 Animated status indicators and interaction feedback.
-* 🌓 Theme support for different viewing preferences.
-* 📱 Responsive layouts for mobile, tablet, and desktop.
-* 🧭 Consistent navigation across major application routes.
-* ♿ Accessibility-conscious interaction and content design.
-
-### Example Animation
-
-The following CSS demonstrates the lightweight interaction style that can be used for cards and content sections.
-
-```css
-.card {
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.5s ease-out both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-```
-
-**Design principle:** Animations should improve feedback and orientation without distracting users from important civic information.
-
----
-
 ## 📊 Project at a Glance
 
 | Category           | Details                               |
@@ -188,21 +122,6 @@ The following CSS demonstrates the lightweight interaction style that can be use
 | Deployment         | Vercel-ready                          |
 | License            | MIT                                   |
 | Contribution Model | Open Source                           |
-
-### 📈 Community Statistics
-
-Help the community understand the project's growth by tracking verified repository and contributor activity.
-
-| Metric                 |                                                       Current Statistics |
-| ---------------------- | -----------------------------------------------------------------------: |
-| ⭐ GitHub Stars         |                                                           See repository |
-| 🍴 Forks               |                                                           See repository |
-| 👥 Contributors        |                                                 See Contributors section |
-| 🐛 Open Issues         |       [View Issues](https://github.com/GoldRay19/Civic-Help-Setu/issues) |
-| 🔀 Pull Requests       | [View Pull Requests](https://github.com/GoldRay19/Civic-Help-Setu/pulls) |
-| 🧩 Contribution Levels |                                                Level 1, Level 2, Level 3 |
-
-> **Note:** Statistics are intentionally linked to the live repository rather than hardcoded, so readers can check the latest activity. Replace these placeholders with verified counts if you want to display fixed numbers.
 
 ---
 
