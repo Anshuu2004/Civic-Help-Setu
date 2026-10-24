@@ -36,6 +36,14 @@ const getDocumentIcon = (type = '', category = '') => {
   return <FileText size={30} />;
 };
 
+const FILE_TYPE_LABELS = { 'application/pdf': 'PDF', 'image/jpeg': 'JPG', 'image/png': 'PNG' };
+
+const formatAddedDate = (iso) => {
+  if (!iso) return 'Date not recorded';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? 'Date not recorded' : `Added ${d.toLocaleDateString()}`;
+};
+
 const Vault = () => {
   const { user } = useAuth();
   const confirm = useConfirm();
@@ -59,6 +67,7 @@ const Vault = () => {
   }, []);
 
   const handleSaveDocument = (docData) => {
+    // saveDocument throws if browser storage is full; the modal shows the message
     const updated = saveDocument(docData);
     setDocuments(updated);
     setExpiringDocs(getExpiringDocuments());
@@ -381,7 +390,7 @@ const Vault = () => {
                         fontWeight: '600',
                       }}
                     >
-                      <ShieldCheck size={15} /> Govt. Verified
+                      <ShieldCheck size={15} /> Self-declared verified
                     </span>
                   ) : (
                     <span
@@ -395,12 +404,16 @@ const Vault = () => {
                       }}
                     >
                       <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--text-tertiary)' }}></div>
-                      Pending Verification
+                      Not verified
                     </span>
                   )}
 
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                    {doc.fileSize || 'Digital Record'}
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textAlign: 'right' }}>
+                    {formatAddedDate(doc.createdAt)}
+                    <br />
+                    {[doc.fileType ? FILE_TYPE_LABELS[doc.fileType] : null, doc.fileSize || 'Digital Record']
+                      .filter(Boolean)
+                      .join(', ')}
                   </span>
                 </div>
               </div>
@@ -488,6 +501,7 @@ const Vault = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveDocument}
+          existingDocs={documents}
         />
 
         {/* Preview Document Modal */}
