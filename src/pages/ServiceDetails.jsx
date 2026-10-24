@@ -13,7 +13,7 @@ import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, History, FileText } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, History, Users, FileText } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
@@ -21,6 +21,7 @@ import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
 import ServiceChangelogModal from '../components/services/ServiceChangelogModal';
+import CommunityAuditBoardModal from '../components/services/CommunityAuditBoardModal';
 import CivicFormGeneratorModal from '../components/services/CivicFormGeneratorModal';
 
 const ServiceDetails = () => {
@@ -44,6 +45,7 @@ const ServiceDetails = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
   const [showChangelogModal, setShowChangelogModal] = useState(false);
+  const [showAuditModal, setShowAuditModal] = useState(false);
   const [showFormGenModal, setShowFormGenModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
@@ -245,22 +247,42 @@ const ServiceDetails = () => {
                   <Printer size={16} />
                   <span>Print Visit Dossier</span>
                 </button>
-                <button
-                  onClick={() => setShowFormGenModal(true)}
-                  className="btn btn-outline"
-                  style={{
-                    padding: '0.6rem 1rem',
-                    fontSize: '0.85rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.45rem'
-                  }}
-                  title="Generate pre-filled application or affidavit form"
-                >
-                  <FileText size={16} />
-                  <span>Generate Application Form</span>
-                </button>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => setShowAuditModal(true)}
+                    className="btn btn-outline"
+                    style={{
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.85rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem',
+                      borderColor: 'rgba(239, 68, 68, 0.4)',
+                      color: 'var(--text-primary)'
+                    }}
+                    title="View and report ground-reality discrepancies with community verification"
+                  >
+                    <Users size={16} color="#ef4444" />
+                    <span>Community Audit</span>
+                  </button>
+                  <button
+                    onClick={() => setShowFormGenModal(true)}
+                    className="btn btn-outline"
+                    style={{
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.85rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.45rem'
+                    }}
+                    title="Generate pre-filled application or affidavit form"
+                  >
+                    <FileText size={16} />
+                    <span>Generate Form</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -314,297 +336,3 @@ const ServiceDetails = () => {
 
             {service.warnings && service.warnings.length > 0 && (
               <div style={{ position: 'relative', zIndex: 1, padding: '1.5rem', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '1rem', marginBottom: '2.5rem' }}>
-                <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '700', color: '#fbbf24', marginBottom: '1rem', fontSize: '1.125rem' }}>
-                  <AlertTriangle size={20} /> Important Notice
-                </h3>
-                <ul style={{ paddingLeft: '1.5rem', color: '#fcd34d', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {service.warnings.map((warning, idx) => <li key={idx} style={{ listStyleType: 'disc' }}>{warning}</li>)}
-                </ul>
-              </div>
-            )}
-
-            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-              <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Eligibility Criteria</h2>
-                <EligibilityWizard
-                  serviceId={service.id}
-                  staticCriteria={service.eligibility}
-                  onApplyClick={() => (user ? setShowApplyModal(true) : navigate('/login'))}
-                />
-              </section>
-
-              <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Required Documents</h2>
-                <Checklist items={service.documents} />
-              </section>
-
-              <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Steps</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  {service.steps.map((step, idx) => (
-                    <div key={idx} style={{ display: 'flex', gap: '1.5rem' }}>
-                      <div style={{ width: '3rem', height: '3rem', flexShrink: 0, borderRadius: '50%', background: 'var(--glass-bg)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '1.125rem', color: 'var(--text-secondary)' }}>
-                        {String(idx + 1).padStart(2, '0')}
-                      </div>
-                      <div style={{ paddingTop: '0.25rem' }}>
-                        <h3 style={{ fontWeight: '700', fontSize: '1.125rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{step.title}</h3>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>{step.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* Nearby Facilitation Centers */}
-              <section>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  <h2 style={{ fontSize: '1.5rem', fontWeight: '800', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <MapPin size={22} color="var(--accent-main)" /> Nearby Facilitation Centers
-                  </h2>
-                  <Link
-                    to={`/nearby?service=${service.id}`}
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.85rem', padding: '0.4rem 0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-                  >
-                    <Compass size={15} /> Find Centers on Interactive Map
-                  </Link>
-                </div>
-
-                {(() => {
-                  const matchingOffices = CIVIC_OFFICES.filter(o => o.serviceIds?.includes(service.id)).slice(0, 3);
-                  if (matchingOffices.length === 0) {
-                    return (
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                        Multiple district magistrate, municipal, and e-Seva centers provide this service. Use our location-aware directory to locate the nearest center to your pin code.
-                      </p>
-                    );
-                  }
-                  return (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
-                      {matchingOffices.map((office) => (
-                        <div
-                          key={office.id}
-                          className="glass-panel"
-                          style={{
-                            padding: '1.1rem',
-                            borderRadius: '0.75rem',
-                            border: '1px solid var(--border-light)',
-                            background: 'rgba(0, 0, 0, 0.1)',
-                          }}
-                        >
-                          <span style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--accent-main)', textTransform: 'uppercase' }}>
-                            {office.type}
-                          </span>
-                          <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0.25rem 0', color: 'var(--text-primary)' }}>
-                            {office.name}
-                          </h4>
-                          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.6rem' }}>
-                            {office.city}, {office.state} • {office.officeHours?.hours}
-                          </p>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <a
-                              href={office.directionsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn btn-secondary"
-                              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', flex: 1, textAlign: 'center' }}
-                            >
-                              Directions
-                            </a>
-                            <Link
-                              to={`/nearby?service=${service.id}`}
-                              className="btn btn-primary"
-                              style={{ padding: '0.35rem 0.65rem', fontSize: '0.75rem', flex: 1, textAlign: 'center' }}
-                            >
-                              Book Token
-                            </Link>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })()}
-              </section>
-
-              {/* Application Rejection Prevention Guide */}
-              <section>
-                <CommonRejectionReasonsCard 
-                  serviceId={service.id}
-                  serviceCategory={service.category}
-                  serviceName={service.name}
-                />
-              </section>
-
-              {/* Service FAQ Knowledge Base */}
-              <section>
-                <ServiceFAQAccordion service={service} />
-              </section>
-
-              {/* Official Sources & Verified Portals */}
-              <section>
-                <SourceCard
-                  service={service}
-                  onReportMissingSource={handleReportInaccuracy}
-                />
-              </section>
-
-              {/* Citizen Experience & Community Reviews */}
-              <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Star size={22} color="#fbbf24" fill="#fbbf24" />
-                  <span>Citizen Experiences & Practical Ratings</span>
-                </h2>
-                <RatingSummaryCard
-                  aggregate={reviewAggregate}
-                  onOpenReviewModal={() => setIsReviewModalOpen(true)}
-                />
-                <CitizenReviewsList
-                  reviews={reviews}
-                  onReviewUpdated={refreshReviews}
-                />
-              </section>
-            </div>
-
-            <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
-                Last Verified: {service.lastVerified || 'Audit Pending'}
-              </div>
-              {reportSubmitted ? (
-                <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
-                  ✓ Report submitted to moderator queue. Thank you!
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleReportInaccuracy}
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-tertiary)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', transition: 'color 0.3s' }}
-                  onMouseOver={(e) => (e.currentTarget.style.color = 'var(--error)')}
-                  onMouseOut={(e) => (e.currentTarget.style.color = 'var(--text-tertiary)')}
-                >
-                  <Flag size={14} /> Report incorrect information
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Fast-Track Apply Modal */}
-      {showApplyModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="card animate-fade-in" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-main)', position: 'relative' }}>
-            <button 
-              onClick={() => { setShowApplyModal(false); setApplyStep(1); }} 
-              style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'var(--glass-bg)', border: 'none', color: 'var(--text-secondary)', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer' }}
-            >
-              <X size={20} />
-            </button>
-
-            {applyStep === 1 ? (
-              <div style={{ padding: '1rem' }}>
-                <h2 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '0.5rem' }}>Universal Fast-Track</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem' }}>Applying digitally for: <strong style={{ color: 'var(--text-primary)' }}>{service.name}</strong></p>
-                
-                <form onSubmit={handleApplySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Full Name (as per ID)</label>
-                    <input
-                      type="text"
-                      className="input-field"
-                      required
-                      placeholder="e.g. Ramesh Patel"
-                      value={applyForm.fullName}
-                      onChange={(e) => setApplyForm({ ...applyForm, fullName: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Aadhaar Number / Virtual ID</label>
-                    <input
-                      type="text"
-                      className="input-field"
-                      required
-                      placeholder="XXXX XXXX 1234"
-                      value={applyForm.aadhaarNumber}
-                      onChange={(e) => setApplyForm({ ...applyForm, aadhaarNumber: e.target.value })}
-                    />
-                  </div>
-                  <div style={{ padding: '1.5rem', border: '1px dashed var(--border-main)', borderRadius: '1rem', textAlign: 'center', background: 'var(--glass-bg-subtle)' }}>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>Upload the Required Documents mentioned in the guide</p>
-                    <input type="file" required style={{ color: 'var(--text-primary)', fontSize: '0.875rem' }} />
-                  </div>
-                  <button type="submit" className="btn btn-primary" style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.125rem' }}>
-                    Submit Secure Application
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <div style={{ padding: '3rem 1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ width: '5rem', height: '5rem', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
-                  <CheckCircle2 size={48} />
-                </div>
-                <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem' }}>Application Sent!</h2>
-                <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                  Your digital application for {service.name} has been securely submitted.
-                </p>
-                <div style={{ background: 'var(--glass-bg)', padding: '1.5rem', borderRadius: '1rem', border: '1px solid var(--border-main)', width: '100%', marginBottom: '2.5rem' }}>
-                  <span style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '600' }}>Reference ID</span>
-                  <p style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--accent-main)', marginTop: '0.5rem', fontFamily: 'monospace' }}>
-                    {generatedAppId}
-                  </p>
-                </div>
-                <Link to={`/track?id=${generatedAppId}`} className="btn btn-primary" style={{ padding: '1rem 2rem' }}>
-                  Track Application Status
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Printable Office Visit Dossier Modal */}
-      <PrintableChecklistModal
-        isOpen={showPrintModal}
-        onClose={() => setShowPrintModal(false)}
-        service={service}
-      />
-
-      {/* Share Checklist Modal */}
-      <ShareServiceModal
-        isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
-        service={service}
-      />
-
-      {/* Citizen Review Submission Modal */}
-      <ReviewSubmissionModal
-        isOpen={isReviewModalOpen}
-        onClose={() => setIsReviewModalOpen(false)}
-        service={service}
-        onReviewAdded={refreshReviews}
-      />
-
-      {/* Fee Breakdown & Concession Calculator Modal */}
-      <FeeBreakdownModal
-        isOpen={showFeeModal}
-        onClose={() => setShowFeeModal(false)}
-        service={service}
-      />
-
-      {/* Official Revisions & Circular Changelog Modal */}
-      <ServiceChangelogModal
-        isOpen={showChangelogModal}
-        onClose={() => setShowChangelogModal(false)}
-        service={service}
-      />
-
-      {/* Civic Form & Affidavit Generator Modal */}
-      <CivicFormGeneratorModal
-        isOpen={showFormGenModal}
-        onClose={() => setShowFormGenModal(false)}
-        defaultService={service}
-      />
-    </>
-  );
-};
-
-export default ServiceDetails;
