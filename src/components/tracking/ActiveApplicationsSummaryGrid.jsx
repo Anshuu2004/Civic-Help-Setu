@@ -1,4 +1,5 @@
-import { Activity, Clock, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
+import { STATUS_META, getStatusMeta } from '../../services/trackingService';
+import { Activity, Clock, AlertTriangle, CheckCircle, Plus, FileText } from 'lucide-react';
 
 const ActiveApplicationsSummaryGrid = ({
   metrics,
@@ -46,6 +47,26 @@ const ActiveApplicationsSummaryGrid = ({
             display: 'flex',
             alignItems: 'center',
             gap: '0.85rem',
+            borderLeft: `4px solid ${STATUS_META.submitted.color}`,
+          }}
+        >
+          <div style={{ background: STATUS_META.submitted.background, color: STATUS_META.submitted.color, padding: '0.6rem', borderRadius: '0.5rem' }}>
+            <FileText size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '1.5rem', fontWeight: '800', lineHeight: 1 }}>{metrics.submitted}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>{STATUS_META.submitted.label}</div>
+          </div>
+        </div>
+
+        <div
+          className="card"
+          style={{
+            padding: '1rem 1.25rem',
+            borderRadius: '0.85rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.85rem',
             borderLeft: '4px solid #38bdf8',
           }}
         >
@@ -53,8 +74,8 @@ const ActiveApplicationsSummaryGrid = ({
             <Clock size={20} />
           </div>
           <div>
-            <div style={{ fontSize: '1.5rem', fontWeight: '800', lineHeight: 1 }}>{metrics.inProgress + metrics.submitted}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>In Processing</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: '800', lineHeight: 1 }}>{metrics.inProgress}</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>{STATUS_META['in-progress'].label}</div>
           </div>
         </div>
 
@@ -76,7 +97,7 @@ const ActiveApplicationsSummaryGrid = ({
             <div style={{ fontSize: '1.5rem', fontWeight: '800', lineHeight: 1, color: metrics.actionRequired > 0 ? '#ef4444' : 'inherit' }}>
               {metrics.actionRequired}
             </div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>Action Required</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>{STATUS_META['action-required'].label}</div>
           </div>
         </div>
 
@@ -96,7 +117,7 @@ const ActiveApplicationsSummaryGrid = ({
           </div>
           <div>
             <div style={{ fontSize: '1.5rem', fontWeight: '800', lineHeight: 1, color: '#10b981' }}>{metrics.completed}</div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>Completed</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>{STATUS_META.completed.label}</div>
           </div>
         </div>
       </div>
@@ -150,7 +171,7 @@ const ActiveApplicationsSummaryGrid = ({
                   gap: '0.3rem',
                 }}
               >
-                {app.id} • {app.serviceName}
+                {app.id} • {app.serviceName} ({getStatusMeta(app.status).label})
                 {isActionReq && (
                   <span
                     style={{
