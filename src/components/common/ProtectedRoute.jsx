@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ShieldAlert, Loader2 } from 'lucide-react';
+import { buildAuthPath, locationToPath } from '../../utils/authRedirect';
 
 /**
  * Route protection component for authenticated and role-restricted views.
@@ -33,7 +34,15 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    // Keep the destination in the URL too, so it survives a refresh and the
+    // Google sign-in round trip (router state does not).
+    return (
+      <Navigate
+        to={buildAuthPath('/login', locationToPath(location))}
+        state={{ from: location }}
+        replace
+      />
+    );
   }
 
   if (requiredRole && user.role !== requiredRole) {
