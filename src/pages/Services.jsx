@@ -123,7 +123,7 @@ const Services = () => {
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '800', marginBottom: '1rem' }}>
             Public Service Directory
           </h1>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto 1.25rem' }}>
             Official requirements, eligibility criteria, and step-by-step procedures to obtain essential Indian civic services.
           </p>
 

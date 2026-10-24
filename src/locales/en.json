@@ -13,7 +13,14 @@
     "signOut": "Sign Out",
     "toggleTheme": "Toggle Theme"
   },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you are looking for does not exist or may have been moved.",
+    "home": "Go to Home",
+    "services": "Browse Services"
+  },
   "common": {
+    "backToTop": "Back to top",
     "citizen": "Citizen",
     "admin": "Admin",
     "search": "Search",

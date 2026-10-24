@@ -13,18 +13,25 @@ import { reviewStorage } from '../services/reviewStorage';
 import FeeBreakdownModal from '../components/services/FeeBreakdownModal';
 import EstimatedTimelineWidget from '../components/services/EstimatedTimelineWidget';
 import ConcessionEligibilityBadge from '../components/services/ConcessionEligibilityBadge';
-import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator } from 'lucide-react';
+import { ArrowLeft, Clock, CreditCard, AlertTriangle, Bookmark, Flag, Zap, CheckCircle2, X, MapPin, Compass, Printer, Share2, Star, Calculator, Link2, Check } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { copyServiceLink, getServiceUrl } from '../services/copyLinkService';
 import { useAuth } from '../context/AuthContext';
 import { submitErrorReport } from '../services/adminService';
 import { createApplication } from '../services/trackingService';
 import { CIVIC_OFFICES } from '../data/locationOffices';
 import CommonRejectionReasonsCard from '../components/services/CommonRejectionReasonsCard';
 import ServiceFAQAccordion from '../components/services/ServiceFAQAccordion';
+import ReportOutdatedInfoModal from '../components/services/ReportOutdatedInfoModal';
+import OfficialSourcesList from '../components/services/OfficialSourcesList';
+import { formatVerificationDate } from '../services/sourceVerificationService';
 
 const ServiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const toast = useToast();
+  const [linkCopied, setLinkCopied] = useState(false);
   
   const [service, setService] = useState(() => MOCK_SERVICES.find(s => s.id === id) || null);
   const [isSaved, setIsSaved] = useState(() => {
@@ -39,6 +46,7 @@ const ServiceDetails = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1); // 1: form, 2: success
   const [generatedAppId, setGeneratedAppId] = useState('');
   const [reportSubmitted, setReportSubmitted] = useState(false);
@@ -53,18 +61,7 @@ const ServiceDetails = () => {
 
   const handleReportInaccuracy = () => {
     if (!service) return;
-    const comment = window.prompt(`Describe any inaccuracy or broken links on the "${service.name}" guide:`, 'Outdated portal link or fee structure.');
-    if (comment && comment.trim()) {
-      submitErrorReport({
-        serviceId: service.id,
-        serviceName: service.name,
-        issueType: 'Community Report',
-        description: comment.trim(),
-        reporterEmail: user?.email || 'citizen.reporter@civicbridge.org',
-      });
-      setReportSubmitted(true);
-      setTimeout(() => setReportSubmitted(false), 4000);
-    }
+    setShowReportModal(true);
   };
   const [applyForm, setApplyForm] = useState({ fullName: '', aadhaarNumber: '' });
 
@@ -78,6 +75,17 @@ const ServiceDetails = () => {
       setIsSaved(false);
     }
   }, [id]);
+
+  const handleCopyLink = async () => {
+    const ok = await copyServiceLink(getServiceUrl(id));
+    if (ok) {
+      toast.success('Service link copied to clipboard.');
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } else {
+      toast.error('Could not copy the link. Please copy it from the address bar.');
+    }
+  };
 
   const toggleSave = () => {
     if (!service) return;
@@ -178,6 +186,29 @@ const ServiceDetails = () => {
                     <Share2 size={16} color="var(--accent-main)" />
                     Share
                   </button>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="btn btn-secondary"
+                    aria-label="Copy link to this service page"
+                    style={{
+                      gridColumn: '1 / -1',
+                      padding: '0.65rem',
+                      fontSize: '0.875rem',
+                      background: 'var(--glass-bg)',
+                      color: 'var(--text-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.35rem'
+                    }}
+                  >
+                    {linkCopied ? <Check size={16} color="var(--accent-main)" /> : <Link2 size={16} color="var(--accent-main)" />}
+                    {linkCopied ? 'Copied' : 'Copy link'}
+                  </button>
+                  <span className="sr-only" role="status" aria-live="polite" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+                    {linkCopied ? 'Link copied to clipboard' : ''}
+                  </span>
                 </div>
                 <button
                   onClick={() => setShowPrintModal(true)}
@@ -374,13 +405,12 @@ const ServiceDetails = () => {
                 <ServiceFAQAccordion service={service} />
               </section>
 
+              {/* Official Sources & Verified Portals */}
               <section>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid var(--border-main)' }}>Official Resources</h2>
-                <div className="grid-2">
-                  {service.officialSources.map((source, idx) => (
-                    <SourceCard key={idx} source={source} />
-                  ))}
-                </div>
+                <OfficialSourcesList
+                  service={service}
+                  onReportMissingSource={handleReportInaccuracy}
+                />
               </section>
 
               {/* Citizen Experience & Community Reviews */}
@@ -401,7 +431,9 @@ const ServiceDetails = () => {
             </div>
 
             <div style={{ position: 'relative', zIndex: 1, marginTop: '4rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-main)', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>Last Verified: {service.lastVerified}</div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--text-tertiary)' }}>
+                Last Verified: {formatVerificationDate(service.lastVerified) || 'Audit Pending'}
+              </div>
               {reportSubmitted ? (
                 <span style={{ fontSize: '0.85rem', color: 'var(--success, #10b981)', fontWeight: '600' }}>
                   ✓ Report submitted to moderator queue. Thank you!
@@ -521,6 +553,14 @@ const ServiceDetails = () => {
         isOpen={showFeeModal}
         onClose={() => setShowFeeModal(false)}
         service={service}
+      />
+
+      {/* Outdated Information Reporting Modal */}
+      <ReportOutdatedInfoModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        service={service}
+        initialUserEmail={user?.email || ''}
       />
     </>
   );
