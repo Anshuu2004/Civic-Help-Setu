@@ -63,7 +63,9 @@ const FilterToolbar = ({
             onChange={(e) => onSearchChange(e.target.value)}
             className="input-field"
             style={{
-              padding: '0.65rem 1rem 0.65rem 2.75rem',
+              // Reserve room for the conditional clear button so long search
+              // text and the caret never render underneath it.
+              padding: '0.65rem 3rem 0.65rem 2.75rem',
               fontSize: '0.95rem',
               borderRadius: '99px',
             }}
