@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MOCK_SERVICES } from '../data/services';
 import ServiceCard from '../components/ServiceCard';
@@ -8,8 +8,8 @@ import SearchAnalyticsBar from '../components/services/SearchAnalyticsBar';
 import ServiceComparisonModal from '../components/services/ServiceComparisonModal';
 import ComparisonFloatingTray from '../components/services/ComparisonFloatingTray';
 import { comparisonService } from '../services/comparisonService';
-import { rankAndFilterServices } from '../services/searchRankingEngine';
-import { Sparkles, Layers, Scale } from 'lucide-react';
+import { getSearchSuggestions, rankAndFilterServices } from '../services/searchRankingEngine';
+import { Layers, Scale } from 'lucide-react';
 import RtiBuilderModal from '../components/services/RtiBuilderModal';
 
 const Services = () => {
@@ -35,6 +35,11 @@ const Services = () => {
   const departments = useMemo(() => {
     return [...new Set(MOCK_SERVICES.map((s) => s.department).filter(Boolean))];
   }, []);
+
+  const searchSuggestions = useMemo(
+    () => getSearchSuggestions(MOCK_SERVICES, searchQuery),
+    [searchQuery]
+  );
 
   const updateParam = (key, value, defaultValue = 'All') => {
     const nextParams = new URLSearchParams(searchParams);
@@ -201,6 +206,7 @@ const Services = () => {
         <FilterToolbar
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
+          searchSuggestions={searchSuggestions}
           selectedMode={selectedMode}
           onModeChange={handleModeChange}
           selectedDifficulty={selectedDifficulty}

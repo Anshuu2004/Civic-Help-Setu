@@ -36,6 +36,53 @@ const COMMON_CIVIC_DICTIONARY = [
   'scholarship',
 ];
 
+const addSuggestion = (suggestions, value, kind, priority) => {
+  const label = String(value || '').trim();
+  if (!label) return;
+  const key = label.toLowerCase();
+  const current = suggestions.get(key);
+  if (!current || priority < current.priority) {
+    suggestions.set(key, { label, kind, priority });
+  }
+};
+
+/**
+ * Build deterministic type-ahead suggestions from real catalog vocabulary.
+ * Prefix matches rank above contains matches, then shorter labels win.
+ */
+export const getSearchSuggestions = (services = [], query = '', limit = 6) => {
+  const clean = query.toLowerCase().trim();
+  if (clean.length < 2) return [];
+
+  const candidates = new Map();
+  services.forEach((service) => {
+    addSuggestion(candidates, service.name, 'Service', 0);
+    addSuggestion(candidates, service.category, 'Category', 1);
+    addSuggestion(candidates, service.department, 'Department', 2);
+    (service.documents || []).forEach((document) => {
+      addSuggestion(candidates, document, 'Document', 3);
+    });
+  });
+  Object.entries(CIVIC_SYNONYMS).forEach(([keyword, synonyms]) => {
+    addSuggestion(candidates, keyword, 'Keyword', 4);
+    synonyms.forEach((synonym) => addSuggestion(candidates, synonym, 'Keyword', 4));
+  });
+  COMMON_CIVIC_DICTIONARY.forEach((keyword) => {
+    addSuggestion(candidates, keyword, 'Keyword', 4);
+  });
+
+  return [...candidates.values()]
+    .filter(({ label }) => label.toLowerCase().includes(clean))
+    .sort((a, b) => {
+      const aPrefix = a.label.toLowerCase().startsWith(clean) ? 0 : 1;
+      const bPrefix = b.label.toLowerCase().startsWith(clean) ? 0 : 1;
+      return aPrefix - bPrefix || a.priority - b.priority ||
+        a.label.length - b.label.length || a.label.localeCompare(b.label);
+    })
+    .slice(0, Math.max(0, limit))
+    .map(({ label, kind }) => ({ label, kind }));
+};
+
 // Levenshtein distance for fuzzy typo correction
 const getLevenshteinDistance = (a, b) => {
   const matrix = [];
