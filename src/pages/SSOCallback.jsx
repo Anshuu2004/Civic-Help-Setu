@@ -1,12 +1,28 @@
-import { AuthenticateWithRedirectCallback } from '@clerk/clerk-react';
+import { useEffect, useState } from 'react';
+import { AuthenticateWithRedirectCallback, ClerkFailed, ClerkLoaded } from '@clerk/clerk-react';
 import { Loader2, ShieldCheck } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
-import { sanitizeRedirectPath } from '../utils/authRedirect';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import AuthFallbackBanner from '../components/AuthFallbackBanner';
+import { buildAuthPath, sanitizeRedirectPath } from '../utils/authRedirect';
+import { classifyAuthFailure, failureForKind, AUTH_FAILURE_KINDS } from '../utils/authFailure';
+
+// How long to wait for Clerk to finish the callback before offering a way out.
+const CALLBACK_SLOW_MS = 20000;
 
 const SSOCallback = () => {
   const [searchParams] = useSearchParams();
   const signInRedirect = sanitizeRedirectPath(searchParams.get('sign_in_force_redirect_url')) || '/';
   const signUpRedirect = sanitizeRedirectPath(searchParams.get('sign_up_force_redirect_url')) || '/';
+  const navigate = useNavigate();
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setTimedOut(true), CALLBACK_SLOW_MS);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Back to the sign-in page with the original destination kept
+  const retryFromLogin = () => navigate(buildAuthPath('/login', signInRedirect), { replace: true });
   return (
     <div className="section flex-center" style={{ minHeight: '85vh', textAlign: 'center' }}>
       <div className="glass-panel animate-fade-in" style={{ padding: '3rem 2.5rem', maxWidth: '420px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
@@ -18,6 +34,21 @@ const SSOCallback = () => {
           Connecting your Google profile with Clerk to secure your civic session...
         </p>
         <Loader2 size={32} className="animate-spin" color="var(--accent-main)" style={{ marginTop: '0.5rem' }} />
+        <ClerkFailed>
+          <AuthFallbackBanner
+            failure={classifyAuthFailure({ code: 'failed_to_load_clerk_js' })}
+            onRetry={() => window.location.reload()}
+          />
+        </ClerkFailed>
+        {/* Clerk loaded but the callback is still not done: offer a way out. */}
+        {timedOut && (
+          <ClerkLoaded>
+            <AuthFallbackBanner
+              failure={failureForKind(AUTH_FAILURE_KINDS.SERVICE_UNAVAILABLE)}
+              onRetry={retryFromLogin}
+            />
+          </ClerkLoaded>
+        )}
         <div style={{ marginTop: '0.5rem', opacity: 0, height: 0, overflow: 'hidden' }}>
           <AuthenticateWithRedirectCallback
             signInForceRedirectUrl={signInRedirect}

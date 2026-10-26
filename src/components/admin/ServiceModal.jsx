@@ -1,42 +1,28 @@
 import { useState, useEffect } from 'react';
 import { X, CheckSquare, Plus, Save } from 'lucide-react';
 import { SERVICE_CATEGORIES } from '../../data/serviceCategories';
+import useUnsavedChangesGuard from '../../hooks/useUnsavedChangesGuard';
+import { isFormDirty } from '../../utils/formDraft';
+import UnsavedChangesDialog from '../common/UnsavedChangesDialog';
 const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 const MODES = ['Online', 'Offline', 'Online / Offline'];
 
-const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
-  const [form, setForm] = useState({
-    name: '',
-    category: 'Certificates',
-    type: 'Online / Offline',
-    difficulty: 'Medium',
-    shortDescription: '',
-    fees: 'Free of cost',
-    processingTime: '7 - 15 days',
-    officialUrl: 'https://services.india.gov.in',
-    portalName: 'National Government Services Portal',
-    documentsText: '',
-    eligibilityText: '',
-  });
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (serviceToEdit) {
-      setForm({
-        name: serviceToEdit.name || '',
-        category: serviceToEdit.category || 'Certificates',
-        type: serviceToEdit.type || 'Online / Offline',
-        difficulty: serviceToEdit.difficulty || 'Medium',
-        shortDescription: serviceToEdit.shortDescription || '',
-        fees: serviceToEdit.fees || 'Free of cost',
-        processingTime: serviceToEdit.processingTime || '7 - 15 days',
-        officialUrl: serviceToEdit.officialSources?.[0]?.url || 'https://services.india.gov.in',
-        portalName: serviceToEdit.officialSources?.[0]?.name || 'Official Government Portal',
-        documentsText: (serviceToEdit.documents || []).join('\n'),
-        eligibilityText: (serviceToEdit.eligibility || []).join('\n'),
-      });
-    } else {
-      setForm({
+const buildForm = (service) =>
+  service
+    ? {
+        name: service.name || '',
+        category: service.category || 'Certificates',
+        type: service.type || 'Online / Offline',
+        difficulty: service.difficulty || 'Medium',
+        shortDescription: service.shortDescription || '',
+        fees: service.fees || 'Free of cost',
+        processingTime: service.processingTime || '7 - 15 days',
+        officialUrl: service.officialSources?.[0]?.url || 'https://services.india.gov.in',
+        portalName: service.officialSources?.[0]?.name || 'Official Government Portal',
+        documentsText: (service.documents || []).join('\n'),
+        eligibilityText: (service.eligibility || []).join('\n'),
+      }
+    : {
         name: '',
         category: 'Certificates',
         type: 'Online / Offline',
@@ -48,9 +34,43 @@ const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
         portalName: 'National Government Services Portal',
         documentsText: 'Proof of Identity (Aadhaar / Voter ID)\nProof of Address\nPassport size photograph',
         eligibilityText: 'Indian citizen or resident\nValid identification proof',
-      });
-    }
+      };
+
+const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
+  const [form, setForm] = useState(() => buildForm(null));
+  // Last saved/initial values; the form is dirty only when it differs from this.
+  const [baseline, setBaseline] = useState(() => buildForm(null));
+  const [error, setError] = useState('');
+  const [confirmClose, setConfirmClose] = useState(false);
+
+  useEffect(() => {
+    const initial = buildForm(serviceToEdit);
+    setForm(initial);
+    setBaseline(initial);
+    setConfirmClose(false);
   }, [serviceToEdit, isOpen]);
+
+  const isDirty = isOpen && isFormDirty(form, baseline);
+  const guard = useUnsavedChangesGuard(isDirty);
+
+  const requestClose = () => {
+    if (isDirty) setConfirmClose(true);
+    else onClose();
+  };
+
+  const handleStay = () => {
+    setConfirmClose(false);
+    guard.stay();
+  };
+
+  const handleDiscard = () => {
+    if (guard.isBlocked) {
+      guard.discard();
+    } else {
+      setConfirmClose(false);
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -134,7 +154,7 @@ const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
       >
         <button
           type="button"
-          onClick={onClose}
+          onClick={requestClose}
           aria-label="Close dialog"
           style={{
             position: 'absolute',
@@ -334,7 +354,7 @@ const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
             <button
               type="button"
-              onClick={onClose}
+              onClick={requestClose}
               className="btn btn-secondary"
               style={{ flex: 1, padding: '0.75rem', fontSize: '0.9rem' }}
             >
@@ -350,6 +370,11 @@ const ServiceModal = ({ isOpen, serviceToEdit, onClose, onSave }) => {
           </div>
         </form>
       </div>
+      <UnsavedChangesDialog
+        isOpen={guard.isBlocked || confirmClose}
+        onStay={handleStay}
+        onDiscard={handleDiscard}
+      />
     </div>
   );
 };

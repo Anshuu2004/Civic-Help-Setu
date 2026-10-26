@@ -5,6 +5,8 @@ import { MOCK_SERVICES } from '../data/services';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import UntranslatedBadge from '../components/common/UntranslatedBadge';
+import { useFocusMode } from '../hooks/useFocusMode';
+import ServiceGuide from '../components/services/ServiceGuide';
 
 const copyServiceLink = async (url) => {
   try {
@@ -30,6 +32,7 @@ const ServiceDetails = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { focusMode, toggleFocusMode } = useFocusMode();
 
   const [linkCopied, setLinkCopied] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -89,7 +92,10 @@ const ServiceDetails = () => {
   }
 
   return (
-    <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
+    <div
+      className={`section animate-fade-in${focusMode ? ' service-details--focus' : ''}`}
+      style={{ paddingBottom: '6rem' }}
+    >
       <div className="container" style={{ maxWidth: '900px' }}>
         <div style={{ marginBottom: '2rem' }}>
           <Link
@@ -107,7 +113,7 @@ const ServiceDetails = () => {
           </Link>
         </div>
 
-        <div className="glass-panel" style={{ padding: '3rem', borderRadius: '1.5rem' }}>
+        <div className="glass-panel service-details__panel" style={{ borderRadius: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
             <div style={{ flex: '1 1 400px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
@@ -236,6 +242,8 @@ const ServiceDetails = () => {
               {service.description || service.shortDescription || 'Details for this service are available in the programme information.'}
             </p>
           </div>
+
+          <ServiceGuide service={service} focusMode={focusMode} onToggleFocusMode={toggleFocusMode} />
         </div>
       </div>
 

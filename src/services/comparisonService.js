@@ -1,95 +1,101 @@
 import { services } from '../data/services';
 
 const STORAGE_KEY = 'civic_compared_services';
-const MAX_COMPARE_LIMIT = 3;
+export const MAX_COMPARE_LIMIT = 3;
+export const NOT_AVAILABLE = 'Not available';
+
+const readIds = () => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeIds = (ids) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+  } catch {
+    // storage unavailable: selection simply will not persist
+  }
+};
+
+const text = (value) => (typeof value === 'string' && value.trim() ? [value.trim()] : []);
+
+const list = (value) =>
+  Array.isArray(value) ? value.filter((v) => typeof v === 'string' && v.trim()) : [];
+
+const sources = (value) =>
+  Array.isArray(value)
+    ? value.filter((s) => s && s.name).map((s) => s.name)
+    : [];
+
+// Each row value is an array of strings; an empty array means the record has no data for it.
+const MATRIX_ROWS = [
+  { attribute: 'Department', pick: (s) => text(s.department) },
+  { attribute: 'Category', pick: (s) => text(s.category) },
+  { attribute: 'Application channel', pick: (s) => text(s.type) },
+  { attribute: 'Difficulty', pick: (s) => text(s.difficulty) },
+  { attribute: 'Fees', pick: (s) => text(s.fees) },
+  { attribute: 'Processing time', pick: (s) => text(s.processingTime) },
+  { attribute: 'Eligibility', pick: (s) => list(s.eligibility) },
+  { attribute: 'Required documents', pick: (s) => list(s.documents) },
+  { attribute: 'Official sources', pick: (s) => sources(s.officialSources) },
+  { attribute: 'Last verified', pick: (s) => text(s.lastVerified) },
+];
 
 export const comparisonService = {
   getComparedIds() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
+    return readIds();
   },
 
   getComparedServices() {
-    const ids = this.getComparedIds();
-    return ids
-      .map(id => services.find(s => s.id === id))
+    return readIds()
+      .map((id) => services.find((s) => s.id === id))
       .filter(Boolean);
   },
 
   addService(serviceId) {
-    const ids = this.getComparedIds();
+    const ids = readIds();
     if (ids.includes(serviceId)) {
       return { success: false, reason: 'already_added', ids };
     }
     if (ids.length >= MAX_COMPARE_LIMIT) {
       return { success: false, reason: 'limit_reached', max: MAX_COMPARE_LIMIT, ids };
     }
+    if (!services.some((s) => s.id === serviceId)) {
+      return { success: false, reason: 'unknown_service', ids };
+    }
     const updated = [...ids, serviceId];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    writeIds(updated);
     return { success: true, ids: updated };
   },
 
   removeService(serviceId) {
-    const ids = this.getComparedIds();
-    const updated = ids.filter(id => id !== serviceId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    const updated = readIds().filter((id) => id !== serviceId);
+    writeIds(updated);
     return updated;
   },
 
   clearAll() {
-    localStorage.removeItem(STORAGE_KEY);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
     return [];
   },
 
   isCompared(serviceId) {
-    const ids = this.getComparedIds();
-    return ids.includes(serviceId);
-  },
-
-  getSimilarServices(serviceId) {
-    const target = services.find(s => s.id === serviceId);
-    if (!target) return [];
-    return services
-      .filter(s => s.id !== serviceId && (s.category === target.category || s.department === target.department))
-      .slice(0, 4);
+    return readIds().includes(serviceId);
   },
 
   buildComparisonMatrix(serviceList) {
     if (!serviceList || serviceList.length === 0) return [];
-
-    return [
-      {
-        attribute: 'Department',
-        values: serviceList.map(s => s.department || 'General')
-      },
-      {
-        attribute: 'Category',
-        values: serviceList.map(s => s.category || 'Public Service')
-      },
-      {
-        attribute: 'Standard Fee',
-        values: serviceList.map(s => s.fee || 'Free / Nil')
-      },
-      {
-        attribute: 'Processing Duration',
-        values: serviceList.map(s => s.processingTime || '10 - 15 working days')
-      },
-      {
-        attribute: 'Online Availability',
-        values: serviceList.map(s => (s.onlinePortalUrl ? 'Yes (Online Portal)' : 'Physical Center / Desk'))
-      },
-      {
-        attribute: 'Required Key Documents',
-        values: serviceList.map(s => (s.requiredDocuments ? s.requiredDocuments.slice(0, 3).join(', ') : 'Identity & Address Proof'))
-      },
-      {
-        attribute: 'Target Eligibility',
-        values: serviceList.map(s => s.eligibilitySummary || 'All Resident Citizens')
-      }
-    ];
-  }
+    return MATRIX_ROWS.map(({ attribute, pick }) => ({
+      attribute,
+      values: serviceList.map(pick),
+    }));
+  },
 };
