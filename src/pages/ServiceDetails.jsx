@@ -4,6 +4,7 @@ import { ArrowLeft, Bookmark, Check, Link2, Printer, Share2, Zap } from 'lucide-
 import { MOCK_SERVICES } from '../data/services';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import UntranslatedBadge from '../components/common/UntranslatedBadge';
 
 const copyServiceLink = async (url) => {
   try {
@@ -133,6 +134,9 @@ const ServiceDetails = () => {
               <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: '1.6', maxWidth: '600px' }}>
                 {service.shortDescription}
               </p>
+              <div style={{ marginTop: '0.75rem' }}>
+                <UntranslatedBadge />
+              </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

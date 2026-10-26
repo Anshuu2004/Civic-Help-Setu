@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Clock, Gauge, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import UntranslatedBadge from './common/UntranslatedBadge';
 
 const getDifficultyBadge = (diff = '') => {
   const d = diff.toLowerCase();
@@ -114,6 +115,7 @@ const ServiceCard = ({ service }) => {
         >
           {service.shortDescription}
         </p>
+        <UntranslatedBadge />
       </div>
 
       <div
