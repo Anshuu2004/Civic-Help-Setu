@@ -5,8 +5,7 @@ import ChatMessage from '../components/ChatMessage';
 import { askCivicAssistant } from '../ai/civicAssistant';
 import { askGroundedCivicAssistant } from '../ai/groundedCivicAssistant';
 import SourceGroundedBadge from '../components/assistant/SourceGroundedBadge';
-import SourceCitationCard from '../components/assistant/SourceCitationCard';
-import SourceCard from '../components/SourceCard';
+import SourcesAndLimitations from '../components/assistant/SourcesAndLimitations';
 import ChatHeaderControls from '../components/chat/ChatHeaderControls';
 import VoiceInputStatus from '../components/chat/VoiceInputStatus';
 import PersonalizedRecommendationsPanel from '../components/chat/PersonalizedRecommendationsPanel';
@@ -269,28 +268,8 @@ const Assistant = () => {
           </div>
         )}
 
-        {/* Official Sources */}
-        {!msg.serviceId && data.officialSources && data.officialSources.length > 0 && (
-          <div style={{ marginTop: '0.5rem' }}>
-            <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-              Verified Portals:
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {data.officialSources.map((src, i) => (
-                <SourceCard key={i} source={src} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Grounded Source Citations (RAG) */}
-        {msg.retrievedChunks && msg.retrievedChunks.length > 0 && (
-          <SourceCitationCard
-            chunks={msg.retrievedChunks}
-            sources={data.officialSources}
-            disclaimer={data.disclaimer}
-          />
-        )}
+        {/* Sources, review dates and limitations (omitted when the response has no source data) */}
+        <SourcesAndLimitations message={msg} />
 
         {/* Suggested Follow-up Questions */}
         {msg.suggestions && msg.suggestions.length > 0 && (
