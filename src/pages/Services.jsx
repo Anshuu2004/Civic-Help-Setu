@@ -7,7 +7,7 @@ import DirectoryEmptyState from '../components/services/DirectoryEmptyState';
 import SearchAnalyticsBar from '../components/services/SearchAnalyticsBar';
 import ServiceComparisonModal from '../components/services/ServiceComparisonModal';
 import ComparisonFloatingTray from '../components/services/ComparisonFloatingTray';
-import { comparisonService } from '../services/comparisonService';
+import { comparisonService, MAX_COMPARE_LIMIT } from '../services/comparisonService';
 import { getSearchSuggestions, rankAndFilterServices } from '../services/searchRankingEngine';
 import { Layers, Scale } from 'lucide-react';
 import RtiBuilderModal from '../components/services/RtiBuilderModal';
@@ -17,6 +17,35 @@ const Services = () => {
   const [comparedServices, setComparedServices] = useState(() => comparisonService.getComparedServices());
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [isRtiModalOpen, setIsRtiModalOpen] = useState(false);
+
+  const [compareNotice, setCompareNotice] = useState('');
+  const comparedIds = comparedServices.map((s) => s.id);
+  const compareFull = comparedServices.length >= MAX_COMPARE_LIMIT;
+
+  const handleToggleCompare = (id) => {
+    if (comparisonService.isCompared(id)) {
+      comparisonService.removeService(id);
+      setCompareNotice('Removed from comparison.');
+    } else {
+      const res = comparisonService.addService(id);
+      setCompareNotice(
+        res.success ? 'Added to comparison.' : `You can compare up to ${MAX_COMPARE_LIMIT} services. Remove one first.`
+      );
+    }
+    setComparedServices(comparisonService.getComparedServices());
+  };
+
+  const handleRemoveCompared = (id) => {
+    comparisonService.removeService(id);
+    setComparedServices(comparisonService.getComparedServices());
+    setCompareNotice('Removed from comparison.');
+  };
+
+  const handleClearCompared = () => {
+    comparisonService.clearAll();
+    setComparedServices([]);
+    setCompareNotice('Comparison cleared.');
+  };
 
   // Read URL params or set defaults
   const activeCategory = searchParams.get('cat') || 'All';
@@ -106,7 +135,7 @@ const Services = () => {
   ]);
 
   return (
-    <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
+    <div className="section animate-fade-in" style={{ paddingBottom: comparedServices.length > 0 ? '12rem' : '6rem' }}>
       <div className="container">
         {/* Header Section */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -235,7 +264,13 @@ const Services = () => {
             }}
           >
             {filteredServices.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard
+                key={service.id}
+                service={service}
+                isCompared={comparedIds.includes(service.id)}
+                compareDisabled={compareFull && !comparedIds.includes(service.id)}
+                onToggleCompare={handleToggleCompare}
+              />
             ))}
           </div>
         ) : (
@@ -250,22 +285,23 @@ const Services = () => {
         <ComparisonFloatingTray
           comparedServices={comparedServices}
           onOpenModal={() => setIsCompareModalOpen(true)}
-          onClear={() => {
-            comparisonService.clearAll();
-            setComparedServices([]);
-          }}
-          onRemove={(id) => {
-            comparisonService.removeService(id);
-            setComparedServices(comparisonService.getComparedServices());
-          }}
+          onClear={handleClearCompared}
+          onRemove={handleRemoveCompared}
         />
+        <p className="sr-only" role="status" aria-live="polite">{compareNotice}</p>
+        {compareFull && (
+          <p className="compare-limit-note">
+            Comparison is full ({MAX_COMPARE_LIMIT} services). Remove one to add another.
+          </p>
+        )}
 
         {/* Service Comparison Matrix Modal */}
         <ServiceComparisonModal
           isOpen={isCompareModalOpen}
           onClose={() => setIsCompareModalOpen(false)}
           comparedServices={comparedServices}
-          onUpdateList={(newList) => setComparedServices(newList)}
+          onRemove={handleRemoveCompared}
+          onClear={handleClearCompared}
         />
 
         {/* Citizen RTI Request Builder Modal */}
