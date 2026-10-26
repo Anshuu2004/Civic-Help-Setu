@@ -31,13 +31,13 @@ const Eligibility = () => {
               marginBottom: '0.5rem',
             }}
           >
-            <Sparkles size={18} /> Official Citizen Entitlement Engine
+            <Sparkles size={18} /> Citizen Entitlement Guide
           </div>
           <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: '800', marginBottom: '0.75rem' }}>
             Interactive Eligibility Checker
           </h1>
           <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', maxWidth: '650px', margin: '0 auto' }}>
-            Answer a few quick questions to instantly check your qualification across key central and state civic schemes.
+            Answer a few quick questions to see which key central and state civic schemes may be relevant to you. This is guidance, not an official eligibility decision.
           </p>
         </div>
 
@@ -46,6 +46,7 @@ const Eligibility = () => {
           style={{
             display: 'flex',
             justifyContent: 'center',
+            flexWrap: 'wrap',
             gap: '0.75rem',
             marginBottom: '2rem',
           }}
