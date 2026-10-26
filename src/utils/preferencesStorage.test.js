@@ -9,6 +9,9 @@ import {
   sanitizeA11yPrefs,
   applyA11yPrefs,
   DEFAULT_A11Y,
+  FOCUS_MODE_KEY,
+  loadFocusMode,
+  saveFocusMode,
 } from './preferencesStorage';
 
 const makeStorage = (initial = {}) => {
@@ -79,5 +82,25 @@ describe('preferencesStorage', () => {
     expect(root.attrs).toEqual({ 'data-font-scale': 'large', 'data-high-contrast': 'true' });
     applyA11yPrefs(DEFAULT_A11Y, root);
     expect(root.attrs).toEqual({ 'data-font-scale': 'normal' });
+  });
+
+  it('remembers focus mode and defaults to off', () => {
+    expect(loadFocusMode()).toBe(false);
+    saveFocusMode(true);
+    expect(localStorage.data[FOCUS_MODE_KEY]).toBe('true');
+    expect(loadFocusMode()).toBe(true);
+    saveFocusMode(false);
+    expect(loadFocusMode()).toBe(false);
+  });
+
+  it('ignores junk focus mode values and blocked storage', () => {
+    vi.stubGlobal('localStorage', makeStorage({ [FOCUS_MODE_KEY]: 'yes' }));
+    expect(loadFocusMode()).toBe(false);
+    vi.stubGlobal('localStorage', {
+      getItem: () => { throw new Error('blocked'); },
+      setItem: () => { throw new Error('blocked'); },
+    });
+    expect(loadFocusMode()).toBe(false);
+    expect(() => saveFocusMode(true)).not.toThrow();
   });
 });
