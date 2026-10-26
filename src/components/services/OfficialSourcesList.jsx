@@ -89,7 +89,7 @@ const OfficialSourcesList = ({ service, onReportMissingSource }) => {
 
       {/* Sources Grid or Empty Fallback */}
       {hasSources ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
           {sources.map((src, idx) => (
             <a
               key={idx}

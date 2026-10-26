@@ -47,7 +47,7 @@ const ChatHeaderControls = ({ messages = [], onNewConversation, canReset = true,
         </span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
         <button
           type="button"
           onClick={handleExport}

@@ -31,12 +31,12 @@ const Navbar = () => {
 
   return (
     <nav id="site-navigation" aria-label="Main Navigation" tabIndex="-1" className="nav-glass animate-fade-in">
-      <div className="container flex-between" style={{ height: '100%' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '800', fontSize: '1.5rem', color: 'var(--text-primary)' }}>
-          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem', background: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="container flex-between nav-container" style={{ height: '100%' }}>
+        <Link to="/" className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '800', fontSize: '1.5rem', color: 'var(--text-primary)' }}>
+          <div className="nav-brand__logo" style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem', background: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Shield size={20} color="var(--bg-main)" fill="currentColor" />
           </div>
-          <span style={{ letterSpacing: '-0.02em' }}>{t('nav.brand', 'CivicBridge')}</span>
+          <span className="nav-brand__text" style={{ letterSpacing: '-0.02em' }}>{t('nav.brand', 'CivicBridge')}</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -173,7 +173,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Nav Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="md-hidden">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="md-hidden nav-mobile-actions">
           <LanguageSwitcher variant="mobile" />
           <button style={{ padding: '0.5rem', background: 'var(--glass-bg-hover)', borderRadius: '50%', color: 'var(--text-primary)' }} onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}

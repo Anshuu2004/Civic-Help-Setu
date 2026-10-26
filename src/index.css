@@ -254,6 +254,25 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .nav-link:hover { color: var(--text-primary); }
 
+/* Navbar on phones: brand + language + menu have to fit in one row (320px and up) */
+.nav-mobile-actions { flex-shrink: 0; }
+@media (max-width: 480px) {
+  .nav-container { padding-left: 1rem; padding-right: 1rem; }
+  .nav-brand { min-width: 0; }
+  .nav-brand { gap: 0.5rem !important; font-size: 1.25rem !important; }
+  .nav-brand__logo { width: 2.25rem !important; height: 2.25rem !important; }
+  /* the globe and the EN badge stay, the button keeps its aria-label */
+  .nav-mobile-actions .lang-switcher__label { display: none; }
+  /* the button no longer sits at the right edge, so pin the list to the screen instead */
+  .nav-mobile-actions .lang-switcher__menu {
+    position: fixed !important;
+    top: 4.5rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+  }
+}
+
 /* Backgrounds & Animations */
 .bg-grid-dark {
   position: absolute;

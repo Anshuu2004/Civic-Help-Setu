@@ -281,7 +281,7 @@ const FilterToolbar = ({
         </div>
 
         {/* Difficulty Filter */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', fontSize: '0.85rem' }}>
           <span style={{ color: 'var(--text-tertiary)', fontWeight: '600' }}>Difficulty:</span>
           {['All', 'Easy', 'Medium', 'Hard'].map((d) => (
             <button

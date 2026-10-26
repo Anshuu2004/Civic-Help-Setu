@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { LanguageProvider, useLanguage } from '../context/LanguageContext';
@@ -81,5 +82,25 @@ describe('t() fallback', () => {
     expect(english).toBe('The New Standard for Civic Assistance');
     expect(key).toBe('no.such.key');
     expect(given).toBe('given fallback');
+  });
+});
+
+describe('mobile navbar fit', () => {
+  beforeEach(() => vi.unstubAllGlobals());
+
+  it('puts the language name in its own span so phones can hide it, name stays on the button', () => {
+    const html = withLanguage('en', <LanguageSwitcher variant="mobile" />);
+    expect(html).toContain('<span class="lang-switcher__label">English</span>');
+    expect(html).toContain('aria-label="Select interface language. Currently English (English)"');
+  });
+
+  it('hides the label and tightens the navbar under 480px only', () => {
+    const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8');
+    const block = css.match(/@media \(max-width: 480px\) \{\s*\.nav-container[\s\S]*?\n\}/);
+    expect(block).not.toBeNull();
+    expect(block[0]).toContain('.nav-mobile-actions .lang-switcher__label { display: none; }');
+    expect(block[0]).toContain('.nav-container { padding-left: 1rem; padding-right: 1rem; }');
+    // the desktop navbar must not get the shrink rule
+    expect(css).not.toMatch(/^\.nav-brand \{ min-width: 0; \}/m);
   });
 });

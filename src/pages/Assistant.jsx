@@ -563,6 +563,7 @@ const Assistant = () => {
             aria-label={isListening ? 'Stop listening' : 'Start voice typing'}
             style={{
               padding: '0.65rem',
+              flexShrink: 0,
               borderRadius: '50%',
               background: isListening ? '#ef4444' : 'var(--glass-bg)',
               color: isListening ? '#ffffff' : 'var(--accent-main)',
@@ -587,6 +588,7 @@ const Assistant = () => {
             disabled={isLoading}
             style={{
               flex: 1,
+              minWidth: 0,
               background: 'transparent',
               border: 'none',
               color: 'var(--text-primary)',
@@ -602,6 +604,7 @@ const Assistant = () => {
             className="btn-primary"
             style={{
               padding: '0.65rem 1.25rem',
+              flexShrink: 0,
               borderRadius: '99px',
               fontSize: '0.95rem',
               display: 'flex',
