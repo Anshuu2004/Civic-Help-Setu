@@ -8,6 +8,9 @@ import { AlertTriangle, AlertCircle, Info, X, Trash2, CheckCircle2, Loader2 } fr
  * - aria-labelledby & aria-describedby
  * - Keyboard Escape cancellation
  * - Focus defaulted to Cancel button to prevent accidental data destruction
+ * - While isLoading, every way of closing the dialog is ignored so the pending
+ *   action cannot be abandoned half way or submitted twice
+ * - errorMessage keeps the dialog open and announces the failure inline
  */
 const ConfirmationDialog = ({
   isOpen,
@@ -18,6 +21,7 @@ const ConfirmationDialog = ({
   cancelLabel = 'Cancel',
   variant = 'danger', // 'danger' | 'warning' | 'info'
   isLoading = false,
+  errorMessage = '',
   onConfirm,
   onCancel,
 }) => {
@@ -36,19 +40,19 @@ const ConfirmationDialog = ({
     }
   }, [isOpen]);
 
-  // Trap Escape key
+  // Trap Escape key (ignored while the action is running)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isOpen) return;
       if (e.key === 'Escape') {
         e.preventDefault();
-        onCancel?.();
+        if (!isLoading) onCancel?.();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onCancel]);
+  }, [isOpen, isLoading, onCancel]);
 
   if (!isOpen) return null;
 
@@ -101,10 +105,11 @@ const ConfirmationDialog = ({
       aria-modal="true"
       aria-labelledby="confirmation-dialog-title"
       aria-describedby="confirmation-dialog-description"
+      aria-busy={isLoading}
       ref={dialogRef}
       onClick={(e) => {
         // Clicking backdrop cancels
-        if (e.target === dialogRef.current) {
+        if (e.target === dialogRef.current && !isLoading) {
           onCancel?.();
         }
       }}
@@ -210,6 +215,26 @@ const ConfirmationDialog = ({
               {itemName}
             </span>
           </div>
+        )}
+
+        {/* Inline failure message, announced to screen readers */}
+        {errorMessage && (
+          <p
+            role="alert"
+            data-testid="confirmation-dialog-error"
+            style={{
+              margin: '0 0 1.25rem 0',
+              padding: '0.75rem 1rem',
+              borderRadius: '0.65rem',
+              border: '1px solid rgba(239, 68, 68, 0.4)',
+              background: 'rgba(239, 68, 68, 0.1)',
+              color: 'var(--text-primary)',
+              fontSize: '0.85rem',
+              lineHeight: '1.5',
+            }}
+          >
+            {errorMessage}
+          </p>
         )}
 
         {/* Action Buttons */}

@@ -40,6 +40,16 @@ import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import { useToast } from '../context/ToastContext';
 import { getAuditReports, resolveAuditReport } from '../services/communityAuditService';
+import ConfirmationDialog from '../components/common/ConfirmationDialog';
+import { MOCK_SERVICES } from '../data/services';
+import {
+  createActionGuard,
+  buildServiceRemovalDialog,
+  buildReportDismissalDialog,
+  removeServiceGuide,
+  dismissReportEntry,
+  describeActionFailure,
+} from '../utils/adminDestructiveActions';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -56,6 +66,12 @@ const Admin = () => {
   const [roleModal, setRoleModal] = useState({ isOpen: false, targetUser: null });
   const [submissionModal, setSubmissionModal] = useState({ isOpen: false, submission: null });
   const [importOpen, setImportOpen] = useState(false);
+
+  // Destructive action waiting for confirmation: { kind: 'service' | 'report', id, name, dialog }
+  const [pendingAction, setPendingAction] = useState(null);
+  const [isActionRunning, setIsActionRunning] = useState(false);
+  const [actionError, setActionError] = useState('');
+  const [actionGuard] = useState(createActionGuard);
 
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -99,13 +115,71 @@ const Admin = () => {
     }
   };
 
+  // Delete and dismiss only open the confirmation. The change itself happens in
+  // runPendingAction once the admin confirms.
   const handleDeleteService = (id) => {
-    if (window.confirm('Are you sure you want to remove this service from the active directory?')) {
-      const updated = deleteAdminService(id, user?.username || 'SuperAdmin');
-      setServices(updated);
-      setAuditLogs(getAuditLogs());
-      toast?.info?.('Service deleted from directory.');
+    const target = services.find((s) => s.id === id);
+    if (!target) return;
+    const builtIn = MOCK_SERVICES.some((s) => s.id === id);
+    setActionError('');
+    setPendingAction({
+      kind: 'service',
+      id,
+      name: target.name,
+      builtIn,
+      dialog: buildServiceRemovalDialog(target, { builtIn }),
+    });
+  };
+
+  const handleCancelPendingAction = () => {
+    if (actionGuard.isPending()) return;
+    setPendingAction(null);
+    setActionError('');
+  };
+
+  const runPendingAction = async () => {
+    if (!pendingAction) return;
+    const actor = user?.username || 'SuperAdmin';
+    const result = await actionGuard.run(async () => {
+      setIsActionRunning(true);
+      setActionError('');
+      if (pendingAction.kind === 'report') {
+        return {
+          reports: dismissReportEntry({ id: pendingAction.id, dismissReport }),
+        };
+      }
+      return removeServiceGuide({
+        id: pendingAction.id,
+        name: pendingAction.name,
+        builtIn: pendingAction.builtIn,
+        actor,
+        deleteService: deleteAdminService,
+      });
+    });
+    setIsActionRunning(false);
+
+    if (result.status === 'busy') return;
+    if (result.status === 'failed') {
+      setActionError(describeActionFailure(pendingAction.kind, pendingAction.name));
+      toast?.error?.(
+        pendingAction.kind === 'report' ? 'Report was not dismissed.' : `"${pendingAction.name}" was not changed.`
+      );
+      return;
     }
+
+    if (pendingAction.kind === 'report') {
+      setReports(result.value.reports);
+      toast?.success?.('Report dismissed. It was deleted from the queue and cannot be restored.');
+    } else {
+      setServices(result.value.services);
+      setAuditLogs(getAuditLogs());
+      toast?.success?.(
+        result.value.outcome === 'reverted-to-builtin'
+          ? `Local changes to "${pendingAction.name}" cleared. The built-in guide stays in the directory.`
+          : `"${pendingAction.name}" removed from the directory. This cannot be undone from here.`
+      );
+    }
+    setPendingAction(null);
   };
 
   const handleResolveReport = (id, resolution) => {
@@ -115,9 +189,15 @@ const Admin = () => {
   };
 
   const handleDismissReport = (id) => {
-    const updated = dismissReport(id);
-    setReports(updated);
-    toast?.info?.('Report dismissed from queue.');
+    const target = reports.find((r) => r.id === id);
+    if (!target) return;
+    setActionError('');
+    setPendingAction({
+      kind: 'report',
+      id,
+      name: target.serviceName,
+      dialog: buildReportDismissalDialog(target),
+    });
   };
 
   const handleEditServiceFromReport = (serviceId) => {
@@ -700,6 +780,20 @@ const Admin = () => {
         </div>
 
         {/* Modals */}
+        <ConfirmationDialog
+          isOpen={Boolean(pendingAction)}
+          title={pendingAction?.dialog.title}
+          message={pendingAction?.dialog.message}
+          itemName={pendingAction?.dialog.itemName}
+          confirmLabel={actionError ? 'Try again' : pendingAction?.dialog.confirmLabel}
+          cancelLabel={pendingAction?.dialog.cancelLabel}
+          variant="danger"
+          isLoading={isActionRunning}
+          errorMessage={actionError}
+          onConfirm={runPendingAction}
+          onCancel={handleCancelPendingAction}
+        />
+
         <ServiceModal
           isOpen={serviceModal.isOpen}
           serviceToEdit={serviceModal.service}
