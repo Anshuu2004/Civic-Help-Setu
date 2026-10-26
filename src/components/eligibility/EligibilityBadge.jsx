@@ -1,27 +1,35 @@
-import { CheckCircle2, AlertTriangle, XCircle, HelpCircle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, HelpCircle, CircleHelp } from 'lucide-react';
+import { RESULT_STATUS_LABELS } from '../../services/eligibilityCriteria';
 
 const EligibilityBadge = ({ status = 'not-checked', size = 'normal' }) => {
   const configs = {
     eligible: {
-      label: 'Eligible to Apply',
+      label: RESULT_STATUS_LABELS.eligible,
       color: 'var(--success, #10b981)',
       bg: 'rgba(16, 185, 129, 0.12)',
       border: 'rgba(16, 185, 129, 0.3)',
       icon: <CheckCircle2 size={size === 'large' ? 18 : 14} />,
     },
     conditional: {
-      label: 'Action / Prerequisite Needed',
+      label: RESULT_STATUS_LABELS.conditional,
       color: 'var(--warning, #f59e0b)',
       bg: 'rgba(245, 158, 11, 0.12)',
       border: 'rgba(245, 158, 11, 0.3)',
       icon: <AlertTriangle size={size === 'large' ? 18 : 14} />,
     },
     ineligible: {
-      label: 'Criteria Not Met',
+      label: RESULT_STATUS_LABELS.ineligible,
       color: 'var(--error, #ef4444)',
       bg: 'rgba(239, 68, 68, 0.12)',
       border: 'rgba(239, 68, 68, 0.3)',
       icon: <XCircle size={size === 'large' ? 18 : 14} />,
+    },
+    unknown: {
+      label: RESULT_STATUS_LABELS.unknown,
+      color: 'var(--text-secondary)',
+      bg: 'var(--glass-bg)',
+      border: 'var(--border-main)',
+      icon: <CircleHelp size={size === 'large' ? 18 : 14} />,
     },
     'not-checked': {
       label: 'Interactive Eligibility Available',

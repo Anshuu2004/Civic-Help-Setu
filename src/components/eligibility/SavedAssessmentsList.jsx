@@ -154,7 +154,7 @@ const SavedAssessmentsList = ({
                         style={{
                           fontSize: '0.75rem',
                           fontWeight: '700',
-                          color: res.status === 'eligible' ? '#10b981' : res.status === 'conditional' ? '#f59e0b' : '#ef4444',
+                          color: res.status === 'eligible' ? '#10b981' : res.status === 'conditional' ? '#f59e0b' : res.status === 'unknown' ? 'var(--text-secondary)' : '#ef4444',
                           textTransform: 'uppercase',
                         }}
                       >
