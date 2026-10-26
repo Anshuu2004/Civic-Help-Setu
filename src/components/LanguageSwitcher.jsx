@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Globe, Check } from 'lucide-react';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../context/LanguageContext';
+import { FALLBACK_NOTE, getLanguageAnnouncement, getUiCoverage } from '../utils/translationCoverage';
 
-const LanguageSwitcher = ({ variant = 'default' }) => {
+const LanguageSwitcher = ({ variant = 'default', defaultOpen = false }) => {
   const { language, setLanguage } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [announcement, setAnnouncement] = useState('');
   const containerRef = useRef(null);
 
   const activeLang = SUPPORTED_LANGUAGES.find((l) => l.code === language) || SUPPORTED_LANGUAGES[0];
@@ -21,10 +23,17 @@ const LanguageSwitcher = ({ variant = 'default' }) => {
 
   return (
     <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
+      <span
+        role="status"
+        aria-live="polite"
+        style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }}
+      >
+        {announcement}
+      </span>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        aria-label={`Select interface language. Currently ${activeLang.native}`}
+        aria-label={`Select interface language. Currently ${activeLang.native} (${activeLang.label})`}
         aria-expanded={isOpen}
         style={{
           display: 'inline-flex',
@@ -65,10 +74,10 @@ const LanguageSwitcher = ({ variant = 'default' }) => {
             top: 'calc(100% + 8px)',
             right: 0,
             zIndex: 1000,
-            minWidth: '180px',
+            width: 'min(300px, calc(100vw - 2rem))',
             padding: '0.5rem',
             borderRadius: '0.75rem',
-            background: 'var(--bg-card, #131b2e)',
+            background: 'var(--bg-card, var(--bg-secondary))',
             border: '1px solid var(--border-main)',
             boxShadow: 'var(--shadow-lg, 0 10px 25px -5px rgba(0,0,0,0.5))',
             display: 'flex',
@@ -81,12 +90,15 @@ const LanguageSwitcher = ({ variant = 'default' }) => {
           </div>
           {SUPPORTED_LANGUAGES.map((l) => {
             const isSelected = l.code === language;
+            const coverage = getUiCoverage(l.code);
             return (
               <button
                 key={l.code}
                 type="button"
+                aria-current={isSelected ? 'true' : undefined}
                 onClick={() => {
                   setLanguage(l.code);
+                  setAnnouncement(getLanguageAnnouncement(l, coverage));
                   setIsOpen(false);
                 }}
                 style={{
@@ -112,14 +124,38 @@ const LanguageSwitcher = ({ variant = 'default' }) => {
                   if (!isSelected) e.currentTarget.style.background = 'transparent';
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span>{l.native}</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>({l.label})</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', minWidth: 0, overflowWrap: 'anywhere' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span>{l.native}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>({l.label})</span>
+                  </span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: '500', color: 'var(--text-tertiary)' }}>
+                    {coverage.isComplete
+                      ? 'Interface fully translated'
+                      : `Interface partly translated (${coverage.translated} of ${coverage.total} labels)`}
+                  </span>
                 </div>
-                {isSelected && <Check size={14} color="var(--accent-main)" />}
+                {isSelected && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.7rem', flexShrink: 0, marginLeft: '0.5rem' }}>
+                    <Check size={14} color="var(--accent-main)" aria-hidden="true" /> Active
+                  </span>
+                )}
               </button>
             );
           })}
+          <div
+            style={{
+              margin: '0.25rem 0.25rem 0',
+              padding: '0.5rem 0.6rem',
+              borderTop: '1px solid var(--border-light)',
+              fontSize: '0.72rem',
+              lineHeight: 1.45,
+              color: 'var(--text-secondary)',
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {FALLBACK_NOTE}
+          </div>
         </div>
       )}
     </div>
