@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Shield, Menu, X, LogOut, User, Sun, Moon, WifiOff, Wifi, HardDrive, PhoneCall, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -7,6 +7,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useNetwork } from '../context/NetworkContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
+import FocusModeNavToggle from './common/FocusModeNavToggle';
 import OfflineCacheStatusModal from './common/OfflineCacheStatusModal';
 import EmergencyHelplineModal from './emergency/EmergencyHelplineModal';
 import VoiceSearchInput from './common/VoiceSearchInput';
@@ -20,6 +21,8 @@ const Navbar = () => {
   const { t } = useLanguage();
   const { isOnline } = useNetwork();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isServiceDetail = /^\/services\/[^/]+/.test(pathname);
 
   const handleLogout = async () => {
     await logout();
@@ -47,6 +50,7 @@ const Navbar = () => {
           <div style={{ width: '1px', height: '20px', background: 'var(--border-main)', margin: '0 0.5rem' }}></div>
 
           <PlainLanguageToggle />
+          {isServiceDetail && <FocusModeNavToggle />}
           <LanguageSwitcher />
 
           {/* Offline Status Badge */}
