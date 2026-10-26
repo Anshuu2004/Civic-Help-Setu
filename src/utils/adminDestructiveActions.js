@@ -75,14 +75,18 @@ export const buildReportDismissalDialog = (report) => {
  * storage errors and hands back the current list, so success is checked against
  * that list instead of trusting the call to throw.
  *
- * @returns {{outcome: 'removed' | 'reverted-to-builtin', services: object[]}}
+ * hadLocalChanges tells the two built-in cases apart: a saved edit that was
+ * cleared, or nothing saved so nothing changed. It defaults to true so callers
+ * that do not pass it keep the old outcome.
+ *
+ * @returns {{outcome: 'removed' | 'reverted-to-builtin' | 'nothing-to-clear', services: object[]}}
  * @throws when the service is still listed and it should have been removed
  */
-export const removeServiceGuide = ({ id, name, builtIn, actor, deleteService }) => {
+export const removeServiceGuide = ({ id, name, builtIn, actor, deleteService, hadLocalChanges = true }) => {
   const services = deleteService(id, actor);
   const stillListed = services.some((s) => s.id === id);
   if (!stillListed) return { outcome: 'removed', services };
-  if (builtIn) return { outcome: 'reverted-to-builtin', services };
+  if (builtIn) return { outcome: hadLocalChanges ? 'reverted-to-builtin' : 'nothing-to-clear', services };
   throw new Error(`"${name}" is still in the directory, so nothing was removed.`);
 };
 
