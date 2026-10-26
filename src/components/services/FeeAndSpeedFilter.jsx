@@ -44,6 +44,7 @@ const FeeAndSpeedFilter = ({
         <div style={{ display: 'flex', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)', padding: '2px' }}>
           {[
             { id: 'All', label: 'Any Speed' },
+            { id: 'Urgent', label: 'Urgent (≤3d)' },
             { id: 'Fast', label: '⚡ Fast (<7d)' },
             { id: 'Standard', label: 'Standard' },
           ].map((s) => {
