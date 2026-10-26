@@ -21,6 +21,7 @@ import {
   getAdminServices,
   saveAdminService,
   deleteAdminService,
+  hasLocalServiceCopy,
   getReports,
   resolveReport,
   dismissReport,
@@ -155,6 +156,7 @@ const Admin = () => {
         builtIn: pendingAction.builtIn,
         actor,
         deleteService: deleteAdminService,
+        hadLocalChanges: hasLocalServiceCopy(pendingAction.id),
       });
     });
     setIsActionRunning(false);
@@ -174,11 +176,16 @@ const Admin = () => {
     } else {
       setServices(result.value.services);
       setAuditLogs(getAuditLogs());
-      toast?.success?.(
-        result.value.outcome === 'reverted-to-builtin'
-          ? `Local changes to "${pendingAction.name}" cleared. The built-in guide stays in the directory.`
-          : `"${pendingAction.name}" removed from the directory. This cannot be undone from here.`
-      );
+      const { outcome } = result.value;
+      if (outcome === 'nothing-to-clear') {
+        toast?.info?.(`"${pendingAction.name}" has no local changes saved on this device. The built-in guide stays in the directory.`);
+      } else {
+        toast?.success?.(
+          outcome === 'reverted-to-builtin'
+            ? `Local changes to "${pendingAction.name}" cleared. The built-in guide stays in the directory.`
+            : `"${pendingAction.name}" removed from the directory. This cannot be undone from here.`
+        );
+      }
     }
     setPendingAction(null);
   };

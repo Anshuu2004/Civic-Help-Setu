@@ -211,19 +211,43 @@ export const importAdminServices = (services, actorName = 'SuperAdmin') => {
   return { ok: true, imported: accepted.length, skipped, error: null };
 };
 
+// True when a saved copy of this id exists on this device. For a built-in guide
+// that copy is a local edit sitting on top of the original text.
+export const hasLocalServiceCopy = (id) => {
+  try {
+    const raw = localStorage.getItem(SERVICES_KEY);
+    const custom = raw ? JSON.parse(raw) : [];
+    return Array.isArray(custom) && custom.some((s) => s.id === id);
+  } catch {
+    return false;
+  }
+};
+
+// Only the saved (custom) list can be changed here, so the audit trail follows
+// what actually happened:
+//   - id not in the saved list (a built-in guide nobody edited): nothing is
+//     written and nothing is logged, the guide stays in the directory
+//   - built-in guide with a saved edit: the edit is cleared, logged as an update
+//   - custom guide: removed, logged as a deletion
+// A failed write is not logged either, the caller sees the unchanged list.
 export const deleteAdminService = (id, actorName = 'SuperAdmin') => {
   try {
     const raw = localStorage.getItem(SERVICES_KEY);
     const custom = raw ? JSON.parse(raw) : [];
     const target = custom.find((s) => s.id === id);
+    if (!target) return getAdminServices();
+
     const updated = custom.filter((s) => s.id !== id);
     localStorage.setItem(SERVICES_KEY, JSON.stringify(updated));
 
+    const builtIn = MOCK_SERVICES.some((s) => s.id === id);
     addAuditLog({
-      action: 'SERVICE_DELETED',
+      action: builtIn ? 'SERVICE_UPDATED' : 'SERVICE_DELETED',
       actor: actorName,
-      target: target?.name || id,
-      details: `Service entry ${id} permanently removed from directory.`,
+      target: target.name || id,
+      details: builtIn
+        ? `Cleared locally saved changes to built-in guide ${id}. The guide stays in the directory with its original text.`
+        : `Service entry ${id} permanently removed from directory.`,
     });
 
     return getAdminServices();
