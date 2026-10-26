@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { Info, X, ShieldAlert, AlertTriangle, RefreshCw, Home, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const REPORT_URL = 'https://github.com/GoldRay19/Civic-Help-Setu/issues';
-
 /**
  * Inline recovery state for a sign-in that did not finish.
  * `failure` comes from classifyAuthFailure(), so it only ever holds fixed,
  * safe wording. Retryable failures get a Try again button, every failure gets
- * a way back to the public home page and a way to report the problem.
+ * a way back to the public home page.
  */
 export const AuthFailureNotice = ({ failure, onRetry, retrying = false }) => {
   if (!failure) return null;
@@ -56,14 +54,6 @@ export const AuthFailureNotice = ({ failure, onRetry, retrying = false }) => {
           >
             <Home size={14} aria-hidden="true" /> Return home
           </Link>
-          <a
-            href={REPORT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: 'var(--accent-main)', fontWeight: '600' }}
-          >
-            Report a problem
-          </a>
         </div>
       </div>
     </div>

@@ -13,22 +13,20 @@ import { classifyAuthFailure } from '../utils/authFailure';
 const render = (element) => renderToStaticMarkup(<MemoryRouter>{element}</MemoryRouter>);
 
 describe('AuthFailureNotice', () => {
-  it('retryable failure: announces itself and offers Try again, Return home and Report a problem', () => {
+  it('retryable failure: announces itself and offers Try again and Return home', () => {
     const html = render(<AuthFailureNotice failure={classifyAuthFailure({ status: 503 })} onRetry={() => {}} />);
     expect(html).toContain('role="alert"');
     expect(html).toContain('data-failure-kind="service_unavailable"');
     expect(html).toContain('Try again');
     expect(html).toContain('href="/"');
     expect(html).toContain('Return home');
-    expect(html).toContain('Report a problem');
-    expect(html).toContain('rel="noopener noreferrer"');
+    expect(html).not.toContain('Report a problem');
   });
 
-  it('non-retryable failure: no Try again, but the way home and reporting stay', () => {
+  it('non-retryable failure: no Try again, but the way home stays', () => {
     const html = render(<AuthFailureNotice failure={classifyAuthFailure({ status: 403 })} onRetry={() => {}} />);
     expect(html).not.toContain('Try again');
     expect(html).toContain('Return home');
-    expect(html).toContain('Report a problem');
   });
 
   it('while a retry is running the button is disabled and says so', () => {
