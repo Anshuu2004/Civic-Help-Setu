@@ -7,19 +7,25 @@ import {
   updateItem,
   removeItem,
   clearAllSaved,
-  getFolders,
   toggleFavoriteItem,
 } from '../services/savedStorage';
 import {
   getAllReminders,
   calculateDaysRemaining,
 } from '../services/reminderNotificationService';
-import FolderTabs from '../components/saved/FolderTabs';
+import CollectionSwitcher from '../components/saved/CollectionSwitcher';
+import CollectionEmptyState from '../components/saved/CollectionEmptyState';
 import ServiceNoteModal from '../components/saved/ServiceNoteModal';
 import SavedEmptyState from '../components/saved/SavedEmptyState';
 import SavedItemCard from '../components/saved/SavedItemCard';
 import ReminderScheduleModal from '../components/saved/ReminderScheduleModal';
 import FavoritesQuickBar from '../components/saved/FavoritesQuickBar';
+import {
+  ALL_COLLECTION,
+  buildCollections,
+  isInCollection,
+  resolveActiveCollection,
+} from '../services/savedCollections';
 import { useToast } from '../context/ToastContext';
 import { useConfirm } from '../context/ConfirmationDialogContext';
 
@@ -28,7 +34,9 @@ const Saved = () => {
   const confirm = useConfirm();
   const [savedItems, setSavedItems] = useState([]);
   const [reminders, setReminders] = useState([]);
-  const [activeFolder, setActiveFolder] = useState('All');
+  const [activeFolder, setActiveFolder] = useState(ALL_COLLECTION);
+  // Collections created before any guide is assigned; session-only (not persisted).
+  const [pendingCollections, setPendingCollections] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showUpcomingOnly, setShowUpcomingOnly] = useState(false);
@@ -42,11 +50,22 @@ const Saved = () => {
     setReminders(getAllReminders());
   }, []);
 
-  const folders = useMemo(() => getFolders(savedItems), [savedItems]);
+  const collections = useMemo(
+    () => buildCollections(savedItems, pendingCollections),
+    [savedItems, pendingCollections]
+  );
+  // If the active collection vanished (its last guide was removed or moved), show "All".
+  const activeCollection = resolveActiveCollection(activeFolder, collections);
+  const activeCollectionInfo = collections.find((c) => c.name === activeCollection);
+  const folders = useMemo(
+    () => collections.filter((c) => c.name !== ALL_COLLECTION).map((c) => c.name),
+    [collections]
+  );
 
-  const handleAddFolder = (newFolder) => {
-    setActiveFolder(newFolder);
-    toast?.success?.(`Switched to folder "${newFolder}".`);
+  const handleCreateCollection = (name) => {
+    setPendingCollections((prev) => [...prev, name]);
+    setActiveFolder(name);
+    toast?.success?.(`Collection "${name}" created. Move a guide into it using Notes.`);
   };
 
   const handleEditNotes = (item, service) => {
@@ -141,9 +160,7 @@ const Saved = () => {
       }
 
       // Folder filter
-      const matchesFolder =
-        activeFolder === 'All' ||
-        (item.folder && item.folder.toLowerCase() === activeFolder.toLowerCase());
+      const matchesFolder = isInCollection(item, activeCollection);
 
       // Query filter
       const q = searchQuery.toLowerCase().trim();
@@ -155,7 +172,7 @@ const Saved = () => {
 
       return matchesFolder && matchesQuery;
     });
-  }, [populatedItems, activeFolder, searchQuery, showFavoritesOnly, showUpcomingOnly]);
+  }, [populatedItems, activeCollection, searchQuery, showFavoritesOnly, showUpcomingOnly]);
 
   return (
     <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
@@ -240,11 +257,11 @@ const Saved = () => {
               marginBottom: '1rem',
             }}
           >
-            <FolderTabs
-              folders={folders}
-              activeFolder={activeFolder}
-              onSelectFolder={setActiveFolder}
-              onAddFolder={handleAddFolder}
+            <CollectionSwitcher
+              collections={collections}
+              activeCollection={activeCollection}
+              onSelect={setActiveFolder}
+              onCreate={handleCreateCollection}
             />
 
             {/* Quick Search */}
@@ -278,9 +295,22 @@ const Saved = () => {
           </div>
         )}
 
+        {populatedItems.length > 0 && (
+          <p className="collection-help">
+            Each guide is kept in one collection (its folder), so nothing is duplicated and removing a guide
+            updates every collection. Collections are saved with your guides; a new empty collection lasts only
+            until you reload.
+          </p>
+        )}
+
         {/* Main Content Area */}
         {populatedItems.length === 0 ? (
           <SavedEmptyState />
+        ) : activeCollectionInfo?.count === 0 ? (
+          <CollectionEmptyState
+            collectionName={activeCollection}
+            onShowAll={() => setActiveFolder(ALL_COLLECTION)}
+          />
         ) : filteredItems.length === 0 ? (
           <div
             className="card"
@@ -296,12 +326,12 @@ const Saved = () => {
               No Guides Match Your Filter
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-              No saved items found in folder "{activeFolder}" matching "{searchQuery}".
+              No saved items found in {activeCollection === ALL_COLLECTION ? 'your saved guides' : `collection "${activeCollection}"`} matching your current filters.
             </p>
             <button
               type="button"
               onClick={() => {
-                setActiveFolder('All');
+                setActiveFolder(ALL_COLLECTION);
                 setSearchQuery('');
                 setShowFavoritesOnly(false);
                 setShowUpcomingOnly(false);
