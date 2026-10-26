@@ -30,6 +30,8 @@ import ApplicationTimeline from '../components/tracking/ApplicationTimeline';
 import ActionRequiredAlert from '../components/tracking/ActionRequiredAlert';
 import LinkedDocumentsManager from '../components/tracking/LinkedDocumentsManager';
 import ManualAddApplicationModal from '../components/tracking/ManualAddApplicationModal';
+import Checklist from '../components/Checklist';
+import { services } from '../data/services';
 import TrackEmptyState from '../components/tracking/TrackEmptyState';
 import TrackingReceiptModal from '../components/tracking/TrackingReceiptModal';
 import SlaBreachAlertWidget from '../components/tracking/SlaBreachAlertWidget';
@@ -132,6 +134,9 @@ const Track = () => {
 
   const pendingAction = activeApp ? resolveApplicationPendingAction(activeApp) : null;
   const statusMeta = activeApp ? getStatusMeta(activeApp.status) : null;
+  const requiredDocuments = activeApp
+    ? (services.find((svc) => svc.id === activeApp.serviceId)?.documents || [])
+    : [];
 
   if (!applications.length && !activeApp) {
     return (
@@ -253,6 +258,18 @@ const Track = () => {
                   <ApplicationTimeline stages={activeApp.stages || []} currentStageIndex={activeApp.currentStageIndex || 0} />
                   <LinkedDocumentsManager documents={activeApp.linkedDocs || []} />
                 </div>
+
+                {requiredDocuments.length > 0 && (
+                  <section className="card" style={{ padding: '1.25rem' }} aria-labelledby="track-checklist-title">
+                    <h3 id="track-checklist-title" style={{ margin: '0 0 1rem' }}>Documents to prepare</h3>
+                    <Checklist
+                      key={activeApp.id}
+                      checklistId={activeApp.id}
+                      items={requiredDocuments}
+                      label={`Documents to prepare for ${activeApp.serviceName || 'this application'}`}
+                    />
+                  </section>
+                )}
 
                 <div className="card" style={{ padding: '1.25rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
