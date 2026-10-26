@@ -39,9 +39,9 @@ const FeeAndSpeedFilter = ({
       </div>
 
       {/* Speed facet */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', maxWidth: '100%', gap: '0.35rem' }}>
         <Zap size={15} color="var(--text-tertiary)" />
-        <div style={{ display: 'flex', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)', padding: '2px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', maxWidth: '100%', background: 'var(--glass-bg)', borderRadius: '99px', border: '1px solid var(--border-light)', padding: '2px' }}>
           {[
             { id: 'All', label: 'Any Speed' },
             { id: 'Urgent', label: 'Urgent (≤3d)' },

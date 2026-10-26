@@ -51,7 +51,7 @@ const LanguageSwitcher = ({ variant = 'default', defaultOpen = false }) => {
         }}
       >
         <Globe size={16} color="var(--accent-main)" />
-        <span>{activeLang.native}</span>
+        <span className="lang-switcher__label">{activeLang.native}</span>
         <span
           style={{
             fontSize: '0.7rem',
@@ -68,7 +68,7 @@ const LanguageSwitcher = ({ variant = 'default', defaultOpen = false }) => {
 
       {isOpen && (
         <div
-          className="animate-fade-in"
+          className="animate-fade-in lang-switcher__menu"
           style={{
             position: 'absolute',
             top: 'calc(100% + 8px)',
