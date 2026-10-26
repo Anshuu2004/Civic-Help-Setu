@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, Download, X, AlertTriangle, CheckCircle2, Copy } from 'lucide-react';
+import { Upload, Download, X } from 'lucide-react';
 import {
   buildImportPreview,
   csvTemplate,
@@ -7,22 +7,7 @@ import {
   MAX_IMPORT_ROWS,
 } from '../../services/serviceImportService';
 import { importAdminServices } from '../../services/adminService';
-
-const cellStyle = { padding: '0.55rem 0.75rem', verticalAlign: 'top' };
-const headStyle = { ...cellStyle, fontWeight: '700', color: 'var(--text-tertiary)' };
-
-const Section = ({ title, icon, color, count, children }) => (
-  <section style={{ marginTop: '1.25rem' }}>
-    <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.9rem', fontWeight: '700', color, margin: '0 0 0.5rem' }}>
-      {icon} {title} ({count})
-    </h4>
-    <div style={{ border: '1px solid var(--border-light)', borderRadius: '0.6rem', overflow: 'auto', maxHeight: '260px' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
-        {children}
-      </table>
-    </div>
-  </section>
-);
+import ImportReviewTable from './ImportReviewTable';
 
 const ServiceImportPanel = ({ existingServices, actorName, onImported, onClose }) => {
   const [fileName, setFileName] = useState('');
@@ -127,60 +112,7 @@ const ServiceImportPanel = ({ existingServices, actorName, onImported, onClose }
         </ul>
       )}
 
-      {validCount > 0 && (
-        <Section title="Ready to import" icon={<CheckCircle2 size={15} />} color="#10b981" count={validCount}>
-          <thead>
-            <tr><th style={headStyle}>Row</th><th style={headStyle}>Name</th><th style={headStyle}>Category</th><th style={headStyle}>ID</th><th style={headStyle}>Notes</th></tr>
-          </thead>
-          <tbody>
-            {report.valid.map(({ row, service, warnings }) => (
-              <tr key={`${row}-${service.id}`} style={{ borderTop: '1px solid var(--border-light)' }}>
-                <td style={cellStyle}>{row}</td>
-                <td style={cellStyle}>{service.name}</td>
-                <td style={cellStyle}>{service.category}</td>
-                <td style={cellStyle}><code>{service.id}</code></td>
-                <td style={{ ...cellStyle, color: '#f59e0b' }}>{warnings.join('; ')}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Section>
-      )}
-
-      {report?.invalid.length > 0 && (
-        <Section title="Errors (will not be imported)" icon={<AlertTriangle size={15} />} color="#ef4444" count={report.invalid.length}>
-          <thead>
-            <tr><th style={headStyle}>Row</th><th style={headStyle}>Name</th><th style={headStyle}>What to fix</th></tr>
-          </thead>
-          <tbody>
-            {report.invalid.map(({ row, name, errors }) => (
-              <tr key={`inv-${row}`} style={{ borderTop: '1px solid var(--border-light)' }}>
-                <td style={cellStyle}>{row}</td>
-                <td style={cellStyle}>{name || <em>(no name)</em>}</td>
-                <td style={cellStyle}>
-                  <ul style={{ margin: 0, paddingLeft: '1rem' }}>{errors.map((err) => <li key={err}>{err}</li>)}</ul>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Section>
-      )}
-
-      {report?.duplicates.length > 0 && (
-        <Section title="Duplicates (skipped, review before re-importing)" icon={<Copy size={15} />} color="#f59e0b" count={report.duplicates.length}>
-          <thead>
-            <tr><th style={headStyle}>Row</th><th style={headStyle}>Name</th><th style={headStyle}>Why</th></tr>
-          </thead>
-          <tbody>
-            {report.duplicates.map(({ row, name, reason }) => (
-              <tr key={`dup-${row}`} style={{ borderTop: '1px solid var(--border-light)' }}>
-                <td style={cellStyle}>{row}</td>
-                <td style={cellStyle}>{name}</td>
-                <td style={cellStyle}>{reason}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Section>
-      )}
+      {report && report.fileErrors.length === 0 && <ImportReviewTable report={report} />}
 
       {report && report.fileErrors.length === 0 && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.25rem' }}>
