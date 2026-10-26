@@ -1,4 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import ConfirmationDialog from './ConfirmationDialog';
 
 describe('ConfirmationDialog - Accessibility and Decision Lifecycle', () => {
   it('defines the contract for confirmation options and styling variants', () => {
@@ -57,5 +60,52 @@ describe('ConfirmationDialog - Accessibility and Decision Lifecycle', () => {
 
     handleKeyDown({ key: 'Enter' });
     expect(onCancelMock).toHaveBeenCalledTimes(1); // not called again
+  });
+});
+
+describe('ConfirmationDialog - rendered output', () => {
+  const render = (props) =>
+    renderToStaticMarkup(
+      createElement(ConfirmationDialog, {
+        isOpen: true,
+        title: 'Remove this service guide?',
+        message: 'This removes "PAN Card" from the active service directory.',
+        itemName: 'PAN Card',
+        confirmLabel: 'Remove service',
+        cancelLabel: 'Keep service',
+        onConfirm: () => {},
+        onCancel: () => {},
+        ...props,
+      })
+    );
+
+  it('renders nothing when closed', () => {
+    expect(render({ isOpen: false })).toBe('');
+  });
+
+  it('shows the target record, consequence and both choices as an alertdialog', () => {
+    const html = render({});
+    expect(html).toContain('role="alertdialog"');
+    expect(html).toContain('PAN Card');
+    expect(html).toContain('Remove service');
+    expect(html).toContain('Keep service');
+    expect(html).not.toContain('role="alert"');
+    expect(html).not.toContain('disabled');
+  });
+
+  it('pending: locks cancel, close and confirm so the action cannot be sent twice', () => {
+    const html = render({ isLoading: true });
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('Processing...');
+    // close icon, cancel and confirm are all disabled
+    expect(html.match(/disabled=""/g)).toHaveLength(3);
+  });
+
+  it('failure: announces the error inline and keeps both buttons usable', () => {
+    const html = render({ errorMessage: 'Could not remove it. Try again.', confirmLabel: 'Try again' });
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Could not remove it. Try again.');
+    expect(html).toContain('Try again');
+    expect(html).not.toContain('disabled');
   });
 });

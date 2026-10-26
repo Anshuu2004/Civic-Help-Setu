@@ -1,32 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import en from '../locales/en.json';
-import hi from '../locales/hi.json';
-import bn from '../locales/bn.json';
-import ta from '../locales/ta.json';
+import { DICTIONARIES } from '../utils/translationCoverage';
+import { SUPPORTED_LANGUAGES, loadLanguage, saveLanguage } from '../utils/languagePreference';
 
+const en = DICTIONARIES.en;
 const LanguageContext = createContext(null);
-const STORAGE_KEY = 'civicbridge_lang';
 const PLAIN_LANG_KEY = 'civicbridge_plain_lang';
 
-export const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English', native: 'English', badge: 'EN' },
-  { code: 'hi', label: 'Hindi', native: 'हिन्दी', badge: 'हि' },
-  { code: 'bn', label: 'Bengali', native: 'বাংলা', badge: 'বা' },
-  { code: 'ta', label: 'Tamil', native: 'தமிழ்', badge: 'த' },
-];
-
-const DICTIONARIES = { en, hi, bn, ta };
+export { SUPPORTED_LANGUAGES };
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguageState] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return ['en', 'hi', 'bn', 'ta'].includes(saved) ? saved : 'en';
-    } catch {
-      return 'en';
-    }
-  });
+  const [language, setLanguageState] = useState(loadLanguage);
 
   const [isPlainLanguage, setIsPlainLanguage] = useState(() => {
     try {
@@ -37,14 +21,7 @@ export const LanguageProvider = ({ children }) => {
   });
 
   const setLanguage = useCallback((lang) => {
-    const valid = ['en', 'hi', 'bn', 'ta'].includes(lang) ? lang : 'en';
-    setLanguageState(valid);
-    try {
-      localStorage.setItem(STORAGE_KEY, valid);
-      document.documentElement.lang = valid;
-    } catch (err) {
-      console.error('Failed to save language preference', err);
-    }
+    setLanguageState(saveLanguage(lang));
   }, []);
 
   const togglePlainLanguage = useCallback(() => {
@@ -73,7 +50,7 @@ export const LanguageProvider = ({ children }) => {
         if (current && typeof current === 'object' && k in current) {
           current = current[k];
         } else {
-          // Fallback to English dictionary if key missing in translation
+          // Fallback order is documented in utils/translationCoverage.js
           let enCurrent = en;
           for (const enK of keys) {
             if (enCurrent && typeof enCurrent === 'object' && enK in enCurrent) {

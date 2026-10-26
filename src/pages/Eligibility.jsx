@@ -3,11 +3,27 @@ import { Sparkles, ShieldCheck, Bookmark, HelpCircle, Calculator } from 'lucide-
 import UniversalEligibilityWizard from '../components/eligibility/UniversalEligibilityWizard';
 import SavedAssessmentsList from '../components/eligibility/SavedAssessmentsList';
 import EntitlementCalculatorModal from '../components/eligibility/EntitlementCalculatorModal';
+import UnsavedChangesDialog from '../components/common/UnsavedChangesDialog';
 
 const Eligibility = () => {
   const [activeTab, setActiveTab] = useState('wizard');
   const [refreshCount, setRefreshCount] = useState(0);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+
+  const [wizardDirty, setWizardDirty] = useState(false);
+  const [pendingTab, setPendingTab] = useState(null);
+
+  // Switching tabs unmounts the wizard, so unsaved answers need the same warning.
+  const requestTab = (tab) => {
+    if (tab === activeTab) return;
+    if (activeTab === 'wizard' && wizardDirty) setPendingTab(tab);
+    else setActiveTab(tab);
+  };
+
+  const discardAndSwitch = () => {
+    setActiveTab(pendingTab);
+    setPendingTab(null);
+  };
 
   const handleAssessmentSaved = () => {
     setRefreshCount((prev) => prev + 1);
@@ -53,7 +69,7 @@ const Eligibility = () => {
         >
           <button
             type="button"
-            onClick={() => setActiveTab('wizard')}
+            onClick={() => requestTab('wizard')}
             style={{
               padding: '0.6rem 1.5rem',
               borderRadius: '99px',
@@ -70,7 +86,7 @@ const Eligibility = () => {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('saved')}
+            onClick={() => requestTab('saved')}
             style={{
               padding: '0.6rem 1.5rem',
               borderRadius: '99px',
@@ -131,10 +147,16 @@ const Eligibility = () => {
 
         {/* Content based on active tab */}
         {activeTab === 'wizard' ? (
-          <UniversalEligibilityWizard onAssessmentSaved={handleAssessmentSaved} />
+          <UniversalEligibilityWizard onAssessmentSaved={handleAssessmentSaved} onDirtyChange={setWizardDirty} />
         ) : (
           <SavedAssessmentsList refreshTrigger={refreshCount} />
         )}
+
+        <UnsavedChangesDialog
+          isOpen={pendingTab !== null}
+          onStay={() => setPendingTab(null)}
+          onDiscard={discardAndSwitch}
+        />
 
         {/* Welfare Entitlement Maximizer Modal */}
         <EntitlementCalculatorModal isOpen={isCalcOpen} onClose={() => setIsCalcOpen(false)} />

@@ -1,7 +1,7 @@
-import { Download, Trash2, Printer, Sparkles } from 'lucide-react';
+import { Download, MessageSquarePlus, Printer } from 'lucide-react';
 import { exportChatAsMarkdown } from '../../services/chatStorage';
 
-const ChatHeaderControls = ({ messages = [], onClear }) => {
+const ChatHeaderControls = ({ messages = [], onNewConversation, canReset = true, isLoading = false }) => {
   const messageCount = messages.filter((m) => m.role === 'user').length;
 
   const handleExport = () => {
@@ -12,11 +12,10 @@ const ChatHeaderControls = ({ messages = [], onClear }) => {
     window.print();
   };
 
-  const handleClearClick = () => {
-    if (window.confirm('Are you sure you want to clear your current consultation session?')) {
-      onClear();
-    }
-  };
+  const resetDisabled = isLoading || !canReset;
+  let resetHint = 'Clear this chat and start a new question. You will be asked to confirm.';
+  if (isLoading) resetHint = 'Wait for the current reply to finish before starting a new conversation';
+  else if (!canReset) resetHint = 'Ask a question first, then you can start a new conversation';
 
   return (
     <div
@@ -87,7 +86,8 @@ const ChatHeaderControls = ({ messages = [], onClear }) => {
 
         <button
           type="button"
-          onClick={handleClearClick}
+          onClick={onNewConversation}
+          disabled={resetDisabled}
           className="btn"
           style={{
             padding: '0.35rem 0.75rem',
@@ -97,10 +97,12 @@ const ChatHeaderControls = ({ messages = [], onClear }) => {
             color: 'var(--error, #ef4444)',
             borderRadius: '99px',
             gap: '0.35rem',
+            opacity: resetDisabled ? 0.5 : 1,
+            cursor: resetDisabled ? 'not-allowed' : 'pointer',
           }}
-          title="Start a fresh chat"
+          title={resetHint}
         >
-          <Trash2 size={14} /> Clear
+          <MessageSquarePlus size={14} aria-hidden="true" /> New conversation
         </button>
       </div>
     </div>

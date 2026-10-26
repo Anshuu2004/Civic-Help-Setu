@@ -1,4 +1,5 @@
-import { X, ShieldCheck, Calendar, Download, Trash2, Building, Hash, FileText } from 'lucide-react';
+import { X, ShieldCheck, Calendar, Trash2, Building, Hash, FileText } from 'lucide-react';
+import FilePreviewPanel from './FilePreviewPanel';
 import { getExpiryStatus } from '../../services/vaultStorage';
 
 const DocumentPreviewModal = ({ doc, isOpen, onClose, onDelete }) => {
@@ -157,15 +158,9 @@ const DocumentPreviewModal = ({ doc, isOpen, onClose, onDelete }) => {
             </div>
           )}
 
-          {doc.fileName && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', borderTop: '1px solid var(--border-light)' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>Attached Scan</span>
-              <span style={{ fontSize: '0.85rem', color: 'var(--accent-main)', fontWeight: '600' }}>
-                {doc.fileName} {doc.fileSize ? `(${doc.fileSize})` : ''}
-              </span>
-            </div>
-          )}
         </div>
+
+        <FilePreviewPanel doc={doc} />
 
         {doc.notes && (
           <div style={{ marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)', padding: '0.75rem', background: 'var(--glass-bg)', borderRadius: '0.5rem' }}>
@@ -194,16 +189,6 @@ const DocumentPreviewModal = ({ doc, isOpen, onClose, onDelete }) => {
             <Trash2 size={16} /> Delete Document
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              alert(`Simulating secure decrypted download for: ${doc.fileName || doc.type}`);
-            }}
-            className="btn btn-primary"
-            style={{ padding: '0.65rem 1.25rem', fontSize: '0.875rem' }}
-          >
-            <Download size={16} /> Download Copy
-          </button>
         </div>
       </div>
     </div>

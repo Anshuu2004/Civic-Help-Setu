@@ -18,6 +18,9 @@ import EligibilityBadge from './EligibilityBadge';
 import CriteriaList from './CriteriaList';
 import { useToast } from '../../context/ToastContext';
 import { Link } from 'react-router-dom';
+import useUnsavedChangesGuard from '../../hooks/useUnsavedChangesGuard';
+import { isFormDirty } from '../../utils/formDraft';
+import UnsavedChangesDialog from '../common/UnsavedChangesDialog';
 
 const INDIAN_STATES = [
   'Andhra Pradesh', 'Assam', 'Bihar', 'Delhi', 'Gujarat', 'Haryana',
@@ -37,28 +40,31 @@ const validateBasics = (profile) => {
   if (!Number.isFinite(age) || age < 1 || age > 110) errors.age = 'Enter an age between 1 and 110.';
   if (!Number.isFinite(income) || income < 0) errors.annualIncome = 'Enter your annual family income, 0 or more.';
   return errors;
+const DEFAULT_PROFILE = {
+  age: 26,
+  annualIncome: 180000,
+  employment: 'salaried',
+  category: 'OBC',
+  state: 'Maharashtra',
+  isStudent: false,
+  ownsAgriculturalLand: false,
+  hasAadhaar: true,
+  hasPan: true,
+  hasLearnerLicense: false,
+  hasIncomeCertificate: false,
 };
 
 const UniversalEligibilityWizard = ({
   onAssessmentSaved = () => {},
+  onDirtyChange = () => {},
 }) => {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
 
   // Form State
-  const [profile, setProfile] = useState({
-    age: 26,
-    annualIncome: 180000,
-    employment: 'salaried',
-    category: 'OBC',
-    state: 'Maharashtra',
-    isStudent: false,
-    ownsAgriculturalLand: false,
-    hasAadhaar: true,
-    hasPan: true,
-    hasLearnerLicense: false,
-    hasIncomeCertificate: false,
-  });
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
+  // Last saved (or initial) answers; edits relative to this are unsaved.
+  const [baseline, setBaseline] = useState(DEFAULT_PROFILE);
 
   const [evaluations, setEvaluations] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -104,6 +110,15 @@ const UniversalEligibilityWizard = ({
     setStep(2);
   };
 
+  const isDirty = isFormDirty(profile, baseline);
+  const guard = useUnsavedChangesGuard(isDirty);
+
+  useEffect(() => {
+    onDirtyChange(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  useEffect(() => () => onDirtyChange(false), [onDirtyChange]);
+
   const handleRunEvaluation = () => {
     const found = validateBasics(profile);
     setErrors(found);
@@ -131,6 +146,7 @@ const UniversalEligibilityWizard = ({
       })
     );
     setIsSaved(true);
+    setBaseline(profile);
     toast.success('Eligibility assessment record saved to your profile!');
     onAssessmentSaved();
   };
@@ -621,6 +637,11 @@ const UniversalEligibilityWizard = ({
           </div>
         </div>
       )}
+      <UnsavedChangesDialog
+        isOpen={guard.isBlocked}
+        onStay={guard.stay}
+        onDiscard={guard.discard}
+      />
     </div>
   );
 };
