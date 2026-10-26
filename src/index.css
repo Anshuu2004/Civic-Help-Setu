@@ -878,3 +878,19 @@ p.vault-preview-state { flex-direction: row; align-items: flex-start; gap: 0.5re
 .assistant-generated-tag { align-self: flex-start; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border: 1px dashed var(--border-main); border-radius: 99px; padding: 0.15rem 0.6rem; }
 .assistant-message-body { min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { .sources-panel__chevron { transition: none; } }
+
+/* ==== Home quick-action panel (#159) ==== */
+.quick-actions { padding-top: 0; padding-bottom: 3rem; position: relative; }
+.quick-actions__title { font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; }
+.quick-actions__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.quick-action { display: flex; align-items: center; gap: 1rem; height: 100%; padding: 1rem 1.25rem; background: var(--glass-bg); border: 1px solid var(--border-main); border-radius: var(--radius-md); color: var(--text-primary); text-decoration: none; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+.quick-action:hover { background: var(--glass-bg-hover); border-color: var(--accent-main); transform: translateY(-2px); }
+.quick-action:focus-visible { outline: 3px solid var(--accent-main); outline-offset: 3px; }
+.quick-action__icon { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius-sm); background: var(--accent-light); color: var(--accent-main); }
+.quick-action__text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; flex: 1; }
+.quick-action__label { font-weight: 700; font-size: 1rem; overflow-wrap: anywhere; }
+.quick-action__hint { font-size: 0.85rem; line-height: 1.4; color: var(--text-secondary); overflow-wrap: anywhere; }
+.quick-action__arrow { flex-shrink: 0; color: var(--text-tertiary); }
+@media (max-width: 992px) { .quick-actions__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .quick-actions__list { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .quick-action { transition: none; } .quick-action:hover { transform: none; } }
