@@ -11,8 +11,18 @@ import ChatHeaderControls from '../components/chat/ChatHeaderControls';
 import VoiceInputStatus from '../components/chat/VoiceInputStatus';
 import PersonalizedRecommendationsPanel from '../components/chat/PersonalizedRecommendationsPanel';
 import DocumentChecklistCard from '../components/chat/DocumentChecklistCard';
+import ChatEmptyState from '../components/chat/ChatEmptyState';
+import UndoResetNotice from '../components/chat/UndoResetNotice';
+import ConfirmationDialog from '../components/common/ConfirmationDialog';
 import { STARTER_PROMPTS, resolveFollowUpQuery, getLastUserMessage, hasUserMessages } from '../ai/conversationContext';
 import { loadChatHistory, saveChatHistory, clearChatHistory } from '../services/chatStorage';
+import {
+  UNDO_WINDOW_MS,
+  needsResetConfirmation,
+  createResetSnapshot,
+  getUndoRemainingMs,
+  restoreFromSnapshot,
+} from '../utils/chatSession';
 
 const Assistant = () => {
   const [messages, setMessages] = useState(() => loadChatHistory());
@@ -25,6 +35,12 @@ const Assistant = () => {
   const recognitionRef = useRef(null);
   const inputRef = useRef(null);
   const [failedQuery, setFailedQuery] = useState(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  // Messages cleared by "New conversation", kept in memory only for the undo window
+  const [undoSnapshot, setUndoSnapshot] = useState(null);
+  const undoNoticeRef = useRef(null);
+  // State updates are async, so this stops two quick sends from both going out
+  const requestInFlightRef = useRef(false);
 
   const location = useLocation();
 
@@ -44,7 +60,22 @@ const Assistant = () => {
     }
   }, [location]);
 
+  // If the notice had keyboard focus when it goes away, hand focus back to the input
+  const closeUndo = () => {
+    if (undoNoticeRef.current?.contains(document.activeElement)) inputRef.current?.focus();
+    setUndoSnapshot(null);
+  };
+
+  // Drop the undo option when the window closes
   useEffect(() => {
+    if (!undoSnapshot) return undefined;
+    const timer = setTimeout(() => closeUndo(), getUndoRemainingMs(undoSnapshot));
+    return () => clearTimeout(timer);
+  }, [undoSnapshot]);
+
+  useEffect(() => {
+    // Nothing to scroll to in the empty state, and after a reset the starters should stay in view
+    if (!hasUserMessages(messages) && !isLoading) return;
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isLoading]);
 
@@ -74,8 +105,11 @@ const Assistant = () => {
 
   const handleSendMessage = async (text = input, { isRetry = false } = {}) => {
     const query = text.trim();
-    if (!query || isLoading) return;
+    if (!query || isLoading || requestInFlightRef.current) return;
+    requestInFlightRef.current = true;
 
+    // Sending a new question starts a different conversation, so the old one can no longer be restored
+    setUndoSnapshot(null);
     const history = messages;
     if (!isRetry) {
       const userMessage = {
@@ -99,6 +133,7 @@ const Assistant = () => {
       setError("We couldn't process your request. Please try again.");
       setFailedQuery(query);
     } finally {
+      requestInFlightRef.current = false;
       setIsLoading(false);
     }
   };
@@ -167,10 +202,28 @@ const Assistant = () => {
     }
   };
 
-  const handleClearChat = () => {
-    const reset = clearChatHistory();
-    setMessages(reset);
+  const handleNewConversationClick = () => {
+    if (isLoading) return;
+    if (needsResetConfirmation(messages)) setShowResetConfirm(true);
   };
+
+  const handleConfirmNewConversation = () => {
+    setShowResetConfirm(false);
+    if (isLoading || !needsResetConfirmation(messages)) return;
+    setUndoSnapshot(createResetSnapshot(messages));
+    setMessages(clearChatHistory());
+    window.scrollTo({ top: 0 });
+    setError(null);
+    setFailedQuery(null);
+  };
+
+  const handleUndoReset = () => {
+    const restored = restoreFromSnapshot(undoSnapshot);
+    setUndoSnapshot(null);
+    if (restored) setMessages(restored);
+  };
+
+  const questionCount = messages.filter((m) => m.role === 'user').length;
 
   const renderAssistantContent = (msg) => {
     if (msg.text && !msg.data) {
@@ -363,7 +416,12 @@ const Assistant = () => {
         </div>
 
         {/* Chat Session Header Controls */}
-        <ChatHeaderControls messages={messages} onClear={handleClearChat} />
+        <ChatHeaderControls
+          messages={messages}
+          onNewConversation={handleNewConversationClick}
+          canReset={needsResetConfirmation(messages)}
+          isLoading={isLoading}
+        />
 
         {/* Voice Input Feedback */}
         <VoiceInputStatus
@@ -375,28 +433,13 @@ const Assistant = () => {
         {/* Personalized Civic Recommendations based on User Profile Context */}
         <PersonalizedRecommendationsPanel onSelectPrompt={(prompt) => handleSendMessage(prompt)} />
 
-        {/* Starter prompts for a fresh session */}
+        {/* Empty state with starter prompts for a fresh session */}
         {!hasUserMessages(messages) && (
-          <section aria-label="Example questions" style={{ marginBottom: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.5rem' }}>
-              Try asking
-            </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.5rem' }}>
-              {STARTER_PROMPTS.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  onClick={() => handleSendMessage(item.prompt)}
-                  disabled={isLoading}
-                  className="card"
-                  style={{ textAlign: 'left', padding: '0.75rem 1rem', cursor: 'pointer', background: 'var(--glass-bg)', color: 'var(--text-primary)' }}
-                >
-                  <strong style={{ display: 'block', fontSize: '0.85rem', color: 'var(--accent-main)' }}>{item.label}</strong>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{item.prompt}</span>
-                </button>
-              ))}
-            </div>
-          </section>
+          <ChatEmptyState
+            prompts={STARTER_PROMPTS}
+            onSelectPrompt={(prompt) => handleSendMessage(prompt)}
+            disabled={isLoading}
+          />
         )}
 
         {/* Messages Container */}
@@ -408,6 +451,7 @@ const Assistant = () => {
             marginBottom: '2rem',
             minHeight: '350px',
           }}
+          aria-busy={isLoading}
         >
           {messages.map((msg, index) => {
             const isUser = msg.role === 'user';
@@ -454,6 +498,7 @@ const Assistant = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <div
                 className="card"
+                role="status"
                 style={{
                   padding: '1.25rem 1.5rem',
                   display: 'flex',
@@ -504,6 +549,14 @@ const Assistant = () => {
 
           <div ref={messagesEndRef} />
         </div>
+
+        {undoSnapshot && (
+          <UndoResetNotice
+            seconds={UNDO_WINDOW_MS / 1000}
+            onUndo={handleUndoReset}
+            containerRef={undoNoticeRef}
+          />
+        )}
 
         {/* Input Bar */}
         <form
@@ -584,6 +637,17 @@ const Assistant = () => {
           </button>
         </form>
       </div>
+
+      <ConfirmationDialog
+        isOpen={showResetConfirm}
+        title="Start a new conversation?"
+        message={`This clears your ${questionCount === 1 ? '1 question' : `${questionCount} questions`} and the answers from this chat. You can undo it for ${UNDO_WINDOW_MS / 1000} seconds afterwards.`}
+        confirmLabel="Start new conversation"
+        cancelLabel="Keep this chat"
+        variant="warning"
+        onConfirm={handleConfirmNewConversation}
+        onCancel={() => setShowResetConfirm(false)}
+      />
     </div>
   );
 };
