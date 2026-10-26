@@ -79,6 +79,8 @@ const LocationFilterToolbar = ({
           />
           <input
             type="text"
+            id="office-locality-search"
+            aria-label="Search offices by name, locality, city or PIN code"
             placeholder="Search by center name, landmark, area, or PIN..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -95,6 +97,7 @@ const LocationFilterToolbar = ({
             <button
               type="button"
               onClick={() => onSearchChange('')}
+              aria-label="Clear search"
               style={{
                 position: 'absolute',
                 right: '0.75rem',

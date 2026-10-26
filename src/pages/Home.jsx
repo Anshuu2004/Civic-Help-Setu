@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SearchBox from '../components/SearchBox';
 import { BookOpen, Shield, HelpCircle, Users, CheckCircle2, Code, ArrowRight, Sparkles, ShieldAlert } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import QuickActionPanel from '../components/QuickActionPanel';
 import DisasterReliefHubModal from '../components/emergency/DisasterReliefHubModal';
 
 const useTypewriter = (words, typingSpeed = 80, deletingSpeed = 40, pauseDuration = 2500) => {
@@ -89,6 +90,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Quick Actions */}
+      <QuickActionPanel />
 
       {/* Trust Bar */}
       <section className="section section-bg" style={{ padding: '4rem 0' }}>

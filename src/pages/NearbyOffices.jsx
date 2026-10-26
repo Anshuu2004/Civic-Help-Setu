@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Building2,
   CalendarCheck,
-  Info,
 } from 'lucide-react';
 import {
   filterCivicOffices,
@@ -21,6 +20,15 @@ import InteractiveOfficeMap from '../components/location/InteractiveOfficeMap';
 import LocationFilterToolbar from '../components/location/LocationFilterToolbar';
 import OfficeCard from '../components/location/OfficeCard';
 import AppointmentModal from '../components/location/AppointmentModal';
+import LocationPermissionPanel, { LOCATION_REQUEST_BUTTON_ID } from '../components/location/LocationPermissionPanel';
+import {
+  LOCATION_STATUS,
+  canRequestLocation,
+  statusFromErrorKind,
+  readDeniedFlag,
+  writeDeniedFlag,
+  queryGeolocationPermission,
+} from '../utils/locationPermission';
 import { useToast } from '../context/ToastContext';
 
 const NearbyOffices = () => {
@@ -39,8 +47,10 @@ const NearbyOffices = () => {
 
   // Location & Geolocation State
   const [userCoords, setUserCoords] = useState(() => getCachedUserCoordinates());
-  const [isLocating, setIsLocating] = useState(false);
-  const [locationError, setLocationError] = useState(null);
+  const [locationStatus, setLocationStatus] = useState(() =>
+    readDeniedFlag() ? LOCATION_STATUS.DENIED : LOCATION_STATUS.IDLE
+  );
+  const [permissionState, setPermissionState] = useState('unknown');
 
   // View & Modal State
   const [viewMode, setViewMode] = useState('split'); // 'split' | 'map' | 'list'
@@ -57,26 +67,63 @@ const NearbyOffices = () => {
     }
   }, [routerLocation.search]);
 
-  // Request GPS Location handler
+  // Read the browser's permission state without prompting. Geolocation itself is only ever
+  // requested from the explicit button below, never on load.
+  useEffect(() => {
+    let cancelled = false;
+    let permissionStatus = null;
+    const applyState = (state) => {
+      setPermissionState(state);
+      if (state === 'denied') {
+        writeDeniedFlag(true);
+        setLocationStatus(LOCATION_STATUS.DENIED);
+      } else if (state === 'granted' || state === 'prompt') {
+        // The user changed the setting in the browser: allow a deliberate new attempt.
+        writeDeniedFlag(false);
+        setLocationStatus((prev) => (prev === LOCATION_STATUS.DENIED ? LOCATION_STATUS.IDLE : prev));
+      }
+    };
+    const onChange = () => applyState(permissionStatus.state);
+    queryGeolocationPermission().then(({ state, status }) => {
+      if (cancelled) return;
+      permissionStatus = status;
+      applyState(state);
+      if (status) status.addEventListener?.('change', onChange);
+    });
+    return () => {
+      cancelled = true;
+      permissionStatus?.removeEventListener?.('change', onChange);
+    };
+  }, []);
+
+  // Request GPS Location handler (only reachable from an explicit button press)
   const handleRequestLocation = async () => {
-    setIsLocating(true);
-    setLocationError(null);
+    if (!canRequestLocation({ status: locationStatus, permissionState })) return;
+    setLocationStatus(LOCATION_STATUS.REQUESTING);
     try {
       const coords = await requestUserCoordinates();
       setUserCoords(coords);
+      setLocationStatus(LOCATION_STATUS.IDLE);
+      writeDeniedFlag(false);
       toast?.success?.('Current GPS location detected successfully.', 'Location Acquired');
     } catch (err) {
-      const message = err.message || 'Could not retrieve your location.';
-      setLocationError({ kind: err.kind || 'unavailable', message });
-      toast?.warning?.(message);
-    } finally {
-      setIsLocating(false);
+      const status = statusFromErrorKind(err.kind);
+      if (status === LOCATION_STATUS.DENIED) writeDeniedFlag(true);
+      setLocationStatus(status);
+    }
+  };
+
+  const focusLocationPanel = () => {
+    const btn = document.getElementById(LOCATION_REQUEST_BUTTON_ID);
+    if (btn && !btn.disabled) {
+      btn.scrollIntoView?.({ block: 'center' });
+      btn.focus();
     }
   };
 
   const handleClearLocation = () => {
     setUserCoords(null);
-    setLocationError(null);
+    setLocationStatus(readDeniedFlag() ? LOCATION_STATUS.DENIED : LOCATION_STATUS.IDLE);
     sessionStorage.removeItem('civicbridge_user_coords');
     toast?.info?.('Location filter cleared.');
   };
@@ -296,46 +343,18 @@ const NearbyOffices = () => {
           onlyWheelchair={onlyWheelchair}
           onWheelchairChange={setOnlyWheelchair}
           userCoords={userCoords}
-          onRequestLocation={handleRequestLocation}
+          onRequestLocation={focusLocationPanel}
           onClearLocation={handleClearLocation}
-          isLocating={isLocating}
+          isLocating={locationStatus === LOCATION_STATUS.REQUESTING}
           onResetFilters={handleResetFilters}
         />
 
-        {locationError && (
-          <div
-            role="alert"
-            className="glass-panel"
-            style={{
-              display: 'flex',
-              gap: '0.75rem',
-              alignItems: 'flex-start',
-              padding: '0.9rem 1.1rem',
-              margin: '1rem 0',
-              borderRadius: '0.75rem',
-              border: '1px solid var(--border-light)',
-              fontSize: '0.9rem',
-            }}
-          >
-            <Info size={18} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
-            <div>
-              <strong>
-                {locationError.kind === 'denied'
-                  ? 'Location access is blocked'
-                  : locationError.kind === 'timeout'
-                    ? 'Location request timed out'
-                    : 'Could not get your location'}
-              </strong>
-              <div style={{ color: 'var(--text-secondary)' }}>
-                {locationError.message}
-                {locationError.kind !== 'denied' &&
-                  locationError.kind !== 'timeout' &&
-                  ' You can still choose a state and district above, or search by city or pincode.'}
-                {locationError.kind === 'denied' &&
-                  ' To use GPS later, allow location for this site in your browser settings and try again.'}
-              </div>
-            </div>
-          </div>
+        {!userCoords && (
+          <LocationPermissionPanel
+            status={locationStatus}
+            permissionState={permissionState}
+            onRequestLocation={handleRequestLocation}
+          />
         )}
 
         {hasAccuracyNote && (
