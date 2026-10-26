@@ -878,3 +878,9 @@ p.vault-preview-state { flex-direction: row; align-items: flex-start; gap: 0.5re
 .assistant-generated-tag { align-self: flex-start; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-tertiary); border: 1px dashed var(--border-main); border-radius: 99px; padding: 0.15rem 0.6rem; }
 .assistant-message-body { min-width: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { .sources-panel__chevron { transition: none; } }
+
+/* Loader icons use className="animate-spin" (#190). The project has no Tailwind, so the class is defined here.
+   Reduced motion slows the turn instead of stopping it, a frozen spinner reads as a hung page. */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .animate-spin { animation-duration: 3s; } }
