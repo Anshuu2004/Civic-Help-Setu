@@ -492,3 +492,27 @@ html[data-high-contrast="true"] .glass-panel {
 @media (prefers-reduced-motion: reduce) {
   .skeleton { animation: none; opacity: 0.5; }
 }
+
+/* ===== Admin import review table (#167) ===== */
+.import-review { margin-top: 1.25rem; }
+.import-review__title { font-size: 0.95rem; font-weight: 700; margin: 0 0 0.6rem; }
+.import-review__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-bottom: 0.75rem; font-size: 0.8rem; }
+.import-review__toggle { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.import-review__fields { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.import-review__fields-label { color: var(--text-secondary); }
+.import-review__chip { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-light); border-radius: 99px; padding: 0.2rem 0.65rem; font-size: 0.78rem; cursor: pointer; }
+.import-review__chip[aria-pressed="true"] { border-color: var(--text-primary); font-weight: 700; }
+.import-review__chip:focus-visible, .import-review__scroll:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+.import-review__scroll { border: 1px solid var(--border-light); border-radius: 0.6rem; overflow: auto; max-height: 360px; }
+.import-review__table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 0.8rem; text-align: left; }
+.import-review__table th, .import-review__table td { padding: 0.55rem 0.75rem; vertical-align: top; }
+.import-review__table thead th { position: sticky; top: 0; background: var(--bg-secondary); color: var(--text-tertiary); font-weight: 700; }
+.import-review__table tbody tr { border-top: 1px solid var(--border-light); }
+.import-review__table tbody th { font-weight: 600; }
+.import-review__status { display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 600; }
+.import-review__row--ready .import-review__status { color: #10b981; }
+.import-review__row--invalid .import-review__status { color: #ef4444; }
+.import-review__row--duplicate .import-review__status { color: #f59e0b; }
+.import-review__pager { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.8rem; color: var(--text-secondary); }
+.import-review__pager-buttons { display: inline-flex; gap: 0.5rem; }
+.import-review__pager-buttons .btn { font-size: 0.8rem; }
