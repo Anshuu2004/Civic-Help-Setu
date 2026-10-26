@@ -38,6 +38,7 @@ import RoleManagementModal from '../components/admin/RoleManagementModal';
 import ServiceSubmissionReviewModal from '../components/admin/ServiceSubmissionReviewModal';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
+import ServiceRecordList from '../components/admin/ServiceRecordList';
 import { useToast } from '../context/ToastContext';
 import { getAuditReports, resolveAuditReport } from '../services/communityAuditService';
 
@@ -236,7 +237,7 @@ const Admin = () => {
         </div>
 
         {/* Layout Grid: Sidebar Tabs & Main Content */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 240px) 1fr', gap: '2rem', alignItems: 'start' }}>
+        <div className="admin-layout" style={{ display: 'grid', gap: '2rem', alignItems: 'start' }}>
           {/* Sidebar Tabs */}
           <div
             className="glass-panel"
@@ -314,9 +315,9 @@ const Admin = () => {
             {/* Service Catalog Tab */}
             {activeTab === 'services' && (
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: '800', margin: 0 }}>Public Service Guides</h2>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <button
                       type="button"
                       onClick={() => setImportOpen((open) => !open)}
@@ -346,51 +347,11 @@ const Admin = () => {
                   />
                 )}
 
-                <div className="glass-panel" style={{ borderRadius: '0.85rem', overflow: 'hidden' }}>
-                  <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '1px solid var(--border-light)', color: 'var(--text-tertiary)', background: 'rgba(0, 0, 0, 0.15)' }}>
-                        <th style={{ padding: '0.85rem 1rem', fontWeight: '700' }}>Service Name</th>
-                        <th style={{ padding: '0.85rem 1rem', fontWeight: '700' }}>Category</th>
-                        <th style={{ padding: '0.85rem 1rem', fontWeight: '700' }}>Delivery Mode</th>
-                        <th style={{ padding: '0.85rem 1rem', fontWeight: '700', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {services.map((svc) => (
-                        <tr key={svc.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                          <td style={{ padding: '0.85rem 1rem', fontWeight: '600', color: 'var(--text-primary)' }}>
-                            {svc.name}
-                          </td>
-                          <td style={{ padding: '0.85rem 1rem', color: 'var(--text-secondary)' }}>
-                            {svc.category}
-                          </td>
-                          <td style={{ padding: '0.85rem 1rem' }}>
-                            <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '99px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '600' }}>
-                              {svc.type || 'Online / Offline'}
-                            </span>
-                          </td>
-                          <td style={{ padding: '0.85rem 1rem', textAlign: 'right' }}>
-                            <button
-                              type="button"
-                              onClick={() => setServiceModal({ isOpen: true, service: svc })}
-                              style={{ background: 'none', border: 'none', color: 'var(--accent-main)', fontWeight: '600', marginRight: '0.85rem', cursor: 'pointer' }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteService(svc.id)}
-                              style={{ background: 'none', border: 'none', color: 'var(--error, #ef4444)', fontWeight: '600', cursor: 'pointer' }}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <ServiceRecordList
+                  services={services}
+                  onEdit={(svc) => setServiceModal({ isOpen: true, service: svc })}
+                  onDelete={handleDeleteService}
+                />
               </div>
             )}
 
