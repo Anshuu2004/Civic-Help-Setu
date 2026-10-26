@@ -3,6 +3,7 @@
 
 export const THEME_KEY = 'civicbridge_theme';
 export const A11Y_KEY = 'civicbridge_a11y_prefs';
+export const FOCUS_MODE_KEY = 'civicbridge_focus_mode';
 
 export const THEMES = ['dark', 'light'];
 export const FONT_SCALES = ['normal', 'large', 'xlarge'];
@@ -62,6 +63,22 @@ export const loadA11yPrefs = () => {
 export const saveA11yPrefs = (prefs) => {
   try {
     getStorage()?.setItem(A11Y_KEY, JSON.stringify(sanitizeA11yPrefs(prefs)));
+  } catch {
+    // ignore, see saveTheme
+  }
+};
+
+export const loadFocusMode = () => {
+  try {
+    return getStorage()?.getItem(FOCUS_MODE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+export const saveFocusMode = (enabled) => {
+  try {
+    getStorage()?.setItem(FOCUS_MODE_KEY, String(enabled === true));
   } catch {
     // ignore, see saveTheme
   }
