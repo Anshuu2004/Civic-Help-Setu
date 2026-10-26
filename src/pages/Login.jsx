@@ -1,12 +1,14 @@
 import { useNavigate, useLocation, Link, Navigate } from 'react-router-dom';
 import { Shield, Sparkles, UserCheck, ShieldCheck, ArrowRight } from 'lucide-react';
-import { SignIn, useSignIn } from '@clerk/clerk-react';
+import { SignIn, ClerkFailed, useSignIn } from '@clerk/clerk-react';
 import { dark } from '@clerk/themes';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AuthRedirectNotice from '../components/common/AuthRedirectNotice';
+import AuthFallbackBanner from '../components/AuthFallbackBanner';
 import { buildAuthPath, getRedirectTarget } from '../utils/authRedirect';
+import { classifyAuthFailure, createRedirectGate } from '../utils/authFailure';
 
 // Google 4‑color SVG Brand Icon
 const GoogleLogo = ({ size = 20 }) => (
@@ -22,27 +24,47 @@ const GoogleLogo = ({ size = 20 }) => (
 const ClerkGoogleButton = ({ disabled, redirectTo = '/' }) => {
   const { signIn, isLoaded } = useSignIn();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [failure, setFailure] = useState(null);
+  // Clicks can land before a state update renders, so the gate is a ref.
+  const [gate] = useState(createRedirectGate);
+
+  // Coming back with the back button restores this page with the redirect
+  // still marked as running, so reopen the button.
+  useEffect(() => {
+    const handlePageShow = (event) => {
+      if (!event.persisted) return;
+      gate.release();
+      setLoading(false);
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [gate]);
 
   const handleGoogleSignIn = async () => {
     if (!isLoaded || !signIn) return;
-    try {
-      setLoading(true);
-      setError('');
+    setLoading(true);
+    const result = await gate.run(() => {
       // Router state is gone after the trip to Google, so the destination
       // rides along in the callback URL (SSOCallback reads these params).
       const callbackParams = new URLSearchParams({
         sign_in_force_redirect_url: redirectTo,
         sign_up_force_redirect_url: redirectTo,
       });
-      await signIn.authenticateWithRedirect({
+      return signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: `/sso-callback?${callbackParams.toString()}`,
         redirectUrlComplete: redirectTo,
       });
-    } catch (err) {
-      console.error('Google Sign‑In Error:', err);
-      setError(err?.errors?.[0]?.message || 'Google sign‑in could not be initiated.');
+    });
+    if (result.status === 'busy') return;
+    if (result.status === 'started') {
+      // The browser is leaving for Google; the button stays locked until then.
+      setFailure(null);
+      return;
+    }
+    if (result.status === 'failed') {
+      console.error('Google Sign‑In Error:', result.error);
+      setFailure(classifyAuthFailure(result.error, { online: navigator.onLine }));
       setLoading(false);
     }
   };
@@ -53,6 +75,7 @@ const ClerkGoogleButton = ({ disabled, redirectTo = '/' }) => {
         type="button"
         onClick={handleGoogleSignIn}
         disabled={disabled || loading || !isLoaded}
+        aria-busy={loading}
         className="google-signin-btn"
         style={{
           width: '100%',
@@ -86,8 +109,13 @@ const ClerkGoogleButton = ({ disabled, redirectTo = '/' }) => {
         <GoogleLogo size={22} />
         {loading ? 'Opening Google Sign‑in…' : 'Continue with Google'}
       </button>
-      {error && (
-        <p style={{ color: 'var(--error)', fontSize: '0.85rem', marginTop: '0.5rem', textAlign: 'center' }}>{error}</p>
+      <p role="status" style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+        {loading ? 'Opening Google sign-in. You will be taken to Google in a moment.' : ''}
+      </p>
+      {failure && (
+        <div style={{ marginTop: '0.75rem' }}>
+          <AuthFallbackBanner failure={failure} onRetry={handleGoogleSignIn} retrying={loading} />
+        </div>
       )}
     </div>
   );
@@ -159,6 +187,13 @@ const Login = () => {
 
         {isClerkConfigured ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <ClerkFailed>
+              {/* Clerk's script never loaded, so there is no sign-in form to show */}
+              <AuthFallbackBanner
+                failure={classifyAuthFailure({ code: 'failed_to_load_clerk_js' })}
+                onRetry={() => window.location.reload()}
+              />
+            </ClerkFailed>
             <ClerkGoogleButton redirectTo={from} />
             <SignIn
               routing="path"

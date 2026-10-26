@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
@@ -45,7 +45,7 @@ const ServicesFallback = () => (
   </div>
 );
 
-function App() {
+function AppRoot() {
   return (
     <ThemeProvider>
       <AccessibilityProvider>
@@ -54,7 +54,7 @@ function App() {
             <LanguageProvider>
               <NetworkProvider>
                 <ConfirmationDialogProvider>
-                  <BrowserRouter>
+                  <>
                     <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                     <OfflineBanner />
                     <SkipToContent />
@@ -111,7 +111,7 @@ function App() {
                   <ToastContainer />
                   <AccessibilityToolbar />
                 </div>
-              </BrowserRouter>
+              </>
             </ConfirmationDialogProvider>
           </NetworkProvider>
         </LanguageProvider>
@@ -120,6 +120,14 @@ function App() {
       </AccessibilityProvider>
     </ThemeProvider>
   );
+}
+
+// A data router is required for useBlocker (unsaved-changes warning).
+// A single splat route keeps all existing <Routes> behaviour unchanged.
+const router = createBrowserRouter([{ path: '*', element: <AppRoot /> }]);
+
+function App() {
+  return <RouterProvider router={router} />;
 }
 
 export default App;

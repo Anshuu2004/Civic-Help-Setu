@@ -72,6 +72,8 @@ Understand service eligibility, requirements, application steps, and other relev
 
 Save useful services for convenient access and revisit important information when needed.
 
+On the Saved page, a collection switcher groups guides by their folder. A guide lives in exactly one folder, so nothing is duplicated and removing a guide updates every collection. Collections exist only while a saved guide uses them; a collection created empty is kept in memory for the current visit and is not stored.
+
 ### 📈 5. Service Journey Tracking
 
 Use the tracking dashboard to organize service journeys and review available progress information.

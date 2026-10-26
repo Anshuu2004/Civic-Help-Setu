@@ -13,11 +13,11 @@ const getDifficultyBadge = (diff = '') => {
   return { bg: 'rgba(245, 158, 11, 0.15)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.3)' };
 };
 
-const ServiceCard = ({ service }) => {
+const ServiceCard = ({ service, isCompared = false, compareDisabled = false, onToggleCompare }) => {
   const { isPlainLanguage } = useLanguage();
   const diffStyle = getDifficultyBadge(service.difficulty);
 
-  return (
+  const card = (
     <Link
       to={`/services/${service.id}`}
       className="card"
@@ -138,6 +138,25 @@ const ServiceCard = ({ service }) => {
         </div>
       </div>
     </Link>
+  );
+
+  if (!onToggleCompare) return card;
+
+  return (
+    <div className="service-card-wrap">
+      {card}
+      <label className={`compare-toggle${compareDisabled ? ' is-disabled' : ''}`}>
+        <input
+          type="checkbox"
+          checked={isCompared}
+          disabled={compareDisabled}
+          onChange={() => onToggleCompare(service.id)}
+        />
+        <span>
+          Compare<span className="sr-only"> {service.name}</span>
+        </span>
+      </label>
+    </div>
   );
 };
 
