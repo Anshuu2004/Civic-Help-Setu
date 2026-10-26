@@ -1,11 +1,84 @@
 import { useState } from 'react';
-import { Info, X, ShieldAlert } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Info, X, ShieldAlert, AlertTriangle, RefreshCw, Home, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const AuthFallbackBanner = () => {
+const REPORT_URL = 'https://github.com/GoldRay19/Civic-Help-Setu/issues';
+
+/**
+ * Inline recovery state for a sign-in that did not finish.
+ * `failure` comes from classifyAuthFailure(), so it only ever holds fixed,
+ * safe wording. Retryable failures get a Try again button, every failure gets
+ * a way back to the public home page and a way to report the problem.
+ */
+export const AuthFailureNotice = ({ failure, onRetry, retrying = false }) => {
+  if (!failure) return null;
+  const canRetry = failure.retryable && typeof onRetry === 'function';
+
+  return (
+    <div
+      role="alert"
+      data-testid="auth-failure-notice"
+      data-failure-kind={failure.kind}
+      style={{
+        display: 'flex',
+        gap: '0.75rem',
+        alignItems: 'flex-start',
+        padding: '0.9rem 1rem',
+        background: 'rgba(239, 68, 68, 0.08)',
+        border: '1px solid rgba(239, 68, 68, 0.35)',
+        borderRadius: '0.75rem',
+        fontSize: '0.875rem',
+        textAlign: 'left',
+      }}
+    >
+      <AlertTriangle size={18} color="var(--error, #ef4444)" style={{ flexShrink: 0, marginTop: '0.1rem' }} aria-hidden="true" />
+      <div style={{ minWidth: 0 }}>
+        <p style={{ fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>{failure.title}</p>
+        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>{failure.message}</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.5rem 1rem', marginTop: '0.75rem' }}>
+          {canRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              disabled={retrying}
+              aria-busy={retrying}
+              className="btn btn-secondary"
+              style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
+            >
+              {retrying ? <Loader2 size={14} aria-hidden="true" /> : <RefreshCw size={14} aria-hidden="true" />}
+              {retrying ? 'Trying again…' : 'Try again'}
+            </button>
+          )}
+          <Link
+            to="/"
+            style={{ color: 'var(--accent-main)', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+          >
+            <Home size={14} aria-hidden="true" /> Return home
+          </Link>
+          <a
+            href={REPORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--accent-main)', fontWeight: '600' }}
+          >
+            Report a problem
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Without props this is the demo / local mode banner. With a `failure` it shows
+ * the sign-in recovery state instead.
+ */
+const AuthFallbackBanner = ({ failure = null, onRetry, retrying = false }) => {
   const { isDemoMode, user, signInAsDemo } = useAuth();
   const [dismissed, setDismissed] = useState(false);
 
+  if (failure) return <AuthFailureNotice failure={failure} onRetry={onRetry} retrying={retrying} />;
   if (!isDemoMode || dismissed) return null;
 
   return (
