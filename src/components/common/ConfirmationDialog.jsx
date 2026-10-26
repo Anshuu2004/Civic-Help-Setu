@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { captureFocusedElement, restoreFocus } from '../../utils/focusReturn';
 import { AlertTriangle, AlertCircle, Info, X, Trash2, CheckCircle2, Loader2 } from 'lucide-react';
 
 /**
@@ -8,6 +9,7 @@ import { AlertTriangle, AlertCircle, Info, X, Trash2, CheckCircle2, Loader2 } fr
  * - aria-labelledby & aria-describedby
  * - Keyboard Escape cancellation
  * - Focus defaulted to Cancel button to prevent accidental data destruction
+ * - On close, focus goes back to the element that opened the dialog (WCAG 2.4.3)
  * - While isLoading, every way of closing the dialog is ignored so the pending
  *   action cannot be abandoned half way or submitted twice
  * - errorMessage keeps the dialog open and announces the failure inline
@@ -28,15 +30,20 @@ const ConfirmationDialog = ({
   const cancelButtonRef = useRef(null);
   const dialogRef = useRef(null);
 
-  // Focus Cancel button upon opening for safety against accidental Enter presses
+  // Focus Cancel button upon opening for safety against accidental Enter presses,
+  // and hand focus back to the opener when the dialog closes (or unmounts).
   useEffect(() => {
     if (isOpen) {
+      const opener = captureFocusedElement();
       const timer = setTimeout(() => {
         if (cancelButtonRef.current) {
           cancelButtonRef.current.focus();
         }
       }, 50);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        restoreFocus(opener);
+      };
     }
   }, [isOpen]);
 
