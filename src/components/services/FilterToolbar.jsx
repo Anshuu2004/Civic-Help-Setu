@@ -1,10 +1,12 @@
-import { Search, X, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
+import { useState } from 'react';
+import { Search, X, ArrowUpDown } from 'lucide-react';
 import DepartmentFilterSelect from './DepartmentFilterSelect';
 import FeeAndSpeedFilter from './FeeAndSpeedFilter';
 
 const FilterToolbar = ({
   searchQuery,
   onSearchChange,
+  searchSuggestions = [],
   selectedMode,
   onModeChange,
   selectedDifficulty,
@@ -22,6 +24,34 @@ const FilterToolbar = ({
   onResetFilters,
   hasActiveFilters,
 }) => {
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+  const suggestionListId = 'service-search-suggestions';
+
+  const chooseSuggestion = (suggestion) => {
+    onSearchChange(suggestion.label);
+    setSuggestionsOpen(false);
+    setActiveSuggestion(-1);
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (!searchSuggestions.length) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setSuggestionsOpen(true);
+      setActiveSuggestion((current) => Math.min(current + 1, searchSuggestions.length - 1));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActiveSuggestion((current) => Math.max(current - 1, 0));
+    } else if (event.key === 'Enter' && suggestionsOpen && activeSuggestion >= 0) {
+      event.preventDefault();
+      chooseSuggestion(searchSuggestions[activeSuggestion]);
+    } else if (event.key === 'Escape') {
+      setSuggestionsOpen(false);
+      setActiveSuggestion(-1);
+    }
+  };
+
   return (
     <div
       style={{
@@ -45,7 +75,15 @@ const FilterToolbar = ({
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ position: 'relative', flex: '1 1 320px' }}>
+        <div
+          style={{ position: 'relative', flex: '1 1 320px' }}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) {
+              setSuggestionsOpen(false);
+              setActiveSuggestion(-1);
+            }
+          }}
+        >
           <Search
             size={18}
             style={{
@@ -58,9 +96,21 @@ const FilterToolbar = ({
           />
           <input
             type="text"
+            aria-label="Search public services"
             placeholder="Search by title, documents, or keywords..."
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => {
+              onSearchChange(e.target.value);
+              setSuggestionsOpen(true);
+              setActiveSuggestion(-1);
+            }}
+            onFocus={() => setSuggestionsOpen(true)}
+            onKeyDown={handleSearchKeyDown}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={suggestionsOpen && searchSuggestions.length > 0}
+            aria-controls={suggestionListId}
+            aria-activedescendant={activeSuggestion >= 0 ? `service-suggestion-${activeSuggestion}` : undefined}
             className="input-field"
             style={{
               // Reserve room for the conditional clear button so long search
@@ -88,6 +138,59 @@ const FilterToolbar = ({
             >
               <X size={16} />
             </button>
+          )}
+          {suggestionsOpen && searchSuggestions.length > 0 && (
+            <ul
+              id={suggestionListId}
+              role="listbox"
+              aria-label="Suggested service searches"
+              style={{
+                position: 'absolute',
+                zIndex: 20,
+                top: 'calc(100% + 0.4rem)',
+                left: 0,
+                right: 0,
+                margin: 0,
+                padding: '0.4rem',
+                listStyle: 'none',
+                border: '1px solid var(--border-light)',
+                borderRadius: '0.9rem',
+                background: 'var(--bg-main)',
+                boxShadow: '0 14px 32px rgba(0, 0, 0, 0.18)',
+              }}
+            >
+              {searchSuggestions.map((suggestion, index) => (
+                <li key={`${suggestion.kind}-${suggestion.label}`}>
+                  <button
+                    id={`service-suggestion-${index}`}
+                    type="button"
+                    role="option"
+                    aria-selected={activeSuggestion === index}
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => chooseSuggestion(suggestion)}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      padding: '0.55rem 0.75rem',
+                      border: 'none',
+                      borderRadius: '0.6rem',
+                      background: activeSuggestion === index ? 'var(--glass-bg)' : 'transparent',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <span>{suggestion.label}</span>
+                    <span style={{ color: 'var(--text-tertiary)', fontSize: '0.72rem' }}>
+                      {suggestion.kind}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 
