@@ -42,6 +42,19 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   
   --max-w-content: 1200px;
+
+  /* Nearby Offices map panel (InteractiveOfficeMap) */
+  --map-panel-bg: #1e293b;
+  --map-canvas-bg: radial-gradient(ellipse at 50% 50%, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 1));
+  --map-popover-bg: rgba(15, 23, 42, 0.95);
+  --map-bar-bg: rgba(0, 0, 0, 0.2);
+  --map-grid: rgba(255, 255, 255, 0.04);
+  --map-label: #f1f5f9;
+  --map-halo: rgba(15, 23, 42, 0.9);
+  --map-accent-text: var(--accent-main);
+  --map-badge-bg: rgba(56, 189, 248, 0.15);
+  --map-ok: #10b981;
+  --map-bad: #ef4444;
 }
 
 [data-theme="light"] {
@@ -75,6 +88,18 @@
   --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.1);
   --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.15), 0 0 40px rgba(99, 102, 241, 0.1);
+
+  --map-panel-bg: #f4f4f5;
+  --map-canvas-bg: radial-gradient(ellipse at 50% 50%, #f8fafc, #e2e8f0);
+  --map-popover-bg: rgba(255, 255, 255, 0.96);
+  --map-bar-bg: rgba(0, 0, 0, 0.04);
+  --map-grid: rgba(15, 23, 42, 0.08);
+  --map-label: #0f172a;
+  --map-halo: rgba(255, 255, 255, 0.9);
+  --map-accent-text: #075985;
+  --map-badge-bg: rgba(14, 165, 233, 0.12);
+  --map-ok: #047857;
+  --map-bad: #b91c1c;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -328,6 +353,17 @@ html[data-high-contrast="true"] {
   --bg-main: #000000 !important;
   --bg-secondary: #0a0a0a !important;
   --card-bg: #121212 !important;
+  --map-panel-bg: #000000 !important;
+  --map-canvas-bg: #000000 !important;
+  --map-popover-bg: #000000 !important;
+  --map-bar-bg: #0a0a0a !important;
+  --map-grid: rgba(255, 255, 255, 0.12) !important;
+  --map-label: #ffffff !important;
+  --map-halo: #000000 !important;
+  --map-accent-text: #facc15 !important;
+  --map-badge-bg: #000000 !important;
+  --map-ok: #4ade80 !important;
+  --map-bad: #f87171 !important;
   --glass-bg: #111111 !important;
   --text-primary: #ffffff !important;
   --text-secondary: #e2e8f0 !important;
