@@ -16,6 +16,7 @@ import AccessibilityToolbar from './components/AccessibilityToolbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import OfflineBanner from './components/common/OfflineBanner';
 import BackToTop from './components/common/BackToTop';
+import RouteErrorFallback from './components/common/RouteErrorFallback';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -124,7 +125,7 @@ function AppRoot() {
 
 // A data router is required for useBlocker (unsaved-changes warning).
 // A single splat route keeps all existing <Routes> behaviour unchanged.
-const router = createBrowserRouter([{ path: '*', element: <AppRoot /> }]);
+const router = createBrowserRouter([{ path: '*', element: <AppRoot />, errorElement: <RouteErrorFallback /> }]);
 
 function App() {
   return <RouterProvider router={router} />;
