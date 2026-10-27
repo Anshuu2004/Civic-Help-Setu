@@ -42,6 +42,7 @@ import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
 import { useToast } from '../context/ToastContext';
 import { getAuditReports, resolveAuditReport } from '../services/communityAuditService';
+import { describeAuditReport, countOpenAudits } from '../utils/auditReportView';
 import ConfirmationDialog from '../components/common/ConfirmationDialog';
 import { MOCK_SERVICES } from '../data/services';
 import {
@@ -97,7 +98,7 @@ const Admin = () => {
     const updated = saveAdminService(serviceData, user?.username || 'SuperAdmin');
     setServices(updated);
     setAuditLogs(getAuditLogs());
-    toast?.success?.('Service guide saved and published live.');
+    toast?.success?.('Service guide saved. It now shows in the public directory on this device.');
   };
 
   const handleImportResult = (result) => {
@@ -245,7 +246,7 @@ const Admin = () => {
 
   const pendingReportsCount = reports.filter((r) => r.status === 'pending').length;
   const pendingSubmissionsCount = submissions.filter((s) => s.status === 'pending').length;
-  const pendingAuditsCount = communityAudits.filter((a) => a.status === 'open').length;
+  const pendingAuditsCount = countOpenAudits(communityAudits);
 
   return (
     <div className="section animate-fade-in" style={{ paddingBottom: '6rem' }}>
@@ -595,13 +596,13 @@ const Admin = () => {
                       No community discrepancy reports recorded yet.
                     </div>
                   ) : (
-                    communityAudits.map((item) => (
+                    communityAudits.map((report) => describeAuditReport(report, services)).map((item) => (
                       <div
                         key={item.id}
                         className="card"
                         style={{
                           padding: '1.25rem',
-                          borderLeft: `4px solid ${item.status === 'resolved' ? '#10b981' : item.corroborationsCount >= 3 ? '#ef4444' : '#f59e0b'}`,
+                          borderLeft: `4px solid ${item.tone === 'resolved' ? '#10b981' : item.tone === 'urgent' ? '#ef4444' : '#f59e0b'}`,
                           background: 'var(--glass-bg)',
                         }}
                       >
@@ -611,10 +612,10 @@ const Admin = () => {
                               {item.serviceName}
                             </span>
                             <span style={{ fontSize: '0.75rem', padding: '0.15rem 0.45rem', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontWeight: '600' }}>
-                              {item.discrepancyType.replace('_', ' ')}
+                              {item.categoryLabel}
                             </span>
                           </div>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{item.reportedAt} • {item.officeLocation}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>{item.reportedDate}</span>
                         </div>
 
                         <h4 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)', margin: '0.3rem 0' }}>
@@ -626,14 +627,14 @@ const Admin = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-light)' }}>
                           <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-                            <span>👍 {item.corroborationsCount} Citizens Corroborated</span>
-                            <span>👎 {item.refutationsCount} Refuted</span>
+                            <span>👍 {item.upvotes} Citizens Corroborated</span>
+                            <span>👎 {item.downvotes} Refuted</span>
                             <span>Reported by: {item.reportedBy}</span>
                           </div>
 
-                          {item.status === 'resolved' ? (
+                          {item.resolved ? (
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem', color: '#10b981', fontWeight: '600' }}>
-                              <CheckCircle2 size={16} /> Resolved: {item.resolutionNote}
+                              <CheckCircle2 size={16} /> Resolved: {item.adminNote}
                             </span>
                           ) : (
                             <button

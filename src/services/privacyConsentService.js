@@ -31,33 +31,88 @@ const redactVaultDocuments = (docs) =>
  * Keys that purge leaves alone on purpose are in RETAINED_STORAGE_KEYS.
  */
 export const USER_DATA_STORES = [
-  { key: 'civicbridge_vault_docs', exportAs: 'documentVaultMetadata', empty: [], transform: redactVaultDocuments }, // vaultStorage.js
-  { key: 'civicbridge_vault_pin', exportAs: null }, // vaultStorage.js
-  { key: 'civicbridge_saved_rich', exportAs: 'savedServices', empty: [] }, // savedStorage.js
-  { key: 'civicbridge_saved', exportAs: 'savedServiceBookmarks', empty: [] }, // ServiceDetails.jsx, savedStorage.js
-  { key: 'civicbridge_applications', exportAs: 'trackedApplications', empty: [] }, // trackingService.js
-  { key: 'civicbridge_office_tokens', exportAs: 'officeAppointments', empty: [] }, // locationService.js
-  { key: 'civic_service_reviews', exportAs: 'serviceReviews', empty: [] }, // reviewStorage.js
-  { key: 'civicbridge_reminders', exportAs: 'activeReminders', empty: [] }, // reminderNotificationService.js
-  { key: 'civicbridge_notification_settings', exportAs: 'notificationSettings', empty: {} }, // reminderNotificationService.js
-  { key: 'civicbridge_chat_history', exportAs: 'chatHistorySummary', empty: [], transform: (msgs) => ({ totalMessages: msgs.length }) }, // chatStorage.js
-  { key: 'civicbridge_eligibility_assessments', exportAs: 'eligibilityAssessments', empty: [] }, // assessmentStorage.js
-  { key: 'civic_grievance_tickets', exportAs: 'grievanceTickets', empty: [] }, // grievanceService.js
-  { key: 'civic_compared_services', exportAs: 'comparedServices', empty: [] }, // comparisonService.js
-  { key: 'civicbridge_faq_votes', exportAs: 'faqVotes', empty: {} }, // faqService.js
-  { key: 'civicbridge_ai_context_consent', exportAs: 'assistantContextConsent', empty: null }, // ai/contextRecommender.js
-  { key: 'civicbridge_offline_cache', exportAs: null }, // offlineCacheService.js
-  { key: 'civicbridge_offline_last_sync', exportAs: null }, // offlineCacheService.js
+  { key: 'civicbridge_vault_docs', category: 'vault', exportAs: 'documentVaultMetadata', empty: [], transform: redactVaultDocuments }, // vaultStorage.js
+  { key: 'civicbridge_vault_pin', category: 'vault', exportAs: null }, // vaultStorage.js
+  { key: 'civicbridge_saved_rich', category: 'saved', exportAs: 'savedServices', empty: [] }, // savedStorage.js
+  { key: 'civicbridge_saved', category: 'saved', exportAs: 'savedServiceBookmarks', empty: [] }, // ServiceDetails.jsx, savedStorage.js
+  { key: 'civicbridge_applications', category: 'tracking', exportAs: 'trackedApplications', empty: [] }, // trackingService.js
+  { key: 'civicbridge_office_tokens', category: 'tracking', exportAs: 'officeAppointments', empty: [] }, // locationService.js
+  { key: 'civic_service_reviews', category: 'activity', exportAs: 'serviceReviews', empty: [] }, // reviewStorage.js
+  { key: 'civicbridge_reminders', category: 'tracking', exportAs: 'activeReminders', empty: [] }, // reminderNotificationService.js
+  { key: 'civicbridge_notification_settings', category: 'tracking', exportAs: 'notificationSettings', empty: {} }, // reminderNotificationService.js
+  { key: 'civicbridge_chat_history', category: 'assistant', exportAs: 'chatHistorySummary', empty: [], transform: (msgs) => ({ totalMessages: msgs.length }) }, // chatStorage.js
+  { key: 'civicbridge_eligibility_assessments', category: 'drafts', exportAs: 'eligibilityAssessments', empty: [] }, // assessmentStorage.js
+  { key: 'civic_grievance_tickets', category: 'tracking', exportAs: 'grievanceTickets', empty: [] }, // grievanceService.js
+  { key: 'civic_compared_services', category: 'saved', exportAs: 'comparedServices', empty: [] }, // comparisonService.js
+  { key: 'civicbridge_faq_votes', category: 'activity', exportAs: 'faqVotes', empty: {} }, // faqService.js
+  { key: 'civicbridge_ai_context_consent', category: 'assistant', exportAs: 'assistantContextConsent', empty: null }, // ai/contextRecommender.js
+  { key: 'civicbridge_offline_cache', category: 'cache', exportAs: null }, // offlineCacheService.js
+  { key: 'civicbridge_offline_last_sync', category: 'cache', exportAs: null }, // offlineCacheService.js
+  { key: 'civicbridge_cached_shelters', category: 'cache', exportAs: null }, // disasterReliefService.js
+  { key: 'civicbridge_checklists', category: 'drafts', exportAs: 'checklistProgress', empty: {} }, // checklistStorage.js
+  { key: 'civicbridge_community_audits', category: 'activity', exportAs: null }, // communityAuditService.js
+];
+
+/**
+ * What the "Clear my data" screen offers. A store belongs to exactly one category (its `category` field).
+ * `copiesOf` lists the categories whose data this category only duplicates: the offline cache holds
+ * copies of saved guides and tracked applications, so clearing either of those clears it too.
+ */
+export const DATA_CATEGORIES = [
+  {
+    id: 'drafts',
+    label: 'Drafts and in-progress work',
+    description: 'Checklist ticks, journey planner progress and eligibility check answers.',
+    copiesOf: [],
+  },
+  {
+    id: 'tracking',
+    label: 'Tracking records',
+    description: 'Applications you track, office appointment tokens, grievance tickets and reminders.',
+    copiesOf: [],
+  },
+  {
+    id: 'saved',
+    label: 'Saved items',
+    description: 'Saved and compared service guides.',
+    copiesOf: [],
+  },
+  {
+    id: 'vault',
+    label: 'Document vault',
+    description: 'Document names, numbers and details you added to the vault, and the vault PIN.',
+    copiesOf: [],
+  },
+  {
+    id: 'assistant',
+    label: 'Assistant history',
+    description: 'Past assistant conversations and your choice about using saved items as context.',
+    copiesOf: [],
+  },
+  {
+    id: 'activity',
+    label: 'Reviews, votes and reports',
+    description: 'Service reviews, FAQ votes and community audit reports kept on this device.',
+    copiesOf: [],
+  },
+  {
+    id: 'cache',
+    label: 'Offline copies and location',
+    description: 'Offline copies of your saved guides and applications, cached shelters and your last location. Cleared together with tracking records or saved items.',
+    copiesOf: ['tracking', 'saved'],
+  },
 ];
 
 export const USER_DATA_STORAGE_KEYS = USER_DATA_STORES.map((store) => store.key);
 
 // The journey planner writes one key per journey: civic_journey_progress_<journeyId> (journeyDependencyEngine.js).
 const JOURNEY_PROGRESS_PREFIX = 'civic_journey_progress_';
-export const USER_DATA_KEY_PREFIXES = [JOURNEY_PROGRESS_PREFIX];
+export const USER_DATA_PREFIX_STORES = [{ prefix: JOURNEY_PROGRESS_PREFIX, category: 'drafts' }];
+export const USER_DATA_KEY_PREFIXES = USER_DATA_PREFIX_STORES.map((store) => store.prefix);
 
 // sessionStorage keys with user data, removed on purge (cached location from locationService.js).
-export const USER_DATA_SESSION_KEYS = ['civicbridge_user_coords'];
+export const USER_DATA_SESSION_STORES = [{ key: 'civicbridge_user_coords', category: 'cache' }];
+export const USER_DATA_SESSION_KEYS = USER_DATA_SESSION_STORES.map((store) => store.key);
 
 // Keys that purge leaves alone on purpose.
 export const RETAINED_STORAGE_KEYS = [
@@ -66,6 +121,7 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_lang',
   'civicbridge_plain_lang',
   'civicbridge_a11y_prefs',
+  'civicbridge_focus_mode',
   // Demo sign-in session, signing out is its own action
   'civicbridge_demo_user',
   // Admin portal data and the shared review queue for outdated-info reports

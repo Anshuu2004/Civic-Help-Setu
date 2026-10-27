@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MOCK_SERVICES } from '../data/services';
+import { getAllServices } from '../services/serviceCatalog';
 import ServiceCard from '../components/ServiceCard';
 import FilterToolbar from '../components/services/FilterToolbar';
 import DirectoryEmptyState from '../components/services/DirectoryEmptyState';
@@ -57,17 +57,20 @@ const Services = () => {
   const selectedSpeed = searchParams.get('speed') || 'All';
   const sortBy = searchParams.get('sort') || 'relevance';
 
+  // Built-in guides plus the ones the admin saved, read once when the page opens.
+  const [allServices] = useState(getAllServices);
+
   const categories = useMemo(() => {
-    return ['All', ...new Set(MOCK_SERVICES.map((s) => s.category))];
-  }, []);
+    return ['All', ...new Set(allServices.map((s) => s.category))];
+  }, [allServices]);
 
   const departments = useMemo(() => {
-    return [...new Set(MOCK_SERVICES.map((s) => s.department).filter(Boolean))];
-  }, []);
+    return [...new Set(allServices.map((s) => s.department).filter(Boolean))];
+  }, [allServices]);
 
   const searchSuggestions = useMemo(
-    () => getSearchSuggestions(MOCK_SERVICES, searchQuery),
-    [searchQuery]
+    () => getSearchSuggestions(allServices, searchQuery),
+    [allServices, searchQuery]
   );
 
   const updateParam = (key, value, defaultValue = 'All') => {
@@ -113,7 +116,7 @@ const Services = () => {
   );
 
   const filteredServices = useMemo(() => {
-    return rankAndFilterServices(MOCK_SERVICES, {
+    return rankAndFilterServices(allServices, {
       searchQuery,
       category: activeCategory,
       department: selectedDepartment,
@@ -124,6 +127,7 @@ const Services = () => {
       sortBy,
     });
   }, [
+    allServices,
     searchQuery,
     activeCategory,
     selectedDepartment,
