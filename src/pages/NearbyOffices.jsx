@@ -257,6 +257,8 @@ const NearbyOffices = () => {
           <div
             style={{
               display: 'inline-flex',
+              flexWrap: 'wrap',
+              maxWidth: '100%',
               background: 'var(--glass-bg)',
               borderRadius: '0.6rem',
               padding: '0.25rem',
@@ -408,7 +410,7 @@ const NearbyOffices = () => {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))',
                   gap: '1.5rem',
                 }}
               >
@@ -430,13 +432,13 @@ const NearbyOffices = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 420px), 1fr))',
               gap: '1.75rem',
               alignItems: 'start',
             }}
           >
             {/* Left: Sticky Visual Map */}
-            <div style={{ position: 'sticky', top: '1.5rem' }}>
+            <div style={{ position: 'sticky', top: '1.5rem', minWidth: 0 }}>
               <InteractiveOfficeMap
                 offices={filteredOffices}
                 userCoords={userCoords}
