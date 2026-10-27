@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import ClearMyDataPanel from '../components/privacy/ClearMyDataPanel';
 
 /* ─────────────────────────── helpers ─────────────────────────── */
 const Field = ({ icon: Icon, label, value, placeholder, editing, name, onChange, type = 'text' }) => (
@@ -82,6 +83,8 @@ const Profile = () => {
   const [saveError, setSaveError] = useState('');
   const [saveOk, setSaveOk] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
+  // Bumped after "Clear my data" so counts read from localStorage (Saved Guides) refresh
+  const [, setDataVersion] = useState(0);
 
   const [form, setForm] = useState({
     firstName: clerkUser?.firstName || '',
@@ -495,6 +498,8 @@ const Profile = () => {
                 <ExternalLink size={13} /> Manage account on Clerk Dashboard
               </a>
             </div>
+
+            <ClearMyDataPanel onCleared={() => setDataVersion((v) => v + 1)} />
 
           </div>
         </div>
