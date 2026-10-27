@@ -1,7 +1,8 @@
 import { MOCK_SERVICES } from '../data/services';
 import { normalizeName } from './serviceImportService';
+import { CUSTOM_SERVICES_KEY, getAllServices } from './serviceCatalog';
 
-const SERVICES_KEY = 'civicbridge_custom_services';
+const SERVICES_KEY = CUSTOM_SERVICES_KEY;
 const REPORTS_KEY = 'civicbridge_error_reports';
 const AUDIT_LOGS_KEY = 'civicbridge_audit_logs';
 const USERS_KEY = 'civicbridge_rbac_users';
@@ -104,19 +105,8 @@ const DEFAULT_SUBMISSIONS = [
   },
 ];
 
-export const getAdminServices = () => {
-  try {
-    const raw = localStorage.getItem(SERVICES_KEY);
-    const custom = raw ? JSON.parse(raw) : [];
-    const base = [...MOCK_SERVICES];
-    const customIds = new Set(custom.map((c) => c.id));
-    const merged = base.filter((b) => !customIds.has(b.id)).concat(custom);
-    return merged;
-  } catch (err) {
-    console.error('Failed to load admin services', err);
-    return MOCK_SERVICES;
-  }
-};
+// Same merged list the public pages read, see serviceCatalog.js.
+export const getAdminServices = getAllServices;
 
 export const saveAdminService = (serviceData, actorName = 'SuperAdmin') => {
   try {
