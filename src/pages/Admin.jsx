@@ -98,7 +98,7 @@ const Admin = () => {
     const updated = saveAdminService(serviceData, user?.username || 'SuperAdmin');
     setServices(updated);
     setAuditLogs(getAuditLogs());
-    toast?.success?.('Service guide saved and published live.');
+    toast?.success?.('Service guide saved. It now shows in the public directory on this device.');
   };
 
   const handleImportResult = (result) => {

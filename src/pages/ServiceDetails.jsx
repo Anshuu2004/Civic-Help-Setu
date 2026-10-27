@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Bookmark, Check, Link2, Printer, Share2, Zap } from 'lucide-react';
-import { MOCK_SERVICES } from '../data/services';
+import { getServiceById } from '../services/serviceCatalog';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import UntranslatedBadge from '../components/common/UntranslatedBadge';
@@ -36,7 +36,7 @@ const ServiceDetails = () => {
 
   const [linkCopied, setLinkCopied] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [service, setService] = useState(() => MOCK_SERVICES.find((s) => s.id === id) || null);
+  const [service, setService] = useState(() => getServiceById(id));
   const [isSaved, setIsSaved] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
@@ -47,7 +47,7 @@ const ServiceDetails = () => {
   });
 
   useEffect(() => {
-    setService(MOCK_SERVICES.find((s) => s.id === id) || null);
+    setService(getServiceById(id));
 
     try {
       const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
