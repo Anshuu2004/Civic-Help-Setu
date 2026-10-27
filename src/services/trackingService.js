@@ -106,6 +106,9 @@ export const formatDisplayDate = (value) => {
 const normalizeId = (value) =>
   typeof value === 'string' ? value.trim().toUpperCase() : '';
 
+// Error code addManualApplication uses when the reference ID is already tracked.
+export const DUPLICATE_APPLICATION = 'DUPLICATE_APPLICATION';
+
 const normalizeApplication = (app) => {
   const safeApp =
     app && typeof app === 'object' && !Array.isArray(app) ? app : {};
@@ -477,6 +480,16 @@ export const addManualApplication = ({
   const safeStatus = normalizeStatus(status);
   const all = getApplications();
 
+  // Never replace an application the user is already tracking (its stages,
+  // notes and linked documents would be lost). IDs compare trimmed and upper case.
+  if (all.some((app) => normalizeId(app?.id) === cleanId)) {
+    const error = new Error(
+      `You are already tracking ${cleanId}. Use a different reference ID.`
+    );
+    error.code = DUPLICATE_APPLICATION;
+    throw error;
+  }
+
   const stages = buildStages(safeStatus, [
     {
       title: 'Application Submitted',
@@ -560,10 +573,7 @@ export const addManualApplication = ({
     stages,
   };
 
-  const updated = [
-    newApp,
-    ...all.filter((app) => normalizeId(app?.id) !== cleanId),
-  ];
+  const updated = [newApp, ...all];
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 
