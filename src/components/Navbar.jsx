@@ -21,6 +21,7 @@ import {
   Bookmark,
   UserCircle,
   Settings,
+  Droplets,
   KeyRound,
   Store
 } from 'lucide-react';
@@ -128,9 +129,11 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
   );
 
   // Close drawer whenever the route changes.
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   // Close drawer on Escape and lock background scrolling.
   useEffect(() => {
@@ -762,6 +765,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/water-tanker',
+                label: 'Water Tanker Tracker',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
                 to: '/pds-shops',
                 label: 'Fair Price Shops (PDS)',
                 icon: Store
@@ -783,6 +792,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/rental-checklist',
                 label: t('nav.rentalChecklist', 'Rental Checklist'),
                 icon: KeyRound
+              })}
+
+              {renderNavLink({
+                to: '/citizen-drafts',
+                label: 'Citizen Drafts & Sync',
+                icon: FileText
               })}
 
               {renderNavLink({
@@ -839,6 +854,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                   to: '/saved',
                   label: t('nav.saved', 'Saved Guides'),
                   icon: Bookmark
+                })}
+
+                {renderNavLink({
+                  to: '/citizen-drafts',
+                  label: 'Drafts & Offline Sync',
+                  icon: FileText
                 })}
 
                 {renderNavLink({
