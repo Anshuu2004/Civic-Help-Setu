@@ -951,6 +951,91 @@ export const MOCK_SERVICES = [
       { label: 'National Forest Vigilance Helpline', phone: '1926', url: 'https://forests.telangana.gov.in' }
     ],
     lastVerified: '2026-10-25'
+  },
+  {
+    id: 'civic-survey-builder',
+    jurisdiction: {
+      level: 'national',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Corporations'
+    },
+    name: 'Civic Survey Builder & Sampling Diagnostics',
+    shortDescription: 'Design structured public surveys, manage sample representation targets, review question missingness, and inspect response-bias diagnostics with anonymous response protection (#767).',
+    category: 'Governance & Planning',
+    department: 'Directorate of Public Consultation & Urban Planning',
+    type: 'Online',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 91,
+    eligibility: [
+      'Accessible to municipal department officers, approved public interest researchers, and community planning teams.',
+      'Public responses are open to all citizens within the specified local ward or urban jurisdiction.',
+      'Anonymous response mode ensures individual submissions cannot be correlated with citizen identification accounts.'
+    ],
+    documents: [
+      'Departmental consultation authorization and gazette topic brief',
+      'Statutory informed consent text with explicit voluntary participation rights',
+      'Sampling quota design specifying minimum target respondents and voluntary strata'
+    ],
+    documentRequirements: {
+      'Departmental consultation authorization and gazette topic brief': {
+        type: 'mandatory'
+      },
+      'Statutory informed consent text with explicit voluntary participation rights': {
+        type: 'mandatory'
+      },
+      'Sampling quota design specifying minimum target respondents and voluntary strata': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Draft Survey Scope & Sampling Target',
+        description: 'Specify consultation objectives, target jurisdiction (ward/city), collection timeline, and minimum demographic representation quotas.'
+      },
+      {
+        title: 'Author Questions & Dynamic Branching Rules',
+        description: 'Configure typed questions, variable names, validation rules, and conditional logic to prevent irrelevant question burden.'
+      },
+      {
+        title: 'Incorporate Informed Consent & Anonymous Protection',
+        description: 'Provide clear consent disclosures and ensure consent tokens remain separated from answer vectors.'
+      },
+      {
+        title: 'Publish Consultation & Monitor Quality Metrics',
+        description: 'Track response intake against sampling targets, evaluate item missingness rates, and inspect demographic balance.'
+      },
+      {
+        title: 'Inspect Diagnostics & Export Open Codebooks',
+        description: 'Review ruleset-versioned recommendations and export data dictionaries for transparent statistical analysis.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs — Citizen Engagement Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National Urban Digital Mission — Public Consultation Standards',
+        url: 'https://nudm.mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Demographic imbalance diagnostics only evaluate voluntary self-reported strata and do not guarantee probabilistic census representativeness.',
+      'Personal identifiers (Aadhaar, PAN, phone numbers) must never be requested or stored in public survey response vectors.',
+      'Small demographic groups with fewer than 5 respondents are suppressed under k-anonymity privacy safeguards.'
+    ],
+    contacts: [
+      { label: 'Citizen Consultation Helpdesk', phone: '1800-11-0033', url: 'https://mohua.gov.in' },
+      { label: 'Urban Analytics & Diagnostics Cell', phone: '011-23061111', url: 'https://nudm.mohua.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
   }
 ];
 
