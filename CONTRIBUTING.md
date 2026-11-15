@@ -36,7 +36,13 @@ npm test -- --run tests/knowledge-provenance.test.js          # provenance serve
 npm test -- --run tests/knowledge-provenance-security.test.js # provenance security & PII tests (#777)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
+npx vitest run src/services/treeInventoryService.test.js       # tree inventory domain/security tests (#749)
+npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
+npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
+npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
 ```
+
+Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

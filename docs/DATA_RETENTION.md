@@ -95,6 +95,10 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civicbridge_conflict_records_v1` | `citizenDraftSyncEngine.js` | Local conflict records waiting for user merge resolution | Drafts and in-progress work |
 | `civicbridge_device_cursors_v1` | `citizenDraftSyncEngine.js` | Device sync cursors and high-water revision marks | Drafts and in-progress work |
 | `civicbridge_tombstones_v1` | `citizenDraftSyncEngine.js` | Deletion tombstones to prevent resurrection of deleted drafts | Drafts and in-progress work |
+| `civicbridge_tree_report_attachments_v1` | `treeInventoryService.js` | Validated citizen-report images and metadata (no raw personal identifiers) | Reviews, votes and reports |
+| `civicbridge_tree_citizen_reports_v1` | `treeInventoryService.js` | Citizen tree observations, tracking codes, triage and review state | Reviews, votes and reports |
+| `civicbridge_tree_reports_v1` | `treeInventoryMigrations.js` | Legacy citizen tree reports read once during migration | Reviews, votes and reports |
+| `civicbridge_tree_reporter_key` | `TreeHealthInventory.jsx` | Random local key used only to rate-limit and deduplicate citizen tree reports | Reviews, votes and reports |
 | `civicbridge_civic_works_reports_v1` | `civicWorksBoardService.js` | Ward civic works reports and moderation state | Reviews, votes and reports |
 | `civicbridge_civic_works_clusters_v1` | `civicWorksBoardService.js` | Clustered duplicate ward reports | Reviews, votes and reports |
 | `civicbridge_civic_works_rate_limit_v1` | `civicWorksBoardService.js` | Ward report submission rate limit tracking | Reviews, votes and reports |
@@ -149,6 +153,7 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_tree_inventory_meta_v1`, `civicbridge_tree_assets_v1`, `civicbridge_tree_species_v1`, `civicbridge_tree_inspections_v1`, `civicbridge_tree_maintenance_orders_v1`, `civicbridge_tree_pruning_events_v1`, `civicbridge_tree_planting_sites_v1`, `civicbridge_tree_triage_suggestions_v1`, `civicbridge_tree_audit_events_v1`, `civicbridge_tree_idempotency_v1`, `civicbridge_tree_rate_limit_v1`, `civicbridge_tree_migration_backup_v1`, `civicbridge_trees_v1` | Municipal tree register, inspection history, maintenance orders, pruning history, planting sites, triage suggestions, append-only audit chain, idempotency/rate-limit state, schema metadata and rollback backup | Public-authority operating records, not a citizen profile. Kept so clearing a citizen's data cannot erase the public register or audit trail. The tree module applies its own 365-day retention to closed citizen reports |
 | `civicbridge_knowledge_sources_v1`, `civicbridge_source_snapshots_v1`, `civicbridge_transformation_runs_v1`, `civicbridge_provenance_edges_v1`, `civicbridge_editorial_reviews_v1`, `civicbridge_supersession_links_v1`, `civicbridge_provenance_audit_v1` | Public knowledge sources, snapshots, transformations, provenance DAG edges, editorial reviews, supersession links, and audit logs (#777) | Statutory provenance records, not citizen personal data |
 
 ## Remote data
