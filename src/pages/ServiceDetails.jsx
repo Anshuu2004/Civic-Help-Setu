@@ -964,6 +964,41 @@ const ServiceDetails = ({ previewService = null }) => {
             </div>
           )}
 
+          {service.id === 'civic-survey-builder' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldCheck size={18} color="var(--accent-main, #3b82f6)" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Dedicated Civic Survey Builder &amp; Sampling Diagnostics Hub
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    End-to-end civic survey creator with branching logic, voluntary demographic quotas, item missingness analysis, and explainable response-bias diagnostics.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/surveys"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Launch Survey Workspace
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {service.id === 'business-licence-checklist' && showDedicatedBusinessLicenceCentre ? (
             <SmallBusinessLicenceCentre />
           ) : service.id === 'aadhaar-card' && showDedicatedAadhaarGuide ? (
