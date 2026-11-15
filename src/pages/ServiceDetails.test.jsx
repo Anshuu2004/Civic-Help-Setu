@@ -29,6 +29,7 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Make checklist');
     expect(html).toContain('Preparation Plan');
     expect(html).toContain('Simplify this service');
+    expect(html).toContain('Trace Data Lineage');
   });
 
   it('says so when the guide does not exist', () => {
@@ -65,5 +66,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Dedicated Tree-Pruning Permission &amp; Urban Tree Protection Guide');
     expect(html).toContain('Open Interactive Tree Guide');
     expect(html).toContain('/services/tree-permission-guide');
+  });
+
+  it('renders the dedicated provenance and data lineage action link (#777)', () => {
+    const service = MOCK_SERVICES[0];
+    const html = render(`/services/${service.id}`);
+    expect(html).toContain('Trace Data Lineage');
+    expect(html).toContain(`/provenance?service=${encodeURIComponent(service.id)}`);
   });
 });

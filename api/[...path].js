@@ -10,6 +10,7 @@ import crematorium from "./_lib/handlers/crematorium-corrections.js";
 import emailPreferences from "./_lib/handlers/email/preferences.js";
 import emailVerify from "./_lib/handlers/email/verify.js";
 import fireCompliance from "./_lib/handlers/fire-compliance-feedback.js";
+import knowledgeProvenance from "./_lib/handlers/knowledge-provenance.js";
 import libraryCorrections from "./_lib/handlers/library-corrections.js";
 import pdsObservations from "./_lib/handlers/pds-observations.js";
 import privacyExports from "./_lib/handlers/privacy-exports.js";
@@ -27,6 +28,7 @@ const handlers = {
   "email/preferences": emailPreferences,
   "email/verify": emailVerify,
   "fire-compliance-feedback": fireCompliance,
+  "knowledge-provenance": knowledgeProvenance,
   "library-corrections": libraryCorrections,
   "pds-observations": pdsObservations,
   "privacy-exports": privacyExports,

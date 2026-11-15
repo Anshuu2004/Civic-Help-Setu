@@ -1,18 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
-  CheckSquare,
   AlertTriangle,
-  MessageSquare,
-  Users,
   LogOut,
   Plus,
-  Edit3,
-  Trash2,
   CheckCircle2,
   ShieldCheck,
-  Shield,
   FileCheck,
-  History,
   Upload,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -47,6 +40,7 @@ import CommunityFacilityCorrectionQueue from '../components/admin/CommunityFacil
 import LibraryCorrectionQueue from '../components/admin/LibraryCorrectionQueue';
 import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
 import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorrectionQueue';
+import ProvenanceReviewQueue from '../components/admin/ProvenanceReviewQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -739,6 +733,7 @@ const Admin = () => {
               { id: 'duplicates', label: 'Duplicate Detection', badge: null },
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
+              { id: 'provenance-reviews', label: 'Knowledge Provenance', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -1768,6 +1763,13 @@ const Admin = () => {
             {activeTab === 'civic-works' && (
               <div>
                 <CivicWorksModeratorPanel />
+              </div>
+            )}
+
+            {/* Knowledge Provenance Review Queue Tab (#777) */}
+            {activeTab === 'provenance-reviews' && (
+              <div>
+                <ProvenanceReviewQueue />
               </div>
             )}
 

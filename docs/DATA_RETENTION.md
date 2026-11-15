@@ -140,6 +140,7 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_knowledge_sources_v1`, `civicbridge_source_snapshots_v1`, `civicbridge_transformation_runs_v1`, `civicbridge_provenance_edges_v1`, `civicbridge_editorial_reviews_v1`, `civicbridge_supersession_links_v1`, `civicbridge_provenance_audit_v1` | Public knowledge sources, snapshots, transformations, provenance DAG edges, editorial reviews, supersession links, and audit logs (#777) | Statutory provenance records, not citizen personal data |
 
 ## Remote data
 

@@ -25,6 +25,7 @@ import {
   Droplets,
   KeyRound,
   Store,
+  GitFork,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -115,6 +116,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/address-change-planner' ||
           normalizedPath === '/address-change' ||
           normalizedPath === '/move-planner'
+        );
+      }
+
+      if (normalizedTarget === '/provenance') {
+        return (
+          normalizedPath === '/provenance' ||
+          normalizedPath.startsWith('/provenance/') ||
+          normalizedPath === '/lineage-explorer'
         );
       }
 
@@ -819,6 +828,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/provenance',
+                label: 'Data Lineage',
+                icon: GitFork
               })}
 
               {renderNavLink({

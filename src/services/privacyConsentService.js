@@ -192,6 +192,14 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Civic knowledge records lineage and provenance explorer (#777)
+  'civicbridge_knowledge_sources_v1',
+  'civicbridge_source_snapshots_v1',
+  'civicbridge_transformation_runs_v1',
+  'civicbridge_provenance_edges_v1',
+  'civicbridge_editorial_reviews_v1',
+  'civicbridge_supersession_links_v1',
+  'civicbridge_provenance_audit_v1',
   // Handled by purge itself: consents are reset, the audit log keeps the deletion receipt
   CONSENT_STORAGE_KEY,
   AUDIT_STORAGE_KEY,
@@ -313,6 +321,19 @@ function getPrefixedUserDataKeys(storage) {
     }
   }
   return keys;
+}
+
+// Parses a stored JSON value. Missing, corrupt or wrong-shaped values give `empty` instead of throwing.
+function readStoredJson(storage, key, empty) {
+  const raw = storage.getItem(key);
+  if (raw === null || raw === undefined || raw === '') return empty;
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
+    return parsed;
+  } catch {
+    return empty;
+  }
 }
 
 /**

@@ -56,6 +56,7 @@ import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -127,6 +128,9 @@ function AppRoot() {
                       <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/provenance" element={<LineageExplorerWorkspace />} />
+                      <Route path="/provenance/:id" element={<LineageExplorerWorkspace />} />
+                      <Route path="/lineage-explorer" element={<LineageExplorerWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />

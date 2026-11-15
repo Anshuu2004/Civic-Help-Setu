@@ -230,6 +230,7 @@ export const MOCK_SERVICES = [
       'UIDAI strictly caps official fees at ₹0 for enrolment, ₹50 for demographic updates, and ₹100 for biometrics. If any centre overcharges, demand a computer receipt and escalate to 1947 or helpdesk@uidai.gov.in.',
       'Never laminate or purchase unauthorized plastic smart cards from local cyber cafes. Order the official ₹50 PVC card exclusively on myAadhaar.'
     ],
+    lineageRecordId: 'aadhaar-card',
     lastVerified: '2026-11-12'
   },
   {
@@ -950,6 +951,7 @@ export const MOCK_SERVICES = [
       { label: 'BMC Disaster Management Helpline (Mumbai)', phone: '1916', url: 'https://www.mcgm.gov.in' },
       { label: 'National Forest Vigilance Helpline', phone: '1926', url: 'https://forests.telangana.gov.in' }
     ],
+    lineageRecordId: 'tree-pruning-permission',
     lastVerified: '2026-10-25'
   }
 ];

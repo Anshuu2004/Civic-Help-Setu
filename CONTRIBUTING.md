@@ -26,6 +26,10 @@ Public service information changes frequently. If you notice outdated or incorre
 Run unit and integration tests locally with Vitest:
 ```bash
 npm test                                                      # run all tests
+npm test -- --run src/services/provenanceService.test.js       # lineage DAG & cycle prevention tests (#777)
+npm test -- --run src/pages/LineageExplorerWorkspace.test.jsx  # provenance explorer UI tests (#777)
+npm test -- --run tests/knowledge-provenance.test.js          # provenance serverless API tests (#777)
+npm test -- --run tests/knowledge-provenance-security.test.js # provenance security & PII tests (#777)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
 ```
