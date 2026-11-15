@@ -47,6 +47,7 @@ import SmallBusinessLicencePage from './pages/SmallBusinessLicencePage';
 import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
+import TreeHealthInventory from './pages/TreeHealthInventory';
 import CrematoriumDirectory from './pages/CrematoriumDirectory';
 import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
@@ -136,6 +137,8 @@ function AppRoot() {
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
+                      <Route path="/tree-health" element={<TreeHealthInventory />} />
+                      <Route path="/tree-inventory" element={<TreeHealthInventory />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
