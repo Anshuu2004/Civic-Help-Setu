@@ -2,11 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import {
   AlertTriangle,
   Activity,
-  Layers,
   Wrench,
   CheckCircle2,
-  FileText,
-  AlertCircle,
 } from 'lucide-react';
 import RoadSafetyHeader from '../components/roadSafety/RoadSafetyHeader';
 import RoadSafetyFilters from '../components/roadSafety/RoadSafetyFilters';
@@ -17,8 +14,16 @@ import RoadSafetyInterventionModal from '../components/roadSafety/RoadSafetyInte
 import RoadSafetyTimelineComparatorModal from '../components/roadSafety/RoadSafetyTimelineComparatorModal';
 import RoadSafetyHazardReportModal from '../components/roadSafety/RoadSafetyHazardReportModal';
 import RoadSafetyRiskRunModal from '../components/roadSafety/RoadSafetyRiskRunModal';
+import RoadSafetyInteractiveMap from '../components/roadSafety/RoadSafetyInteractiveMap';
 import {
-  ensureRoadSafetySeedData,
+  RoadSafetySkeleton,
+  RoadSafetyOfflineBanner,
+  RoadSafetyStaleDataNotice,
+  RoadSafetyErrorState,
+  RoadSafetyPermissionDeniedState,
+  RoadSafetyViewToggle,
+} from '../components/roadSafety/RoadSafetyStates';
+import {
   listReviewCases,
   getReviewCaseDetail,
   transitionReviewCaseState,
@@ -41,6 +46,21 @@ export default function RoadSafetyDashboard() {
   const { toast } = useToast();
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [viewMode, setViewMode] = useState('table'); // 'table' | 'map'
+  const [isLoading] = useState(false);
+  const [permissionError, setPermissionError] = useState(null);
+  const [isOffline, setIsOffline] = useState(() => (typeof navigator !== 'undefined' ? !navigator.onLine : false));
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   // Modals state
   const [detailCaseId, setDetailCaseId] = useState(null);
@@ -50,31 +70,29 @@ export default function RoadSafetyDashboard() {
   const [showComparatorModal, setShowComparatorModal] = useState(false);
   const [showRiskRunModal, setShowRiskRunModal] = useState(false);
 
-  // Initialize seed data once on mount
-  useEffect(() => {
-    ensureRoadSafetySeedData();
-    setRefreshTick((t) => t + 1);
-  }, []);
-
   // Fetch filtered cases
-  const { filteredCases, totalItems } = useMemo(() => {
+  const { filteredCases, totalItems, loadError } = useMemo(() => {
+    // Explicit cache dependency for storage mutation invalidation
+    if (refreshTick < 0) return { filteredCases: [], totalItems: 0, loadError: null };
     try {
       const res = listReviewCases(filters);
       return {
         filteredCases: res.cases,
         totalItems: res.totalItems,
+        loadError: null,
       };
-    } catch {
+    } catch (err) {
       return {
         filteredCases: [],
         totalItems: 0,
+        loadError: err?.message || 'Failed to list review cases',
       };
     }
   }, [filters, refreshTick]);
 
   // Full detail for modal
   const caseDetail = useMemo(() => {
-    if (!detailCaseId) return null;
+    if (!detailCaseId || refreshTick < 0) return null;
     return getReviewCaseDetail(detailCaseId);
   }, [detailCaseId, refreshTick]);
 
@@ -100,24 +118,48 @@ export default function RoadSafetyDashboard() {
   };
 
   const handleTransitionState = async (caseId, targetState, transitionData) => {
-    const updated = transitionReviewCaseState(caseId, targetState, transitionData);
-    toast?.success?.(`Review case transitioned to ${targetState.replace('_', ' ')}.`);
-    setRefreshTick((t) => t + 1);
-    return updated;
+    try {
+      const updated = transitionReviewCaseState(caseId, targetState, transitionData);
+      toast?.success?.(`Review case transitioned to ${targetState.replace('_', ' ')}.`);
+      setPermissionError(null);
+      setRefreshTick((t) => t + 1);
+      return updated;
+    } catch (err) {
+      if (err.name === 'PermissionDeniedError' || err.code === 'RS_FORBIDDEN_JURISDICTION') {
+        setPermissionError(err.message);
+      }
+      throw err;
+    }
   };
 
   const handleSubmitInspection = async (caseId, inspectionData) => {
-    const result = recordSiteInspection(caseId, inspectionData);
-    toast?.success?.('Physical site inspection recorded successfully.');
-    setRefreshTick((t) => t + 1);
-    return result;
+    try {
+      const result = recordSiteInspection(caseId, inspectionData);
+      toast?.success?.('Physical site inspection recorded successfully.');
+      setPermissionError(null);
+      setRefreshTick((t) => t + 1);
+      return result;
+    } catch (err) {
+      if (err.name === 'PermissionDeniedError' || err.code === 'RS_FORBIDDEN_JURISDICTION') {
+        setPermissionError(err.message);
+      }
+      throw err;
+    }
   };
 
   const handleSubmitIntervention = async (caseId, interventionData) => {
-    const result = recordIntervention(caseId, interventionData);
-    toast?.success?.('Engineering countermeasure recorded successfully.');
-    setRefreshTick((t) => t + 1);
-    return result;
+    try {
+      const result = recordIntervention(caseId, interventionData);
+      toast?.success?.('Engineering countermeasure recorded successfully.');
+      setPermissionError(null);
+      setRefreshTick((t) => t + 1);
+      return result;
+    } catch (err) {
+      if (err.name === 'PermissionDeniedError' || err.code === 'RS_FORBIDDEN_JURISDICTION') {
+        setPermissionError(err.message);
+      }
+      throw err;
+    }
   };
 
   const handleSubmitHazard = async (reportData) => {
@@ -128,10 +170,18 @@ export default function RoadSafetyDashboard() {
   };
 
   const handleExecuteRiskRun = async (parameters) => {
-    const result = executeRiskRun(parameters);
-    toast?.success?.(`Risk run completed. Evaluated ${result.runRecord.totalSegmentsEvaluated} corridors.`);
-    setRefreshTick((t) => t + 1);
-    return result;
+    try {
+      const result = executeRiskRun(parameters);
+      toast?.success?.(`Risk run completed. Evaluated ${result.runRecord.totalSegmentsEvaluated} corridors.`);
+      setPermissionError(null);
+      setRefreshTick((t) => t + 1);
+      return result;
+    } catch (err) {
+      if (err.name === 'PermissionDeniedError' || err.code === 'RS_FORBIDDEN_JURISDICTION') {
+        setPermissionError(err.message);
+      }
+      throw err;
+    }
   };
 
   return (
@@ -299,13 +349,64 @@ export default function RoadSafetyDashboard() {
           onReset={handleResetFilters}
         />
 
-        {/* Hotspot List & Evidence Review Table */}
-        <RoadSafetyCaseList
-          cases={filteredCases}
-          onSelectCase={(c) => setDetailCaseId(c.id)}
-          onScheduleInspection={(c) => setInspectionTargetCase(c)}
-          onPlanIntervention={(c) => setInterventionTargetCase(c)}
-        />
+        {/* Offline & Data Currency Notices */}
+        {isOffline && <RoadSafetyOfflineBanner />}
+        <RoadSafetyStaleDataNotice />
+
+        {/* View Mode Switcher & Counter */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '1rem',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
+          }}
+        >
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            Showing <strong>{filteredCases.length}</strong> identified road corridors ({totalItems} total)
+          </span>
+          <RoadSafetyViewToggle activeView={viewMode} onViewChange={setViewMode} />
+        </div>
+
+        {/* Loading / Permission Denied / Error / Data Views */}
+        {isLoading ? (
+          <RoadSafetySkeleton />
+        ) : permissionError ? (
+          <RoadSafetyPermissionDeniedState
+            requiredRole={permissionError}
+            onDismiss={() => setPermissionError(null)}
+          />
+        ) : loadError ? (
+          <RoadSafetyErrorState message={loadError} onRetry={() => setRefreshTick((t) => t + 1)} />
+        ) : viewMode === 'map' ? (
+          <>
+            <RoadSafetyInteractiveMap
+              cases={filteredCases}
+              onSelectCase={(c) => setDetailCaseId(c.id)}
+            />
+            {/* Synchronized accessible table view accompanying the map */}
+            <div style={{ marginTop: '1.5rem' }}>
+              <h3 style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                Tabular Evidence Alternative (Screen Reader &amp; Keyboard Accessible)
+              </h3>
+              <RoadSafetyCaseList
+                cases={filteredCases}
+                onSelectCase={(c) => setDetailCaseId(c.id)}
+                onScheduleInspection={(c) => setInspectionTargetCase(c)}
+                onPlanIntervention={(c) => setInterventionTargetCase(c)}
+              />
+            </div>
+          </>
+        ) : (
+          <RoadSafetyCaseList
+            cases={filteredCases}
+            onSelectCase={(c) => setDetailCaseId(c.id)}
+            onScheduleInspection={(c) => setInspectionTargetCase(c)}
+            onPlanIntervention={(c) => setInterventionTargetCase(c)}
+          />
+        )}
 
         {/* Modals */}
         {detailCaseId && caseDetail && (

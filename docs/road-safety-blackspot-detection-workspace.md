@@ -111,24 +111,63 @@ Allowed transitions are strictly validated in `src/services/roadSafetyBlackspotS
 Registered in `src/services/accessControl.js`:
 - `'roadSafety.review'`: Required for transitioning review cases, documenting site inspections, and recording countermeasures. Restricted to `admin` / certified safety officers.
 - `'roadSafety.admin'`: Required for configuring algorithm factor weights and executing automated risk assessment runs.
-- **Public / Citizen Access:** Anyone can view public corridors and submit hazard reports, guarded by anti-abuse rate limits (maximum 5 submissions per 15-minute window).
+- **Jurisdiction Scoping:** When an officer carries jurisdiction metadata (e.g. `state: 'Karnataka'`), attempts to modify corridors in other states (e.g. `'Delhi'`) throw `RS_FORBIDDEN_JURISDICTION`.
+- **Public / Citizen Access:** Anyone can view public corridors and submit hazard reports, guarded by anti-abuse rate limits (maximum 5 submissions per 15-minute window) and idempotency deduplication (`idempotencyKey`).
 
 ---
 
-## 7. Testing & Verification Guide
+## 7. Stable Error Codes & Recovery Guidance
 
-Run targeted unit and component tests:
+The service layer exports `RoadSafetyServiceError` with standardized, machine-verifiable error codes:
+
+| Error Code | Trigger Condition | UI Guidance / Recovery Action |
+| :--- | :--- | :--- |
+| `RS_NOT_FOUND` | Target review case, corridor segment, or intervention ID does not exist. | Display not-found notification and reload corridor catalogue. |
+| `RS_INVALID_STATE_TRANSITION` | Transition violates `ALLOWED_STATE_TRANSITIONS` FSM graph. | Display current and allowed target states with guidance on required prerequisites. |
+| `RS_JUSTIFICATION_REQUIRED` | Attempting to dismiss or defer a candidate blackspot without documented reason. | Prompt officer for a mandatory text explanation ($\ge 15$ characters). |
+| `RS_VALIDATION_ERROR` | Required fields missing or failed length/format boundaries. | Highlight specific invalid input fields in the active modal. |
+| `RS_RATE_LIMITED` | Citizen client submitted $\ge 5$ hazard reports in 15 minutes. | Show rate limit cooldown banner advising the citizen to wait. |
+| `RS_FORBIDDEN_JURISDICTION` | Officer attempts an administrative action outside assigned jurisdiction. | Block operation and indicate authorized administrative zone. |
+
+---
+
+## 8. Auditability, Migrations & Rollback Strategy
+
+1. **Append-Only Audit Trail**:
+   All state transitions, site inspections, and automated risk runs log immutable records to `civicbridge_road_safety_audit_logs_v1`, capturing the timestamp, actor, action, and rationale.
+
+2. **Public Data Minimization**:
+   The `serializePublicBlackspotSummary()` helper guarantees that public data exports strip all private notes, officer IDs, and internal inspection metadata.
+
+3. **Schema Migration & Rollback**:
+   - Migration runner `migrateRoadSafetyStorage()` creates a backup snapshot (`civicbridge_review_cases_v1_backup_v1`) before applying schema transformations.
+   - If an operational defect is discovered, `rollbackRoadSafetyStorage(targetVersion)` instantly restores the snapshot without data loss.
+
+---
+
+## 9. Testing & Verification Guide
+
+Run targeted unit, integration, and security tests:
 ```bash
-# Service layer & math logic tests
+# Service layer, spatial joins, boundary rescaling, temporal bias, and math logic tests (36 tests)
 npx vitest run src/services/roadSafetyBlackspotService.test.js
 
-# UI & Component modal workflow tests
+# UI, accessibility, map/table duality, and modal workflow tests (10 tests)
 npx vitest run src/pages/RoadSafetyDashboard.test.jsx
 
-# Access control integration tests
+# Admin hazard review queue tests (2 tests)
+npx vitest run src/components/admin/RoadHazardReviewQueue.test.jsx
+
+# Serverless endpoint abuse protection and PII sanitization tests (6 tests)
+npx vitest run tests/road-hazards.test.js
+
+# Run all 54 road-safety tests together:
+npx vitest run src/services/roadSafetyBlackspotService.test.js src/pages/RoadSafetyDashboard.test.jsx src/components/admin/RoadHazardReviewQueue.test.jsx tests/road-hazards.test.js
+
+# Access control integration tests (138 tests)
 npx vitest run src/services/accessControl.test.js
 
-# Build production bundle
+# Production build
 npm run build
 ```
 

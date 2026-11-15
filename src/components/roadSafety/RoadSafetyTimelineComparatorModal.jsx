@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { X, BarChart3, TrendingDown, TrendingUp, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { X, BarChart3, TrendingDown, TrendingUp } from 'lucide-react';
 import { compareTimePeriods } from '../../services/roadSafetyBlackspotService';
 
 export default function RoadSafetyTimelineComparatorModal({
@@ -11,7 +11,6 @@ export default function RoadSafetyTimelineComparatorModal({
   const [periodAEnd, setPeriodAEnd] = useState('2025-06-30');
   const [periodBStart, setPeriodBStart] = useState('2025-10-01');
   const [periodBEnd, setPeriodBEnd] = useState('2025-12-31');
-  const [result, setResult] = useState(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -21,24 +20,18 @@ export default function RoadSafetyTimelineComparatorModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  const handleCompare = (e) => {
-    e?.preventDefault();
-    if (!selectedSegmentId) return;
-    const comparison = compareTimePeriods(
-      selectedSegmentId,
-      { start: periodAStart, end: periodAEnd },
-      { start: periodBStart, end: periodBEnd }
-    );
-    setResult(comparison);
-  };
-
-  useEffect(() => {
-    if (selectedSegmentId) {
-      handleCompare();
+  const result = useMemo(() => {
+    if (!selectedSegmentId) return null;
+    try {
+      return compareTimePeriods(
+        selectedSegmentId,
+        { start: periodAStart, end: periodAEnd },
+        { start: periodBStart, end: periodBEnd }
+      );
+    } catch {
+      return null;
     }
   }, [selectedSegmentId, periodAStart, periodAEnd, periodBStart, periodBEnd]);
-
-  const targetSegment = segments.find((s) => s.id === selectedSegmentId);
 
   return (
     <div

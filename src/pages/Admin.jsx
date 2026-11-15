@@ -1,18 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
-  CheckSquare,
   AlertTriangle,
-  MessageSquare,
-  Users,
   LogOut,
   Plus,
-  Edit3,
-  Trash2,
   CheckCircle2,
   ShieldCheck,
-  Shield,
   FileCheck,
-  History,
   Upload,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -40,8 +33,12 @@ import ReportResolutionModal from '../components/admin/ReportResolutionModal';
 import RoleManagementModal from '../components/admin/RoleManagementModal';
 import ServiceSubmissionReviewModal from '../components/admin/ServiceSubmissionReviewModal';
 import CrematoriumCorrectionQueue from '../components/admin/CrematoriumCorrectionQueue';
+import PdsObservationQueue from '../components/admin/PdsObservationQueue';
+import WaterTankerReviewQueue from '../components/admin/WaterTankerReviewQueue';
 import TenderCorrectionQueue from '../components/admin/TenderCorrectionQueue';
 import CommunityFacilityCorrectionQueue from '../components/admin/CommunityFacilityCorrectionQueue';
+import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
+import RoadHazardReviewQueue from '../components/admin/RoadHazardReviewQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -154,6 +151,7 @@ const Admin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setServices(getAdminServices());
     setReports(getReports());
     setUsers(getUserList());
@@ -1145,10 +1143,20 @@ const Admin = () => {
                 </div>
 
                 <CrematoriumCorrectionQueue />
+                <PdsObservationQueue />
                 <div style={{ marginTop: '2rem' }}>
                   <TenderCorrectionQueue />
                 </div>
                 <CommunityFacilityCorrectionQueue />
+                <div style={{ marginTop: '2rem' }}>
+                  <WaterTankerReviewQueue />
+                </div>
+                <div style={{ marginTop: '2rem' }}>
+                  <RentalCorrectionQueue />
+                </div>
+                <div style={{ marginTop: '2rem' }}>
+                  <RoadHazardReviewQueue />
+                </div>
               </div>
             )}
 

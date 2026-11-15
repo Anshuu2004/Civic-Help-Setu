@@ -15,6 +15,13 @@ import {
   submitCitizenHazardReport,
   compareTimePeriods,
   migrateRoadSafetyStorage,
+  rollbackRoadSafetyStorage,
+  serializePublicBlackspotSummary,
+  getRoadSafetyAuditLogs,
+  spatialJoinCrashToSegment,
+  rescaleSegmentExposureForBoundaryChange,
+  detectTemporalBiasInCrashHistory,
+  RoadSafetyServiceError,
   RATE_LIMIT_MAX_SUBMISSIONS,
 } from './roadSafetyBlackspotService';
 import {
@@ -110,6 +117,85 @@ describe('roadSafetyBlackspotService', () => {
       expect(result.compositeRiskScore).toBeLessThanOrEqual(98);
       expect(result.explainabilityFactors).toBeInstanceOf(Array);
       expect(result.explainabilityFactors.some((f) => f.includes('fatal'))).toBe(true);
+    });
+
+    it('ensures model scoring is deterministic and strictly reproducible across identical input sets', () => {
+      const segment = SEED_ROAD_SEGMENTS[0];
+      const crashes = [{ totalCrashes: 18, fatalCount: 3, severeInjuryCount: 6, exposureDenominator: 42 }];
+      const run1 = evaluateSegmentRisk(segment, crashes, null, []);
+      const run2 = evaluateSegmentRisk(segment, crashes, null, []);
+
+      expect(run1.compositeRiskScore).toBe(run2.compositeRiskScore);
+      expect(run1.severityWeightedFrequency).toBe(run2.severityWeightedFrequency);
+      expect(run1.explainabilityFactors).toEqual(run2.explainabilityFactors);
+    });
+
+    it('handles edge case exposure denominators: zero, negative, and extreme values safely', () => {
+      const zeroDenom = calculateExposureRiskRate(30, 0);
+      expect(zeroDenom.rate).toBeNull();
+      expect(zeroDenom.uncertainty).toBe('high');
+
+      const negativeDenom = calculateExposureRiskRate(30, -10);
+      expect(negativeDenom.rate).toBeNull();
+      expect(negativeDenom.uncertainty).toBe('high');
+
+      const extremeDenom = calculateExposureRiskRate(10, 100000);
+      expect(extremeDenom.rate).toBe(0.000);
+      expect(extremeDenom.uncertainty).toBe('low');
+    });
+  });
+
+  describe('Spatial Joins, Boundary Changes & Temporal Bias Analysis (#769)', () => {
+    it('performs spatial join associating coordinates to the nearest road corridor within buffer', () => {
+      const hebbalCoords = { lat: 13.0359, lng: 77.5971 };
+      const match = spatialJoinCrashToSegment(hebbalCoords, SEED_ROAD_SEGMENTS, 1.0);
+
+      expect(match).not.toBeNull();
+      expect(match.segmentId).toBe('seg-ka-blr-nh44-01');
+      expect(match.offsetDistanceKm).toBeLessThan(0.5);
+    });
+
+    it('returns null when coordinates exceed spatial buffer distance threshold', () => {
+      // Remote coordinate far from test corridors
+      const remoteCoords = { lat: 20.0, lng: 85.0 };
+      const match = spatialJoinCrashToSegment(remoteCoords, SEED_ROAD_SEGMENTS, 0.5);
+      expect(match).toBeNull();
+    });
+
+    it('rescales exposure denominator when road corridor boundaries or length change', () => {
+      const segment = SEED_ROAD_SEGMENTS[0]; // 650 meters
+      const rescaled = rescaleSegmentExposureForBoundaryChange(segment, 1300, 40000);
+
+      expect(rescaled.previousLengthMeters).toBe(650);
+      expect(rescaled.newLengthMeters).toBe(1300);
+      expect(rescaled.newExposureDenominator).toBeGreaterThan(rescaled.previousExposureDenominator);
+      expect(rescaled.deltaRatio).toBe(2.0);
+    });
+
+    it('detects nocturnal and seasonal temporal bias across crash history', () => {
+      const biasedCrashes = [
+        { periodStart: '2025-07-10', lightingCondition: 'night', totalCrashes: 8 },
+        { periodStart: '2025-08-15', lightingCondition: 'night', totalCrashes: 7 },
+        { periodStart: '2025-09-02', lightingCondition: 'day', totalCrashes: 2 },
+      ];
+
+      const biasReport = detectTemporalBiasInCrashHistory(biasedCrashes);
+      expect(biasReport.hasTemporalBias).toBe(true);
+      expect(biasReport.nocturnalRatio).toBeGreaterThan(0.7);
+      expect(biasReport.flags.some((f) => f.includes('Nocturnal clustering bias'))).toBe(true);
+      expect(biasReport.flags.some((f) => f.includes('Monsoon seasonal skew'))).toBe(true);
+    });
+
+    it('reports uniform distribution when crashes exhibit no temporal or seasonal skew', () => {
+      const uniformCrashes = [
+        { periodStart: '2025-01-10', lightingCondition: 'day', totalCrashes: 5 },
+        { periodStart: '2025-02-15', lightingCondition: 'day', totalCrashes: 5 },
+        { periodStart: '2025-03-20', lightingCondition: 'night', totalCrashes: 2 },
+      ];
+
+      const biasReport = detectTemporalBiasInCrashHistory(uniformCrashes);
+      expect(biasReport.hasTemporalBias).toBe(false);
+      expect(biasReport.dominantWindow).toBe('uniform');
     });
   });
 
@@ -316,6 +402,120 @@ describe('roadSafetyBlackspotService', () => {
       const res = migrateRoadSafetyStorage(mockStorage);
       expect(res.success).toBe(true);
       expect(res.version).toBe(1);
+    });
+
+    it('handles migration against completely empty storage by bootstrapping seed data', () => {
+      const emptyStorage = createMemoryStorage();
+      const res = migrateRoadSafetyStorage(emptyStorage);
+      expect(res.success).toBe(true);
+      expect(res.version).toBe(1);
+      expect(emptyStorage.getItem(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS)).not.toBeNull();
+    });
+
+    it('migrates legacy unversioned dataset and upgrades schemaVersion to 1', () => {
+      const legacyStorage = createMemoryStorage();
+      const legacyCases = [
+        { id: 'case-legacy-1', segmentId: 'seg-1', status: 'candidate' }, // Missing schemaVersion
+      ];
+      legacyStorage.setItem(ROAD_SAFETY_STORAGE_KEYS.CASES, JSON.stringify(legacyCases));
+
+      const res = migrateRoadSafetyStorage(legacyStorage);
+      expect(res.success).toBe(true);
+      expect(res.migratedCount).toBe(1);
+
+      const updated = JSON.parse(legacyStorage.getItem(ROAD_SAFETY_STORAGE_KEYS.CASES));
+      expect(updated[0].schemaVersion).toBe(1);
+    });
+
+    it('creates rollback snapshot and successfully rolls back schema version', () => {
+      migrateRoadSafetyStorage(mockStorage);
+      const rollbackResult = rollbackRoadSafetyStorage(1, mockStorage);
+      expect(rollbackResult.success).toBe(true);
+      expect(rollbackResult.restoredVersion).toBe(1);
+    });
+  });
+
+  describe('Security, Jurisdiction Scoping & Append-Only Audit Logging', () => {
+    beforeEach(() => {
+      ensureRoadSafetySeedData(mockStorage);
+    });
+
+    it('enforces jurisdiction boundary and throws RS_FORBIDDEN_JURISDICTION on unauthorized zone', () => {
+      // Karnataka officer attempting to alter Delhi corridor
+      setCurrentActor({
+        id: 'officer-ka',
+        role: 'admin',
+        jurisdiction: { state: 'Karnataka' },
+      });
+
+      expect(() => {
+        transitionReviewCaseState(
+          'case-seg-dl-del-ring-03',
+          CASE_STATES.INSPECTION_SCHEDULED,
+          {},
+          mockStorage
+        );
+      }).toThrowError(RoadSafetyServiceError);
+
+      try {
+        transitionReviewCaseState(
+          'case-seg-dl-del-ring-03',
+          CASE_STATES.INSPECTION_SCHEDULED,
+          {},
+          mockStorage
+        );
+      } catch (err) {
+        expect(err.code).toBe('RS_FORBIDDEN_JURISDICTION');
+      }
+    });
+
+    it('appends audit log events for review transitions and administrative runs', () => {
+      setCurrentActor(ADMIN_ACTOR);
+      transitionReviewCaseState(
+        'case-seg-ka-blr-nh44-01',
+        CASE_STATES.INSPECTION_SCHEDULED,
+        { reason: 'Scheduled joint safety inspection with NHAI team' },
+        mockStorage
+      );
+
+      const logs = getRoadSafetyAuditLogs(mockStorage);
+      expect(logs.length).toBeGreaterThan(0);
+      expect(logs[0].action).toBe('CASE_STATE_TRANSITION');
+      expect(logs[0].details.toState).toBe(CASE_STATES.INSPECTION_SCHEDULED);
+      expect(logs[0].details.caseId).toBe('case-seg-ka-blr-nh44-01');
+    });
+
+    it('handles idempotent hazard report submissions safely without duplicating', () => {
+      const payload = {
+        idempotencyKey: 'idem-uuid-999',
+        segmentId: 'seg-ka-blr-nh44-01',
+        hazardType: 'pothole_surface',
+        description: 'Severe longitudinal rutting near exit ramp.',
+      };
+
+      const first = submitCitizenHazardReport(payload, mockStorage, 'client-a');
+      const second = submitCitizenHazardReport(payload, mockStorage, 'client-a');
+
+      expect(first.id).toBe(second.id);
+      expect(first.idempotencyKey).toBe('idem-uuid-999');
+    });
+
+    it('serializes public blackspot summary, stripping internal reviewer and inspection notes', () => {
+      const fullCaseDetail = getReviewCaseDetail('case-seg-ka-blr-nh44-01', mockStorage);
+      const publicSummary = serializePublicBlackspotSummary(fullCaseDetail);
+
+      expect(publicSummary.name).toBe('NH-44 Outer Ring Road - Hebbal Flyover Down-Ramp');
+      expect(publicSummary.compositeRiskScore).toBeDefined();
+      expect(publicSummary.status).toBeDefined();
+      // Verify internal private fields are absent
+      expect(publicSummary.reviewNotes).toBeUndefined();
+      expect(publicSummary.inspectionRecords).toBeUndefined();
+      expect(publicSummary.assignedOfficer).toBeUndefined();
+    });
+
+    it('safely handles non-existent case enumeration without leaking memory or throwing unhandled errors', () => {
+      const result = getReviewCaseDetail('non-existent-case-id', mockStorage);
+      expect(result).toBeNull();
     });
   });
 });

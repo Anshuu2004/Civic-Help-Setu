@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -22,7 +21,10 @@ import {
   Bookmark,
   UserCircle,
   Settings,
-  AlertTriangle
+  AlertTriangle,
+  Droplets,
+  KeyRound,
+  Store
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -30,6 +32,7 @@ import { can } from '../services/accessControl';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNetwork } from '../context/NetworkContext';
+import { logDiagnostic } from '../utils/diagnostics';
 
 import LanguageSwitcher from './LanguageSwitcher';
 import PlainLanguageToggle from './common/PlainLanguageToggle';
@@ -99,6 +102,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+      if (normalizedTarget === '/rental-checklist') {
+        return (
+          normalizedPath === '/rental-checklist' ||
+          normalizedPath === '/rental-transition' ||
+          normalizedPath === '/rental-records'
+        );
+      }
+
       if (normalizedTarget === '/admin') {
         return (
           normalizedPath === '/admin' ||
@@ -119,9 +130,11 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
   );
 
   // Close drawer whenever the route changes.
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   // Close drawer on Escape and lock background scrolling.
   useEffect(() => {
@@ -184,7 +197,7 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
       setIsOpen(false);
       navigate('/login', { replace: true });
     } catch (error) {
-      console.error('Logout failed:', error);
+      logDiagnostic('Logout failed', error);
     } finally {
       setIsLoggingOut(false);
     }
@@ -753,6 +766,18 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/water-tanker',
+                label: 'Water Tanker Tracker',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
+                to: '/pds-shops',
+                label: 'Fair Price Shops (PDS)',
+                icon: Store
+              })}
+
+              {renderNavLink({
                 to: '/community-facilities',
                 label: 'Community Facilities',
                 icon: Home
@@ -761,6 +786,18 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               {renderNavLink({
                 to: '/tenders',
                 label: t('nav.tenders', 'Tender Readiness'),
+                icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/rental-checklist',
+                label: t('nav.rentalChecklist', 'Rental Checklist'),
+                icon: KeyRound
+              })}
+
+              {renderNavLink({
+                to: '/citizen-drafts',
+                label: 'Citizen Drafts & Sync',
                 icon: FileText
               })}
 
@@ -824,6 +861,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                   to: '/saved',
                   label: t('nav.saved', 'Saved Guides'),
                   icon: Bookmark
+                })}
+
+                {renderNavLink({
+                  to: '/citizen-drafts',
+                  label: 'Drafts & Offline Sync',
+                  icon: FileText
                 })}
 
                 {renderNavLink({

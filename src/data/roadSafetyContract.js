@@ -14,6 +14,7 @@ export const ROAD_SAFETY_STORAGE_KEYS = {
   CASES: 'civicbridge_review_cases_v1',
   INTERVENTIONS: 'civicbridge_intervention_records_v1',
   RATE_LIMIT: 'civicbridge_road_safety_rate_limit_v1',
+  AUDIT_LOGS: 'civicbridge_road_safety_audit_logs_v1',
 };
 
 export const CASE_STATES = {

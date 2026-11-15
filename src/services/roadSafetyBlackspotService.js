@@ -16,9 +16,18 @@ import {
   SEED_HAZARD_REPORTS,
   ETHICAL_NON_FAULT_NOTICE,
 } from '../data/roadSafetyContract';
-import { requirePermission, actorLabel as getActorLabel } from './accessControl';
+import { requirePermission, actorLabel as getActorLabel, getCurrentActor } from './accessControl';
 import { sanitizePlainText, safeHttpUrl } from '../utils/safeContent';
 import { minimizeForExternal } from '../utils/dataMinimization';
+
+export class RoadSafetyServiceError extends Error {
+  constructor(message, code = 'RS_INTERNAL_ERROR', details = {}) {
+    super(message);
+    this.name = 'RoadSafetyServiceError';
+    this.code = code;
+    this.details = details;
+  }
+}
 
 export const RATE_LIMIT_MAX_SUBMISSIONS = 5;
 export const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
@@ -54,6 +63,30 @@ const writeStorageJson = (key, data, storage) => {
   } catch {
     return false;
   }
+};
+
+/**
+ * Append-only audit logger for sensitive road-safety administrative actions.
+ */
+export const recordRoadSafetyAuditEvent = (action, details = {}, storage) => {
+  const s = getStorage(storage);
+  if (!s) return null;
+  const auditKey = ROAD_SAFETY_STORAGE_KEYS.AUDIT_LOGS;
+  const logs = readStorageJson(auditKey, [], s);
+  const entry = {
+    id: `rs-audit-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    action,
+    timestamp: new Date().toISOString(),
+    actor: getActorLabel('Safety Officer'),
+    details,
+  };
+  writeStorageJson(auditKey, [entry, ...logs].slice(0, 500), s);
+  return entry;
+};
+
+export const getRoadSafetyAuditLogs = (storage) => {
+  const s = getStorage(storage);
+  return readStorageJson(ROAD_SAFETY_STORAGE_KEYS.AUDIT_LOGS, [], s);
 };
 
 /**
@@ -348,6 +381,13 @@ export const executeRiskRun = (parameters = {}, storage) => {
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.RUNS, [runRecord, ...runs], s);
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, updatedCases, s);
 
+  recordRoadSafetyAuditEvent('RISK_RUN_EXECUTED', {
+    runId,
+    totalSegments: segments.length,
+    featureWindowStart: runRecord.featureWindowStart,
+    featureWindowEnd: runRecord.featureWindowEnd,
+  }, s);
+
   return {
     runRecord,
     cases: updatedCases,
@@ -450,23 +490,39 @@ export const transitionReviewCaseState = (caseId, targetState, transitionData = 
   const cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
   const caseIndex = cases.findIndex((c) => c.id === caseId);
   if (caseIndex === -1) {
-    throw new Error(`Review case with ID ${caseId} not found.`);
+    throw new RoadSafetyServiceError(`Review case with ID ${caseId} not found.`, 'RS_NOT_FOUND');
   }
 
   const currentCase = cases[caseIndex];
   const currentState = currentCase.status;
 
+  // Scope access by authenticated actor's jurisdiction when specified
+  const actor = getCurrentActor();
+  const segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+  const segment = segments.find((seg) => seg.id === currentCase.segmentId);
+  if (actor?.jurisdiction?.state && segment?.jurisdiction?.state && actor.jurisdiction.state !== segment.jurisdiction.state) {
+    throw new RoadSafetyServiceError(
+      `Access Denied: You are authorized for jurisdiction '${actor.jurisdiction.state}', cannot modify '${segment.jurisdiction.state}'.`,
+      'RS_FORBIDDEN_JURISDICTION'
+    );
+  }
+
   const allowedNext = ALLOWED_STATE_TRANSITIONS[currentState] || [];
   if (!allowedNext.includes(targetState)) {
-    throw new Error(
-      `Invalid state transition: Cannot transition from '${currentState}' to '${targetState}'. Allowed transitions are: [${allowedNext.join(', ')}]`
+    throw new RoadSafetyServiceError(
+      `Invalid state transition: Cannot transition from '${currentState}' to '${targetState}'. Allowed transitions are: [${allowedNext.join(', ')}]`,
+      'RS_INVALID_STATE_TRANSITION',
+      { currentState, targetState, allowedTransitions: allowedNext }
     );
   }
 
   // Sanitize transition note
   const justification = sanitizePlainText(transitionData.reason || transitionData.notes || '', { max: 1000 });
   if (!justification && (targetState === CASE_STATES.DISMISSED_FALSE_POSITIVE || targetState === CASE_STATES.DEFERRED)) {
-    throw new Error('A documented justification reason is required when dismissing or deferring a detected blackspot.');
+    throw new RoadSafetyServiceError(
+      'A documented justification reason is required when dismissing or deferring a detected blackspot.',
+      'RS_JUSTIFICATION_REQUIRED'
+    );
   }
 
   const updatedCase = {
@@ -488,6 +544,14 @@ export const transitionReviewCaseState = (caseId, targetState, transitionData = 
   cases[caseIndex] = updatedCase;
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, cases, s);
 
+  recordRoadSafetyAuditEvent('CASE_STATE_TRANSITION', {
+    caseId,
+    fromState: currentState,
+    toState: targetState,
+    justification,
+    segmentId: currentCase.segmentId,
+  }, s);
+
   return updatedCase;
 };
 
@@ -503,10 +567,21 @@ export const recordSiteInspection = (caseId, inspectionData = {}, storage) => {
   const cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
   const caseIndex = cases.findIndex((c) => c.id === caseId);
   if (caseIndex === -1) {
-    throw new Error(`Review case ${caseId} not found.`);
+    throw new RoadSafetyServiceError(`Review case ${caseId} not found.`, 'RS_NOT_FOUND');
   }
 
   const currentCase = cases[caseIndex];
+
+  // Scope access by authenticated actor's jurisdiction when specified
+  const actor = getCurrentActor();
+  const segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+  const segment = segments.find((seg) => seg.id === currentCase.segmentId);
+  if (actor?.jurisdiction?.state && segment?.jurisdiction?.state && actor.jurisdiction.state !== segment.jurisdiction.state) {
+    throw new RoadSafetyServiceError(
+      `Access Denied: You are authorized for jurisdiction '${actor.jurisdiction.state}', cannot inspect '${segment.jurisdiction.state}'.`,
+      'RS_FORBIDDEN_JURISDICTION'
+    );
+  }
 
   const inspectionDate = inspectionData.inspectionDate || new Date().toISOString().split('T')[0];
   const findings = sanitizePlainText(inspectionData.findings || '', { max: 2000 });
@@ -515,7 +590,7 @@ export const recordSiteInspection = (caseId, inspectionData = {}, storage) => {
   const speedSurveyObservedKmph = Number(inspectionData.speedSurveyObservedKmph) || null;
 
   if (!findings || findings.length < 10) {
-    throw new Error('Detailed site inspection findings (minimum 10 characters) are required.');
+    throw new RoadSafetyServiceError('Detailed site inspection findings (minimum 10 characters) are required.', 'RS_VALIDATION_ERROR');
   }
 
   const newInspectionRecord = {
@@ -544,6 +619,12 @@ export const recordSiteInspection = (caseId, inspectionData = {}, storage) => {
   cases[caseIndex] = updatedCase;
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, cases, s);
 
+  recordRoadSafetyAuditEvent('SITE_INSPECTION_RECORDED', {
+    caseId,
+    inspectionId: newInspectionRecord.id,
+    segmentId: currentCase.segmentId,
+  }, s);
+
   return {
     inspection: newInspectionRecord,
     reviewCase: updatedCase,
@@ -562,14 +643,14 @@ export const recordIntervention = (caseId, interventionData = {}, storage) => {
   const cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
   const caseIndex = cases.findIndex((c) => c.id === caseId);
   if (caseIndex === -1) {
-    throw new Error(`Review case ${caseId} not found.`);
+    throw new RoadSafetyServiceError(`Review case ${caseId} not found.`, 'RS_NOT_FOUND');
   }
 
   const currentCase = cases[caseIndex];
 
   const interventionType = interventionData.interventionType;
   if (!interventionType) {
-    throw new Error('An intervention type (e.g. rumble_strips, speed_table_pedestrian) is required.');
+    throw new RoadSafetyServiceError('An intervention type (e.g. rumble_strips, speed_table_pedestrian) is required.', 'RS_VALIDATION_ERROR');
   }
 
   const description = sanitizePlainText(interventionData.description || '', { max: 1500 });
@@ -606,6 +687,13 @@ export const recordIntervention = (caseId, interventionData = {}, storage) => {
   cases[caseIndex] = updatedCase;
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, cases, s);
 
+  recordRoadSafetyAuditEvent('INTERVENTION_RECORDED', {
+    caseId,
+    interventionId: newIntervention.id,
+    interventionType,
+    costEstimateInr,
+  }, s);
+
   return {
     intervention: newIntervention,
     reviewCase: updatedCase,
@@ -622,7 +710,7 @@ export const evaluateInterventionOutcome = (interventionId, outcomeData = {}, st
   const interventions = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.INTERVENTIONS, [], s);
   const intIndex = interventions.findIndex((i) => i.id === interventionId);
   if (intIndex === -1) {
-    throw new Error(`Intervention record ${interventionId} not found.`);
+    throw new RoadSafetyServiceError(`Intervention record ${interventionId} not found.`, 'RS_NOT_FOUND');
   }
 
   const preCrashes = Number(outcomeData.preInterventionCrashes) || 0;
@@ -644,6 +732,14 @@ export const evaluateInterventionOutcome = (interventionId, outcomeData = {}, st
   interventions[intIndex].updatedAt = new Date().toISOString();
 
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.INTERVENTIONS, interventions, s);
+
+  recordRoadSafetyAuditEvent('INTERVENTION_OUTCOME_EVALUATED', {
+    interventionId,
+    preCrashes,
+    postCrashes,
+    reductionPercentage,
+  }, s);
+
   return interventions[intIndex];
 };
 
@@ -655,6 +751,16 @@ export const submitCitizenHazardReport = (reportData = {}, storage, clientId = '
   const s = getStorage(storage);
   ensureRoadSafetySeedData(s);
 
+  // Idempotency guard: If an idempotencyKey is supplied and already stored, return existing report safely
+  const idempotencyKey = reportData.idempotencyKey;
+  const hazards = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [], s);
+  if (idempotencyKey) {
+    const existing = hazards.find((h) => h.idempotencyKey === idempotencyKey);
+    if (existing) {
+      return existing;
+    }
+  }
+
   // Rate Limiting Enforcement
   const rateKey = ROAD_SAFETY_STORAGE_KEYS.RATE_LIMIT;
   const rateRecords = readStorageJson(rateKey, {}, s);
@@ -662,8 +768,9 @@ export const submitCitizenHazardReport = (reportData = {}, storage, clientId = '
   const clientHistory = (rateRecords[clientId] || []).filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
 
   if (clientHistory.length >= RATE_LIMIT_MAX_SUBMISSIONS) {
-    throw new Error(
-      `Rate limit exceeded: You have submitted ${RATE_LIMIT_MAX_SUBMISSIONS} hazard reports in the last 15 minutes. Please wait before reporting again.`
+    throw new RoadSafetyServiceError(
+      `Rate limit exceeded: You have submitted ${RATE_LIMIT_MAX_SUBMISSIONS} hazard reports in the last 15 minutes. Please wait before reporting again.`,
+      'RS_RATE_LIMITED'
     );
   }
 
@@ -671,12 +778,12 @@ export const submitCitizenHazardReport = (reportData = {}, storage, clientId = '
   const segmentId = reportData.segmentId;
   const hazardType = reportData.hazardType;
   if (!hazardType) {
-    throw new Error('Please select a valid hazard type.');
+    throw new RoadSafetyServiceError('Please select a valid hazard type.', 'RS_VALIDATION_ERROR');
   }
 
   const rawDescription = String(reportData.description || '');
   if (rawDescription.trim().length < 10) {
-    throw new Error('Please provide at least 10 characters describing the hazard.');
+    throw new RoadSafetyServiceError('Please provide at least 10 characters describing the hazard.', 'RS_VALIDATION_ERROR');
   }
 
   const description = minimizeForExternal(sanitizePlainText(rawDescription, { max: 1000 }));
@@ -684,6 +791,7 @@ export const submitCitizenHazardReport = (reportData = {}, storage, clientId = '
 
   const newReport = {
     id: `haz-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    idempotencyKey: idempotencyKey || null,
     segmentId: segmentId || 'unassigned-corridor',
     hazardType,
     severity: reportData.severity || 'medium',
@@ -694,7 +802,6 @@ export const submitCitizenHazardReport = (reportData = {}, storage, clientId = '
     status: 'submitted',
   };
 
-  const hazards = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [], s);
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [newReport, ...hazards], s);
 
   // Update client rate-limit tracking
@@ -761,6 +868,9 @@ export const migrateRoadSafetyStorage = (storage) => {
   }
 
   try {
+    // Preserve rollback snapshot prior to applying version mutation
+    s.setItem(`${ROAD_SAFETY_STORAGE_KEYS.CASES}_backup_v${ROAD_SAFETY_SCHEMA_VERSION}`, rawCases);
+
     const cases = JSON.parse(rawCases);
     let migratedCount = 0;
     const migrated = cases.map((c) => {
@@ -776,9 +886,175 @@ export const migrateRoadSafetyStorage = (storage) => {
     });
 
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, migrated, s);
+    recordRoadSafetyAuditEvent('STORAGE_MIGRATION_EXECUTED', { version: ROAD_SAFETY_SCHEMA_VERSION, migratedCount }, s);
     return { success: true, migratedCount, version: ROAD_SAFETY_SCHEMA_VERSION };
   } catch (err) {
     return { success: false, reason: err.message };
   }
+};
+
+/**
+ * Rollback strategy: restores schema snapshot from previous version backup.
+ */
+export const rollbackRoadSafetyStorage = (targetVersion = 1, storage) => {
+  const s = getStorage(storage);
+  if (!s) return { success: false, reason: 'No storage available' };
+  const backupKey = `${ROAD_SAFETY_STORAGE_KEYS.CASES}_backup_v${targetVersion}`;
+  const backupRaw = s.getItem(backupKey);
+  if (!backupRaw) {
+    return { success: false, reason: `No backup snapshot found for version ${targetVersion}` };
+  }
+  try {
+    const cases = JSON.parse(backupRaw);
+    writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, cases, s);
+    recordRoadSafetyAuditEvent('STORAGE_ROLLBACK_EXECUTED', { targetVersion, count: cases.length }, s);
+    return { success: true, restoredVersion: targetVersion, count: cases.length };
+  } catch (err) {
+    return { success: false, reason: err.message };
+  }
+};
+
+/**
+ * Spatial join: associates a point coordinate { lat, lng } with the nearest or enclosing road segment.
+ * Uses Euclidean approximation suitable for short corridor lengths (< 5km).
+ * @param {{ lat: number, lng: number }} coords
+ * @param {Array<Object>} segments
+ * @param {number} maxDistanceKm - maximum buffer distance (default 0.5 km)
+ * @returns {Object|null} matched segment with calculated offsetDistanceKm
+ */
+export const spatialJoinCrashToSegment = (coords, segments = [], maxDistanceKm = 0.5) => {
+  if (!coords || typeof coords.lat !== 'number' || typeof coords.lng !== 'number' || !Array.isArray(segments) || segments.length === 0) {
+    return null;
+  }
+  let closest = null;
+  let minDistance = Infinity;
+
+  for (const seg of segments) {
+    if (!seg.startCoords || !seg.endCoords) continue;
+    // Midpoint of corridor
+    const midLat = (seg.startCoords.lat + seg.endCoords.lat) / 2;
+    const midLng = (seg.startCoords.lng + seg.endCoords.lng) / 2;
+    // Approximate distance in km using equirectangular projection
+    const dLat = (coords.lat - midLat) * 111.0;
+    const dLng = (coords.lng - midLng) * 111.0 * Math.cos((midLat * Math.PI) / 180);
+    const dist = Math.sqrt(dLat * dLat + dLng * dLng);
+
+    if (dist <= maxDistanceKm && dist < minDistance) {
+      minDistance = dist;
+      closest = {
+        segmentId: seg.id,
+        segmentName: seg.name,
+        offsetDistanceKm: Number(dist.toFixed(3)),
+      };
+    }
+  }
+  return closest;
+};
+
+/**
+ * Boundary change handler: recalculates vehicle-km exposure denominator when a road segment's
+ * physical boundaries (length in meters) or geometry are altered.
+ * Denominator (Million Vkm/year) = (365 * AADT * lengthKm) / 1,000,000.
+ * @param {Object} segment - road segment entity
+ * @param {number} newLengthMeters - revised length
+ * @param {number} [aadt] - Annual Average Daily Traffic (defaults to estimated volume if omitted)
+ * @returns {{ newLengthMeters: number, exposureDenominator: number, deltaRatio: number }}
+ */
+export const rescaleSegmentExposureForBoundaryChange = (segment, newLengthMeters, aadt = 30000) => {
+  if (!segment || !newLengthMeters || newLengthMeters <= 0) {
+    throw new RoadSafetyServiceError(
+      'Valid road segment and positive new length in meters are required for boundary rescaling.',
+      'RS_VALIDATION_ERROR'
+    );
+  }
+  const oldLengthKm = (segment.lengthMeters || 1000) / 1000;
+  const newLengthKm = newLengthMeters / 1000;
+  const oldExposure = (365 * aadt * oldLengthKm) / 1000000;
+  const newExposure = (365 * aadt * newLengthKm) / 1000000;
+  const deltaRatio = Number((newExposure / (oldExposure || 1)).toFixed(3));
+
+  return {
+    segmentId: segment.id,
+    previousLengthMeters: segment.lengthMeters,
+    newLengthMeters,
+    previousExposureDenominator: Number(oldExposure.toFixed(3)),
+    newExposureDenominator: Number(newExposure.toFixed(3)),
+    deltaRatio,
+  };
+};
+
+/**
+ * Detects temporal and seasonal bias across crash records (e.g. night glare skew, monsoon season spike).
+ * Useful to distinguish true infrastructure hazards from transient seasonal exposure peaks.
+ * @param {Array<Object>} crashRecords
+ * @returns {{ hasTemporalBias: boolean, dominantWindow: string, nocturnalRatio: number, seasonalRatio: number, flags: string[] }}
+ */
+export const detectTemporalBiasInCrashHistory = (crashRecords = []) => {
+  if (!Array.isArray(crashRecords) || crashRecords.length === 0) {
+    return { hasTemporalBias: false, dominantWindow: 'insufficient_data', nocturnalRatio: 0, seasonalRatio: 0, flags: [] };
+  }
+  let nocturnal = 0;
+  let diurnal = 0;
+  let monsoon = 0; // June - September
+  const flags = [];
+
+  for (const c of crashRecords) {
+    if (c.lightingCondition === 'night' || c.timeOfDay === 'night' || c.isNight) {
+      nocturnal += (c.totalCrashes || 1);
+    } else {
+      diurnal += (c.totalCrashes || 1);
+    }
+
+    if (c.periodStart) {
+      const month = new Date(c.periodStart).getMonth() + 1; // 1-12
+      if (month >= 6 && month <= 9) {
+        monsoon += (c.totalCrashes || 1);
+      }
+    }
+  }
+
+  const total = nocturnal + diurnal;
+  const nocturnalRatio = total > 0 ? Number((nocturnal / total).toFixed(2)) : 0;
+  const seasonalRatio = total > 0 ? Number((monsoon / total).toFixed(2)) : 0;
+
+  if (nocturnalRatio >= 0.65) {
+    flags.push(`Nocturnal clustering bias: ${Math.round(nocturnalRatio * 100)}% of crashes occur during dark hours (lighting deficiency indicated).`);
+  }
+  if (seasonalRatio >= 0.50) {
+    flags.push(`Monsoon seasonal skew: ${Math.round(seasonalRatio * 100)}% of crashes clustered between June and September (hydroplaning / drainage indicated).`);
+  }
+
+  return {
+    hasTemporalBias: flags.length > 0,
+    dominantWindow: nocturnalRatio >= 0.65 ? 'night_skew' : seasonalRatio >= 0.50 ? 'monsoon_skew' : 'uniform',
+    nocturnalRatio,
+    seasonalRatio,
+    flags,
+  };
+};
+
+/**
+ * Public Data Minimization Serializer:
+ * Ensures public views and exports contain only aggregated metrics,
+ * stripping internal reviewer notes, inspector names, and officer IDs.
+ */
+export const serializePublicBlackspotSummary = (caseItem) => {
+  if (!caseItem) return null;
+  return {
+    code: caseItem.segment?.code || '',
+    name: caseItem.segment?.name || '',
+    jurisdiction: {
+      state: caseItem.segment?.jurisdiction?.state || '',
+      district: caseItem.segment?.jurisdiction?.district || '',
+      zone: caseItem.segment?.jurisdiction?.zone || '',
+    },
+    roadType: caseItem.segment?.roadType || '',
+    speedLimitKmph: caseItem.segment?.speedLimitKmph || 0,
+    compositeRiskScore: caseItem.compositeRiskScore || 0,
+    status: caseItem.status || '',
+    confidenceLevel: caseItem.confidenceLevel || 'medium',
+    primaryRiskFactors: caseItem.primaryRiskFactors || [],
+    publishedAt: caseItem.updatedAt || caseItem.createdAt,
+  };
 };
 

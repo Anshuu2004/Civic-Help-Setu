@@ -8,6 +8,15 @@ import RoadSafetyInterventionModal from '../components/roadSafety/RoadSafetyInte
 import RoadSafetyTimelineComparatorModal from '../components/roadSafety/RoadSafetyTimelineComparatorModal';
 import RoadSafetyHazardReportModal from '../components/roadSafety/RoadSafetyHazardReportModal';
 import RoadSafetyRiskRunModal from '../components/roadSafety/RoadSafetyRiskRunModal';
+import RoadSafetyInteractiveMap from '../components/roadSafety/RoadSafetyInteractiveMap';
+import {
+  RoadSafetySkeleton,
+  RoadSafetyOfflineBanner,
+  RoadSafetyStaleDataNotice,
+  RoadSafetyErrorState,
+  RoadSafetyPermissionDeniedState,
+  RoadSafetyViewToggle,
+} from '../components/roadSafety/RoadSafetyStates';
 import { ToastProvider } from '../context/ToastContext';
 import { SEED_ROAD_SEGMENTS, SEED_CRASH_AGGREGATES, SEED_ROAD_FEATURES } from '../data/roadSafetyContract';
 import { setCurrentActor } from '../services/accessControl';
@@ -168,6 +177,78 @@ describe('RoadSafetyDashboard & Components (#769)', () => {
     expect(html).toContain('Deterministic MoRTH Evaluation:');
     expect(html).toContain('Crash Frequency Weight');
     expect(html).toContain('Crash Severity Weight');
+  });
+
+  it('renders RoadSafetyInteractiveMap with SVG canvas, corridor pins, and legend', () => {
+    const mockCases = [
+      {
+        id: 'case-seg-ka-blr-nh44-01',
+        compositeRiskScore: 84,
+        status: 'candidate',
+        severityWeightedFrequency: 45.2,
+        segment: SEED_ROAD_SEGMENTS[0],
+      },
+    ];
+
+    const html = renderToStaticMarkup(
+      <RoadSafetyInteractiveMap
+        cases={mockCases}
+        onSelectCase={() => {}}
+      />
+    );
+
+    expect(html).toContain('Spatial Blackspot Distribution Map');
+    expect(html).toContain('Priority 1');
+    expect(html).toContain('Priority 2');
+    expect(html).toContain('Priority 3');
+    expect(html).toContain('84');
+    expect(html).toContain('NH-44 Outer Ring Road');
+    expect(html).toContain('Review Full Evidence');
+  });
+
+  it('renders RoadSafetyStates components: skeleton, offline banner, stale notice, error state, and view toggle', () => {
+    const skeletonHtml = renderToStaticMarkup(<RoadSafetySkeleton />);
+    expect(skeletonHtml).toContain('Loading road safety blackspot records...');
+
+    const offlineHtml = renderToStaticMarkup(<RoadSafetyOfflineBanner pendingCount={2} />);
+    expect(offlineHtml).toContain('Offline Mode Active');
+    expect(offlineHtml).toContain('2 pending local entries');
+
+    const staleHtml = renderToStaticMarkup(<RoadSafetyStaleDataNotice />);
+    expect(staleHtml).toContain('Statutory Baseline:');
+    expect(staleHtml).toContain('Ministry of Road Transport and Highways (MoRTH)');
+
+    const errorHtml = renderToStaticMarkup(
+      <RoadSafetyErrorState message="Network storage timeout" onRetry={() => {}} />
+    );
+    expect(errorHtml).toContain('Unable to Load Road Safety Data');
+    expect(errorHtml).toContain('Network storage timeout');
+    expect(errorHtml).toContain('Retry Data Recovery');
+
+    const toggleHtml = renderToStaticMarkup(
+      <RoadSafetyViewToggle activeView="table" onViewChange={() => {}} />
+    );
+    expect(toggleHtml).toContain('Evidence Table (Accessible)');
+    expect(toggleHtml).toContain('Spatial Hotspot Map');
+
+    const deniedHtml = renderToStaticMarkup(
+      <RoadSafetyPermissionDeniedState
+        requiredRole="Executive Road Safety Officer"
+        onDismiss={() => {}}
+      />
+    );
+    expect(deniedHtml).toContain('Access Restricted: Authorized Personnel Only');
+    expect(deniedHtml).toContain('Executive Road Safety Officer');
+    expect(deniedHtml).toContain('Return to Monitored Corridors');
+  });
+
+  it('renders RoadSafetyDashboard with view toggle, stale data notice, and summary metrics', () => {
+    const html = renderDashboard();
+    expect(html).toContain('Evidence Table (Accessible)');
+    expect(html).toContain('Spatial Hotspot Map');
+    expect(html).toContain('Statutory Baseline:');
+    expect(html).toContain('Showing');
+    expect(html).toContain('identified road corridors');
   });
 });
 

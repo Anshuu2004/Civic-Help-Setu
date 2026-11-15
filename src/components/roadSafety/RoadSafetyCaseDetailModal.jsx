@@ -2,23 +2,16 @@ import { useState, useEffect } from 'react';
 import {
   X,
   MapPin,
-  AlertTriangle,
-  Compass,
   Layers,
-  Lightbulb,
   ShieldAlert,
   ArrowRight,
   ExternalLink,
   ClipboardList,
-  Wrench,
   Info,
 } from 'lucide-react';
 import {
-  CASE_STATES,
   CASE_STATE_LABELS,
   ALLOWED_STATE_TRANSITIONS,
-  LIGHTING_QUALITIES,
-  CROSSING_TYPES,
 } from '../../data/roadSafetyContract';
 import { can } from '../../services/accessControl';
 
