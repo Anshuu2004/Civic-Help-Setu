@@ -28,6 +28,9 @@ Run unit and integration tests locally with Vitest:
 npm test                                                      # run all tests
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
+npm test -- --run src/services/continuityPlannerService.test.js # continuity planner service & state machine tests (#780)
+npm test -- --run src/services/dependencyGraphEngine.test.js  # graph analysis, cycle detection & SPOF tests (#780)
+npm test -- --run src/pages/ContinuityPlannerWorkspace.test.jsx # incident response drill workspace & runbook tests (#780)
 ```
 
 ## Security checks

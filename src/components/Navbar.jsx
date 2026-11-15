@@ -23,7 +23,8 @@ import {
   Settings,
   Droplets,
   KeyRound,
-  Store
+  Store,
+  ShieldAlert
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -106,6 +107,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/rental-checklist' ||
           normalizedPath === '/rental-transition' ||
           normalizedPath === '/rental-records'
+        );
+      }
+
+      if (normalizedTarget === '/continuity-planner') {
+        return (
+          normalizedPath === '/continuity-planner' ||
+          normalizedPath.startsWith('/continuity-planner/') ||
+          normalizedPath === '/incident-drills'
         );
       }
 
@@ -798,6 +807,13 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/continuity-planner',
+                activeTarget: '/continuity-planner',
+                label: t('nav.continuityPlanner', 'Continuity & Drills'),
+                icon: ShieldAlert
               })}
 
               {renderNavLink({

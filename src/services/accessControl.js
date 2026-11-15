@@ -46,6 +46,9 @@ export const PERMISSIONS = {
   'ownership.read': { roles: ['admin'], resource: 'civicbridge_service_ownership_v1', description: 'Read who is assigned to review each service guide, with private notes' },
   'ownership.manage': { roles: ['admin'], resource: 'civicbridge_service_ownership_v1', description: 'Assign, reassign or clear the reviewer of a service guide' },
   'civicWorks.moderate': { roles: ['admin'], resource: 'civicbridge_civic_works_reports_v1', description: 'Moderate ward-level civic work reports, cluster duplicates, record official acknowledgements and verify completion evidence' },
+  'continuity.write': { roles: ['admin'], resource: 'civicbridge_continuity_plans_v1', description: 'Create or update public service continuity plans and service dependencies' },
+  'continuity.approve': { roles: ['admin'], resource: 'civicbridge_continuity_plans_v1', description: 'Approve, activate or supersede continuity plans' },
+  'continuity.drill': { roles: ['admin'], resource: 'civicbridge_exercise_runs_v1', description: 'Schedule and facilitate incident tabletop exercises and record decisions' },
 };
 
 export class PermissionDeniedError extends Error {

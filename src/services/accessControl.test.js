@@ -43,6 +43,11 @@ import { addNotice, updateNotice, changeNoticeStatus, resetNoticesToDefault } fr
 import { moderateBarrierReport } from './barrierReportService';
 import { recordServiceReview } from './dataFreshnessTrustService';
 import { saveLinkCheck } from './linkHealthService';
+import {
+  saveContinuityPlan,
+  transitionPlanState,
+  createExerciseRun,
+} from './continuityPlannerService';
 import { moderateCivicWorkReport } from './civicWorksBoardService';
 
 const memoryStorage = () => {
@@ -107,6 +112,9 @@ const CALLS = {
   'ownership.read': () => getOwnershipMap(moduleStorage),
   'ownership.manage': () => assignServiceOwnership('svc', { team: 'Docs' }, { storage: moduleStorage }),
   'civicWorks.moderate': () => moderateCivicWorkReport({ reportId: 'cw-1', decision: 'approved' }, moduleStorage),
+  'continuity.write': () => saveContinuityPlan({ title: 'ContPlan' }),
+  'continuity.approve': () => transitionPlanState('plan_pune_ward_12', 'APPROVED', { reason: 'Test' }),
+  'continuity.drill': () => createExerciseRun({ title: 'Test Drill' }),
 };
 
 const outcome = (fn) => {

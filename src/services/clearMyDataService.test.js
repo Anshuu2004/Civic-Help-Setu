@@ -289,6 +289,21 @@ describe('registry covers the keys the app writes', () => {
     'civicbridge_shareable_citizen_profiles',
     'civicbridge_voluntary_profile_opt_in',
     'civicbridge_voluntary_profile_attrs',
+    'civic_fire_noc_checklist_dossier',
+    'civicbridge_civic_works_reporter_id',
+    'civic_admin_operations_digest_config',
+    'civic_admin_operations_digest_logs',
+    'civic_application_lifecycle_email_logs',
+    'civic_application_notification_preferences',
+    'civic_service_checklist_email_logs',
+    'civic_application_deadline_reminder_configs',
+    'civic_application_deadline_reminder_logs',
+    'civic_privacy_safe_feedback_store',
+    'civic_help_setu_contributors_cache',
+    'civic_rental_transition_checklists_v1',
+    'civic_tender_readiness_checklists_v1',
+    'civicbridge_transactional_delivery_logs',
+    'civicbridge_watertanker_requests',
   ]);
 
   it('has no unlisted storage key in src', () => {
