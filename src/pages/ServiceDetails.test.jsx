@@ -43,6 +43,14 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/services/aadhaar-guide');
   });
 
+  it('renders the dedicated Small-Business Licence Renewal & Closure Centre entry card (#721)', () => {
+    const html = render('/services/business-licence-checklist');
+    expect(html).toContain('Small-Business Licence Renewal &amp; Closure Checklist Centre');
+    expect(html).toContain('Interactive Small-Business Licence Renewal &amp; Closure Checklist Centre');
+    expect(html).toContain('Open Interactive Centre');
+    expect(html).toContain('/services/business-licence-checklist');
+  });
+
   it('renders the dedicated Fire NOC guide entry card when viewing the fire-noc service (#719)', () => {
     const html = render('/services/fire-noc');
     expect(html).toContain('Fire Safety Certificate / Fire NOC');
