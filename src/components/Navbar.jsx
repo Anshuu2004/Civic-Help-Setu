@@ -120,6 +120,22 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+      if (normalizedTarget === '/ward-budget') {
+        return (
+          normalizedPath === '/ward-budget' ||
+          normalizedPath === '/services/ward-budget-proposal' ||
+          normalizedPath.startsWith('/ward-budget/')
+        );
+      }
+
+      if (normalizedTarget === '/road-safety') {
+        return (
+          normalizedPath === '/road-safety' ||
+          normalizedPath === '/blackspots' ||
+          normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
       if (normalizedTarget === '/admin') {
         return (
           normalizedPath === '/admin' ||
@@ -838,6 +854,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               {renderNavLink({
                 to: '/civic-works',
                 label: t('nav.civicWorks', 'Ward Public Works'),
+                icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/ward-budget',
+                label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
                 icon: Users
               })}
 

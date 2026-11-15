@@ -67,6 +67,14 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/services/tree-permission-guide');
   });
 
+  it('renders the dedicated Ward Budget Proposal entry card when viewing the ward-budget-proposal service (#765)', () => {
+    const html = render('/services/ward-budget-proposal');
+    expect(html).toContain('Participatory Ward Budget Proposal &amp; Public Deliberation');
+    expect(html).toContain('Open Ward Budget Platform');
+    expect(html).toContain('/services/ward-budget-proposal');
+    expect(html).toContain('/ward-budget');
+  });
+
   it('renders the dedicated Civic Survey Builder entry card when viewing the civic-survey-builder service (#767)', () => {
     const html = render('/services/civic-survey-builder');
     expect(html).toContain('Civic Survey Builder &amp; Sampling Diagnostics');
