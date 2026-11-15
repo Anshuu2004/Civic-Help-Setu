@@ -73,12 +73,13 @@ export default function ReviewQueueModal({
       <div
         className="modal-content"
         style={{
-          background: 'var(--bg-card, #ffffff)',
-          color: 'var(--text-primary, #0f172a)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary, #ffffff)',
+          border: '1px solid var(--border-light, rgba(255, 255, 255, 0.15))',
           width: '100%',
           maxWidth: '600px',
           borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
           overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -86,19 +87,19 @@ export default function ReviewQueueModal({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-light, #e2e8f0)',
+            borderBottom: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={18} color="#2563eb" />
-            <h3 id="review-modal-title" style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>
+            <ShieldCheck size={18} color="#38bdf8" />
+            <h3 id="review-modal-title" style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               Official Technical Scrutiny Action
             </h3>
           </div>
-          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}>
+          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem', color: 'var(--text-secondary)' }}>
             ✕
           </button>
         </div>
@@ -117,13 +118,20 @@ export default function ReviewQueueModal({
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
               Review Decision *
             </label>
             <select
               value={decision}
               onChange={(e) => setDecision(e.target.value)}
-              style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+              style={{
+                width: '100%',
+                padding: '0.6rem',
+                borderRadius: '0.5rem',
+                background: 'var(--bg-surface, #0e0e11)',
+                color: 'var(--text-primary, #ffffff)',
+                border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+              }}
             >
               <option value="approved_for_voting">Approved for Citizen Ballot (Eligible)</option>
               <option value="eligible">Eligible (Under Further Engineering Verification)</option>
@@ -137,13 +145,20 @@ export default function ReviewQueueModal({
 
           {decision === 'merged_as_duplicate' && (
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                 Canonical Primary Proposal ID *
               </label>
               <select
                 value={canonicalProposalId}
                 onChange={(e) => setCanonicalProposalId(e.target.value)}
-                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem',
+                  borderRadius: '0.5rem',
+                  background: 'var(--bg-surface, #0e0e11)',
+                  color: 'var(--text-primary, #ffffff)',
+                  border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+                }}
               >
                 <option value="">-- Select Canonical Proposal --</option>
                 {allProposals
@@ -158,7 +173,7 @@ export default function ReviewQueueModal({
           )}
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
               Public Summary Justification * (Visible to residents)
             </label>
             <textarea
@@ -168,13 +183,21 @@ export default function ReviewQueueModal({
               placeholder="e.g. Technical review confirms road width meets IRC norms. Estimate matches schedule of rates. Passed for ballot."
               maxLength={1000}
               required
-              style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', resize: 'vertical' }}
+              style={{
+                width: '100%',
+                padding: '0.6rem',
+                borderRadius: '0.5rem',
+                background: 'var(--bg-surface, #0e0e11)',
+                color: 'var(--text-primary, #ffffff)',
+                border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+                resize: 'vertical',
+              }}
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Minimum 15 characters</span>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
               Internal Engineering Notes (Confidential to committee)
             </label>
             <textarea
@@ -183,12 +206,32 @@ export default function ReviewQueueModal({
               onChange={(e) => setInternalNotes(e.target.value)}
               placeholder="Administrative scrutiny notes, utility clearances, or department comments..."
               maxLength={1000}
-              style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', resize: 'vertical' }}
+              style={{
+                width: '100%',
+                padding: '0.6rem',
+                borderRadius: '0.5rem',
+                background: 'var(--bg-surface, #0e0e11)',
+                color: 'var(--text-primary, #ffffff)',
+                border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+                resize: 'vertical',
+              }}
             />
           </div>
 
           {errorMsg && (
-            <div style={{ padding: '0.6rem', borderRadius: '0.375rem', background: '#fef2f2', color: '#b91c1c', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div
+              style={{
+                padding: '0.6rem',
+                borderRadius: '0.375rem',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                color: '#f87171',
+                fontSize: '0.8rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+              }}
+            >
               <AlertCircle size={14} />
               <span>{errorMsg}</span>
             </div>

@@ -53,13 +53,13 @@ export default function ProposalDetailModal({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.65)',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1050,
         padding: '1rem',
-        backdropFilter: 'blur(3px)',
+        backdropFilter: 'blur(4px)',
       }}
       onClick={onClose}
       role="dialog"
@@ -70,13 +70,14 @@ export default function ProposalDetailModal({
         ref={modalRef}
         className="modal-content"
         style={{
-          background: 'var(--bg-card, #ffffff)',
-          color: 'var(--text-primary, #0f172a)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary, #ffffff)',
+          border: '1px solid var(--border-light, rgba(255, 255, 255, 0.15))',
           width: '100%',
           maxWidth: '750px',
           maxHeight: '90vh',
           borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -87,7 +88,7 @@ export default function ProposalDetailModal({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-light, #e2e8f0)',
+            borderBottom: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
@@ -100,10 +101,10 @@ export default function ProposalDetailModal({
                 style={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  padding: '0.2rem 0.5rem',
+                  padding: '0.2rem 0.6rem',
                   borderRadius: '9999px',
-                  background: 'var(--accent-subtle, #eff6ff)',
-                  color: 'var(--accent-text, #1e40af)',
+                  background: 'rgba(56, 189, 248, 0.15)',
+                  color: 'var(--accent-main, #38bdf8)',
                 }}
               >
                 {categoryInfo.label}
@@ -112,21 +113,22 @@ export default function ProposalDetailModal({
                 style={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  padding: '0.2rem 0.5rem',
+                  padding: '0.2rem 0.6rem',
                   borderRadius: '4px',
-                  background: 'var(--bg-tag, #f1f5f9)',
-                  color: 'var(--text-secondary, #334155)',
+                  background: 'var(--bg-tag, #1c1c22)',
+                  color: 'var(--text-secondary, #a1a1aa)',
+                  border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
                 }}
               >
                 {statusInfo.label}
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary, #64748b)' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary, #71717a)' }}>
                 ID: {proposal.id}
               </span>
             </div>
             <h2
               id="modal-proposal-title"
-              style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.3 }}
+              style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, lineHeight: 1.3, color: 'var(--text-primary)' }}
             >
               {proposal.title}
             </h2>
@@ -141,7 +143,7 @@ export default function ProposalDetailModal({
               cursor: 'pointer',
               padding: '0.4rem',
               borderRadius: '0.375rem',
-              color: 'var(--text-secondary, #64748b)',
+              color: 'var(--text-secondary, #a1a1aa)',
             }}
           >
             <X size={20} />
@@ -157,10 +159,11 @@ export default function ProposalDetailModal({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                padding: '0.75rem',
+                padding: '0.75rem 1rem',
                 borderRadius: '0.5rem',
-                background: '#fef3c7',
-                color: '#92400e',
+                background: 'rgba(217, 119, 6, 0.15)',
+                border: '1px solid rgba(217, 119, 6, 0.35)',
+                color: '#fbbf24',
                 marginBottom: '1rem',
                 fontSize: '0.85rem',
               }}
@@ -179,40 +182,43 @@ export default function ProposalDetailModal({
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: '1rem',
-              padding: '0.85rem',
+              padding: '1rem',
               borderRadius: '0.5rem',
-              background: 'var(--bg-tag, #f8fafc)',
+              background: 'var(--bg-tag, #1c1c22)',
+              border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
               marginBottom: '1.25rem',
             }}
           >
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.2rem' }}>
                 Ward Jurisdiction
               </span>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{proposal.ward}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                {proposal.ward}
+              </span>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.2rem' }}>
                 Approximate Location
               </span>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                <MapPin size={14} color="#ef4444" />
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-primary)' }}>
+                <MapPin size={14} color="#f87171" />
                 {proposal.approximateLocation}
               </span>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.2rem' }}>
                 Estimated Cost Range
               </span>
-              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--accent-main, #2563eb)' }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--accent-main, #38bdf8)' }}>
                 {formatCurrency(proposal.costEstimateRange?.min)} - {formatCurrency(proposal.costEstimateRange?.max)}
               </span>
             </div>
             <div>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.2rem' }}>
                 Submitted By
               </span>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                 {proposal.submittedBy?.displayName || 'Ward Resident'}
               </span>
             </div>
@@ -220,7 +226,7 @@ export default function ProposalDetailModal({
 
           {/* Description */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.35rem' }}>
+            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.35rem', color: 'var(--text-primary)' }}>
               Public Utility &amp; Scope of Works
             </h4>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
@@ -236,7 +242,7 @@ export default function ProposalDetailModal({
           {/* Supporting Evidence Documents */}
           {proposal.supportingEvidence && proposal.supportingEvidence.length > 0 && (
             <div style={{ marginBottom: '1.25rem' }}>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.35rem' }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.35rem', color: 'var(--text-primary)' }}>
                 Supporting Evidence &amp; Survey Notes
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
@@ -247,14 +253,16 @@ export default function ProposalDetailModal({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '0.5rem 0.75rem',
+                      padding: '0.6rem 0.85rem',
                       borderRadius: '0.375rem',
-                      border: '1px solid var(--border-light)',
+                      background: 'var(--bg-tag, #1c1c22)',
+                      border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
                       fontSize: '0.85rem',
+                      color: 'var(--text-primary)',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <FileText size={16} color="#3b82f6" />
+                      <FileText size={16} color="var(--accent-main, #38bdf8)" />
                       <span>{ev.label}</span>
                     </div>
                     {ev.sourceUrl && (
@@ -262,7 +270,7 @@ export default function ProposalDetailModal({
                         href={ev.sourceUrl}
                         target="_blank"
                         rel="noreferrer noopener"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', color: '#2563eb', fontSize: '0.8rem' }}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', color: 'var(--accent-main, #38bdf8)', fontSize: '0.8rem' }}
                       >
                         View Document <ExternalLink size={12} />
                       </a>
@@ -275,17 +283,25 @@ export default function ProposalDetailModal({
 
           {/* Official Decisions History */}
           {decisions.length > 0 && (
-            <div style={{ marginBottom: '1.25rem', padding: '0.85rem', borderRadius: '0.5rem', background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+            <div
+              style={{
+                marginBottom: '1.25rem',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                background: 'rgba(34, 197, 94, 0.12)',
+                border: '1px solid rgba(34, 197, 94, 0.35)',
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
-                <ShieldCheck size={16} color="#16a34a" />
-                <h4 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#166534' }}>
+                <ShieldCheck size={16} color="#4ade80" />
+                <h4 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#4ade80' }}>
                   Official Technical Review Decision
                 </h4>
               </div>
               {decisions.map((d) => (
-                <div key={d.id} style={{ fontSize: '0.82rem', color: '#14532d' }}>
-                  <p style={{ margin: '0 0 0.25rem 0' }}>{d.publicSummary}</p>
-                  <span style={{ fontSize: '0.75rem', color: '#15803d' }}>
+                <div key={d.id} style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                  <p style={{ margin: '0 0 0.25rem 0', lineHeight: 1.5 }}>{d.publicSummary}</p>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                     Reviewed on {new Date(d.decisionDate).toLocaleDateString()} by {d.reviewerRole}
                   </span>
                 </div>
@@ -295,23 +311,31 @@ export default function ProposalDetailModal({
 
           {/* Implementation Updates if Funded */}
           {updates.length > 0 && (
-            <div style={{ marginBottom: '1.25rem', padding: '0.85rem', borderRadius: '0.5rem', background: '#eff6ff', border: '1px solid #bfdbfe' }}>
+            <div
+              style={{
+                marginBottom: '1.25rem',
+                padding: '1rem',
+                borderRadius: '0.5rem',
+                background: 'rgba(56, 189, 248, 0.12)',
+                border: '1px solid rgba(56, 189, 248, 0.35)',
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                <CheckCircle2 size={16} color="#2563eb" />
-                <h4 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#1e40af' }}>
+                <CheckCircle2 size={16} color="#38bdf8" />
+                <h4 style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: '#38bdf8' }}>
                   Ground Implementation Tracking
                 </h4>
               </div>
               {updates.map((u) => (
-                <div key={u.id} style={{ marginBottom: '0.5rem', fontSize: '0.82rem' }}>
+                <div key={u.id} style={{ marginBottom: '0.5rem', fontSize: '0.82rem', color: 'var(--text-primary)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
                     <span>{u.milestoneTitle}</span>
                     <span>{u.progressPercent}% Complete</span>
                   </div>
-                  <div style={{ width: '100%', height: '6px', background: '#dbeafe', borderRadius: '3px', margin: '0.25rem 0' }}>
-                    <div style={{ width: `${u.progressPercent}%`, height: '100%', background: '#2563eb', borderRadius: '3px' }} />
+                  <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.15)', borderRadius: '3px', margin: '0.25rem 0' }}>
+                    <div style={{ width: `${u.progressPercent}%`, height: '100%', background: '#38bdf8', borderRadius: '3px' }} />
                   </div>
-                  <p style={{ margin: '0.25rem 0 0 0', color: '#334155' }}>{u.publicNotes}</p>
+                  <p style={{ margin: '0.25rem 0 0 0', color: 'var(--text-secondary)' }}>{u.publicNotes}</p>
                 </div>
               ))}
             </div>
@@ -322,7 +346,6 @@ export default function ProposalDetailModal({
             proposalId={proposal.id}
             comments={comments}
             onAddComment={onAddComment}
-            currentUser={currentUser}
           />
         </div>
 
@@ -330,13 +353,13 @@ export default function ProposalDetailModal({
         <div
           style={{
             padding: '1rem 1.5rem',
-            borderTop: '1px solid var(--border-light, #e2e8f0)',
+            borderTop: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '0.75rem',
-            background: 'var(--bg-tag, #f8fafc)',
+            background: 'var(--bg-tag, #1c1c22)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -373,7 +396,7 @@ export default function ProposalDetailModal({
             <button
               type="button"
               className="btn btn-secondary"
-              style={{ fontSize: '0.85rem' }}
+              style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}
               onClick={onClose}
             >
               Close

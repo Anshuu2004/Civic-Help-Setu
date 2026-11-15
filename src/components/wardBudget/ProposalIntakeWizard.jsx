@@ -149,6 +149,15 @@ export default function ProposalIntakeWizard({
     }
   };
 
+  const inputStyle = {
+    width: '100%',
+    padding: '0.6rem',
+    borderRadius: '0.5rem',
+    background: 'var(--bg-surface, #0e0e11)',
+    color: 'var(--text-primary, #ffffff)',
+    border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+  };
+
   return (
     <div
       className="modal-backdrop"
@@ -158,13 +167,13 @@ export default function ProposalIntakeWizard({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.65)',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1050,
         padding: '1rem',
-        backdropFilter: 'blur(3px)',
+        backdropFilter: 'blur(4px)',
       }}
       onClick={onClose}
       role="dialog"
@@ -174,13 +183,14 @@ export default function ProposalIntakeWizard({
       <div
         className="modal-content"
         style={{
-          background: 'var(--bg-card, #ffffff)',
-          color: 'var(--text-primary, #0f172a)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary, #ffffff)',
+          border: '1px solid var(--border-light, rgba(255, 255, 255, 0.15))',
           width: '100%',
           maxWidth: '680px',
           maxHeight: '92vh',
           borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -191,17 +201,17 @@ export default function ProposalIntakeWizard({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-light, #e2e8f0)',
+            borderBottom: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
           <div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-main, #2563eb)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-main, #38bdf8)' }}>
               Step {step} of 4 • Citizen Proposal Intake
             </span>
-            <h2 id="intake-wizard-title" style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800 }}>
+            <h2 id="intake-wizard-title" style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               {step === 1 && 'Basic Title & Municipal Category'}
               {step === 2 && 'Location & Scope of Improvement'}
               {step === 3 && 'Cost Range & Estimation Basis'}
@@ -211,7 +221,7 @@ export default function ProposalIntakeWizard({
           <button
             type="button"
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem', color: 'var(--text-secondary)' }}
             aria-label="Cancel proposal intake"
           >
             ✕
@@ -228,8 +238,9 @@ export default function ProposalIntakeWizard({
                 gap: '0.5rem',
                 padding: '0.6rem 0.8rem',
                 borderRadius: '0.375rem',
-                background: '#fef3c7',
-                color: '#92400e',
+                background: 'rgba(217, 119, 6, 0.15)',
+                border: '1px solid rgba(217, 119, 6, 0.35)',
+                color: '#fbbf24',
                 fontSize: '0.8rem',
                 marginBottom: '1rem',
               }}
@@ -244,9 +255,9 @@ export default function ProposalIntakeWizard({
               style={{
                 padding: '0.75rem',
                 borderRadius: '0.5rem',
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                color: '#b91c1c',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                color: '#f87171',
                 fontSize: '0.85rem',
                 marginBottom: '1rem',
               }}
@@ -263,7 +274,7 @@ export default function ProposalIntakeWizard({
           {step === 1 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Proposal Title *
                 </label>
                 <input
@@ -272,19 +283,19 @@ export default function ProposalIntakeWizard({
                   onChange={(e) => handleChange('title', e.target.value)}
                   placeholder="e.g. Pedestrian Walkway Restoration and Tactile Paving on 14th Main"
                   maxLength={120}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                  style={inputStyle}
                 />
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>10-120 characters</span>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Civic Works Category *
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => handleChange('category', e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                  style={inputStyle}
                 >
                   {Object.entries(PROPOSAL_CATEGORIES).map(([key, cat]) => (
                     <option key={key} value={key}>
@@ -295,14 +306,14 @@ export default function ProposalIntakeWizard({
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Designated Ward Jurisdiction *
                 </label>
                 <input
                   type="text"
                   value={formData.ward}
                   onChange={(e) => handleChange('ward', e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                  style={inputStyle}
                 />
               </div>
             </div>
@@ -312,7 +323,7 @@ export default function ProposalIntakeWizard({
           {step === 2 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Approximate Street Address / Landmark *
                 </label>
                 <input
@@ -321,12 +332,12 @@ export default function ProposalIntakeWizard({
                   onChange={(e) => handleChange('approximateLocation', e.target.value)}
                   placeholder="e.g. 14th Main Road between Green Glen Layout & ORR Underpass"
                   maxLength={200}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                  style={inputStyle}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Public Benefit &amp; Scope of Works *
                 </label>
                 <textarea
@@ -335,7 +346,7 @@ export default function ProposalIntakeWizard({
                   onChange={(e) => handleChange('description', e.target.value)}
                   placeholder="Detail the issue, who is affected (e.g., pedestrians, senior citizens), and what specific civil improvements are needed (do NOT include personal phone or identity numbers)..."
                   maxLength={2000}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', resize: 'vertical' }}
+                  style={{ ...inputStyle, resize: 'vertical' }}
                 />
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>Minimum 30 characters</span>
               </div>
@@ -347,7 +358,7 @@ export default function ProposalIntakeWizard({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                     Estimated Minimum (₹ INR) *
                   </label>
                   <input
@@ -357,11 +368,11 @@ export default function ProposalIntakeWizard({
                     step="10000"
                     value={formData.costMin}
                     onChange={(e) => handleChange('costMin', e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                     Estimated Maximum (₹ INR) *
                   </label>
                   <input
@@ -371,13 +382,13 @@ export default function ProposalIntakeWizard({
                     step="10000"
                     value={formData.costMax}
                     onChange={(e) => handleChange('costMax', e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                    style={inputStyle}
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Cost Basis / Estimation Source
                 </label>
                 <input
@@ -386,12 +397,12 @@ export default function ProposalIntakeWizard({
                   onChange={(e) => handleChange('costBasis', e.target.value)}
                   placeholder="e.g. Municipal Schedule of Rates 2025-26 or quotation by local contractor"
                   maxLength={300}
-                  style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                  style={inputStyle}
                 />
               </div>
 
-              <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: '1rem' }}>
-                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, margin: '0 0 0.5rem 0' }}>
+              <div style={{ borderTop: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))', paddingTop: '1rem' }}>
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
                   Supporting Document or Photo Survey (Optional)
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -400,14 +411,14 @@ export default function ProposalIntakeWizard({
                     value={formData.evidenceLabel}
                     onChange={(e) => handleChange('evidenceLabel', e.target.value)}
                     placeholder="Document Label (e.g. Photo Survey of Potholes)"
-                    style={{ padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid var(--border-light)', fontSize: '0.82rem' }}
+                    style={{ ...inputStyle, fontSize: '0.82rem' }}
                   />
                   <input
                     type="text"
                     value={formData.evidenceUrl}
                     onChange={(e) => handleChange('evidenceUrl', e.target.value)}
                     placeholder="URL or file reference"
-                    style={{ padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid var(--border-light)', fontSize: '0.82rem' }}
+                    style={{ ...inputStyle, fontSize: '0.82rem' }}
                   />
                 </div>
               </div>
@@ -422,17 +433,17 @@ export default function ProposalIntakeWizard({
                   style={{
                     padding: '1rem',
                     borderRadius: '0.5rem',
-                    background: '#eff6ff',
-                    border: '1px solid #bfdbfe',
+                    background: 'rgba(56, 189, 248, 0.12)',
+                    border: '1px solid rgba(56, 189, 248, 0.35)',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.35rem' }}>
-                    <Sparkles size={16} color="#2563eb" />
-                    <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: '#1e40af' }}>
+                    <Sparkles size={16} color="#38bdf8" />
+                    <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700, color: '#38bdf8' }}>
                       Duplicate Clustering Notice ({duplicateAssessment.candidates.length} potential matches found)
                     </h4>
                   </div>
-                  <p style={{ fontSize: '0.82rem', color: '#1e3a8a', margin: '0 0 0.75rem 0' }}>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem 0' }}>
                     Similar proposals exist in your ward. Reviewing them helps consolidate citizen votes so the Ward Committee prioritizes a unified project.
                   </p>
 
@@ -443,14 +454,15 @@ export default function ProposalIntakeWizard({
                         style={{
                           padding: '0.6rem 0.8rem',
                           borderRadius: '0.375rem',
-                          background: '#ffffff',
-                          border: '1px solid #93c5fd',
+                          background: 'var(--bg-tag, #1c1c22)',
+                          border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
                           fontSize: '0.82rem',
+                          color: 'var(--text-primary)',
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
                           <span>{cand.title}</span>
-                          <span style={{ color: '#2563eb' }}>{cand.similarityScore}% match</span>
+                          <span style={{ color: '#38bdf8' }}>{cand.similarityScore}% match</span>
                         </div>
                         <div style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem', marginTop: '0.2rem' }}>
                           Factors: {cand.influencingFactors.join(', ')}
@@ -464,10 +476,10 @@ export default function ProposalIntakeWizard({
                   style={{
                     padding: '0.85rem',
                     borderRadius: '0.5rem',
-                    background: '#f0fdf4',
-                    border: '1px solid #bbf7d0',
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    border: '1px solid rgba(34, 197, 94, 0.35)',
                     fontSize: '0.85rem',
-                    color: '#166534',
+                    color: '#4ade80',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
@@ -479,7 +491,16 @@ export default function ProposalIntakeWizard({
               )}
 
               {/* Review Summary */}
-              <div style={{ padding: '0.85rem', borderRadius: '0.5rem', background: 'var(--bg-tag)', fontSize: '0.85rem' }}>
+              <div
+                style={{
+                  padding: '0.85rem',
+                  borderRadius: '0.5rem',
+                  background: 'var(--bg-tag, #1c1c22)',
+                  border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
+                  fontSize: '0.85rem',
+                  color: 'var(--text-primary)',
+                }}
+              >
                 <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.88rem', fontWeight: 700 }}>
                   Submission Summary
                 </h4>
@@ -500,11 +521,11 @@ export default function ProposalIntakeWizard({
         <div
           style={{
             padding: '1rem 1.5rem',
-            borderTop: '1px solid var(--border-light, #e2e8f0)',
+            borderTop: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'var(--bg-tag, #f8fafc)',
+            background: 'var(--bg-tag, #1c1c22)',
           }}
         >
           {step > 1 ? (

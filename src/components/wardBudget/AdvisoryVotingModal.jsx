@@ -56,12 +56,13 @@ export default function AdvisoryVotingModal({
       <div
         className="modal-content"
         style={{
-          background: 'var(--bg-card, #ffffff)',
-          color: 'var(--text-primary, #0f172a)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary, #ffffff)',
+          border: '1px solid var(--border-light, rgba(255, 255, 255, 0.15))',
           width: '100%',
           maxWidth: '520px',
           borderRadius: '1rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
           overflow: 'hidden',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -69,22 +70,22 @@ export default function AdvisoryVotingModal({
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            borderBottom: '1px solid var(--border-light, #e2e8f0)',
+            borderBottom: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ThumbsUp size={18} color="#2563eb" />
-            <h3 id="voting-modal-title" style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>
+            <ThumbsUp size={18} color="#38bdf8" />
+            <h3 id="voting-modal-title" style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               Citizen Advisory Ballot
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem', color: 'var(--text-secondary)' }}
             aria-label="Close vote modal"
           >
             ✕
@@ -94,8 +95,8 @@ export default function AdvisoryVotingModal({
         <div style={{ padding: '1.5rem' }}>
           {receipt ? (
             <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-              <CheckCircle size={48} color="#16a34a" style={{ margin: '0 auto 0.75rem auto' }} />
-              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 700 }}>
+              <CheckCircle size={48} color="#4ade80" style={{ margin: '0 auto 0.75rem auto' }} />
+              <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Advisory Vote Recorded!
               </h4>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
@@ -105,11 +106,13 @@ export default function AdvisoryVotingModal({
                 style={{
                   padding: '0.75rem',
                   borderRadius: '0.5rem',
-                  background: 'var(--bg-tag)',
+                  background: 'var(--bg-tag, #1c1c22)',
+                  border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
                   fontFamily: 'monospace',
                   fontSize: '0.8rem',
                   marginBottom: '1rem',
                   wordBreak: 'break-all',
+                  color: 'var(--text-primary)',
                 }}
               >
                 <div><strong>Ballot Receipt:</strong> {receipt.voteReceipt}</div>
@@ -125,14 +128,14 @@ export default function AdvisoryVotingModal({
                 style={{
                   padding: '0.85rem',
                   borderRadius: '0.5rem',
-                  background: 'var(--bg-tag, #f8fafc)',
-                  border: '1px solid var(--border-light)',
+                  background: 'var(--bg-tag, #1c1c22)',
+                  border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
                 }}
               >
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 700 }}>
                   Proposal Under Ballot
                 </span>
-                <h4 style={{ margin: '0.25rem 0', fontSize: '0.95rem', fontWeight: 700 }}>
+                <h4 style={{ margin: '0.25rem 0', fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                   {proposal.title}
                 </h4>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
@@ -145,10 +148,11 @@ export default function AdvisoryVotingModal({
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '0.5rem',
-                  padding: '0.75rem',
+                  padding: '0.75rem 1rem',
                   borderRadius: '0.5rem',
-                  background: '#fef3c7',
-                  color: '#92400e',
+                  background: 'rgba(217, 119, 6, 0.15)',
+                  border: '1px solid rgba(217, 119, 6, 0.35)',
+                  color: '#fbbf24',
                   fontSize: '0.8rem',
                   lineHeight: 1.4,
                 }}
@@ -162,10 +166,11 @@ export default function AdvisoryVotingModal({
               {alreadyVoted ? (
                 <div
                   style={{
-                    padding: '0.75rem',
+                    padding: '0.75rem 1rem',
                     borderRadius: '0.5rem',
-                    background: '#f0fdf4',
-                    color: '#166534',
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    border: '1px solid rgba(34, 197, 94, 0.35)',
+                    color: '#4ade80',
                     fontSize: '0.85rem',
                     display: 'flex',
                     alignItems: 'center',
@@ -178,7 +183,7 @@ export default function AdvisoryVotingModal({
               ) : (
                 <>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                       Citizen Voter Identifier / EPIC Registration
                     </label>
                     <input
@@ -187,7 +192,14 @@ export default function AdvisoryVotingModal({
                       onChange={(e) => setCitizenIdInput(e.target.value)}
                       placeholder="e.g. EPIC Voter ID / Registered Citizen ID"
                       required
-                      style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}
+                      style={{
+                        width: '100%',
+                        padding: '0.6rem',
+                        borderRadius: '0.5rem',
+                        background: 'var(--bg-surface, #0e0e11)',
+                        color: 'var(--text-primary, #ffffff)',
+                        border: '1px solid var(--border-main, rgba(255, 255, 255, 0.15))',
+                      }}
                     />
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                       Used strictly to create a salted one-way hash preventing ballot manipulation. Never exposed publicly.
@@ -199,8 +211,9 @@ export default function AdvisoryVotingModal({
                       style={{
                         padding: '0.6rem',
                         borderRadius: '0.375rem',
-                        background: '#fef2f2',
-                        color: '#b91c1c',
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        border: '1px solid rgba(239, 68, 68, 0.35)',
+                        color: '#f87171',
                         fontSize: '0.8rem',
                         display: 'flex',
                         alignItems: 'center',

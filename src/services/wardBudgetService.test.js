@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { wardBudgetService, generateVoterHash } from './wardBudgetService.js';
+import { wardBudgetService } from './wardBudgetService.js';
 import { resetWardBudgetData } from './wardBudgetStorage.js';
 import { findDuplicateCandidates, tokenizeText, computeJaccardSimilarity } from './proposalClusteringService.js';
 

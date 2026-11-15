@@ -34,10 +34,11 @@ export default function ProposalCard({
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: '1.25rem',
-        border: '1px solid var(--border-light, #e2e8f0)',
+        border: '1px solid var(--border-light, rgba(255, 255, 255, 0.12))',
         borderRadius: '0.75rem',
-        background: 'var(--bg-card, #ffffff)',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        background: 'var(--bg-card, #121212)',
+        color: 'var(--text-primary)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
         cursor: 'pointer',
         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
       }}
@@ -59,8 +60,8 @@ export default function ProposalCard({
               fontWeight: 600,
               padding: '0.2rem 0.6rem',
               borderRadius: '9999px',
-              background: 'var(--accent-subtle, #eff6ff)',
-              color: 'var(--accent-text, #1e40af)',
+              background: 'rgba(56, 189, 248, 0.15)',
+              color: 'var(--accent-main, #38bdf8)',
             }}
           >
             {categoryInfo.label}
@@ -72,8 +73,9 @@ export default function ProposalCard({
               fontWeight: 600,
               padding: '0.2rem 0.6rem',
               borderRadius: '0.375rem',
-              background: isDuplicate ? '#f1f5f9' : 'var(--bg-tag, #f3f4f6)',
-              color: isDuplicate ? '#475569' : 'var(--text-secondary, #374151)',
+              background: isDuplicate ? 'rgba(217, 119, 6, 0.15)' : 'var(--bg-tag, #1c1c22)',
+              color: isDuplicate ? '#fbbf24' : 'var(--text-secondary, #a1a1aa)',
+              border: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.25rem',
@@ -88,7 +90,7 @@ export default function ProposalCard({
           style={{
             fontSize: '1.05rem',
             fontWeight: 700,
-            color: 'var(--text-primary, #0f172a)',
+            color: 'var(--text-primary)',
             margin: '0.25rem 0 0.5rem 0',
             lineHeight: 1.35,
           }}
@@ -101,12 +103,12 @@ export default function ProposalCard({
             display: 'flex',
             alignItems: 'center',
             gap: '0.35rem',
-            color: 'var(--text-tertiary, #64748b)',
+            color: 'var(--text-tertiary, #71717a)',
             fontSize: '0.8rem',
             marginBottom: '0.75rem',
           }}
         >
-          <MapPin size={14} aria-hidden="true" />
+          <MapPin size={14} color="#f87171" aria-hidden="true" />
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {proposal.approximateLocation}
           </span>
@@ -115,12 +117,13 @@ export default function ProposalCard({
         <p
           style={{
             fontSize: '0.875rem',
-            color: 'var(--text-secondary, #475569)',
+            color: 'var(--text-secondary, #a1a1aa)',
             margin: '0 0 1rem 0',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
+            lineHeight: 1.5,
           }}
         >
           {proposal.summary || proposal.description}
@@ -134,8 +137,9 @@ export default function ProposalCard({
               gap: '0.35rem',
               padding: '0.4rem 0.6rem',
               borderRadius: '0.375rem',
-              background: '#fef3c7',
-              color: '#92400e',
+              background: 'rgba(217, 119, 6, 0.15)',
+              border: '1px solid rgba(217, 119, 6, 0.35)',
+              color: '#fbbf24',
               fontSize: '0.75rem',
               marginBottom: '0.75rem',
             }}
@@ -148,7 +152,7 @@ export default function ProposalCard({
 
       <div
         style={{
-          borderTop: '1px solid var(--border-light, #f1f5f9)',
+          borderTop: '1px solid var(--border-light, rgba(255, 255, 255, 0.1))',
           paddingTop: '0.75rem',
           display: 'flex',
           justifyContent: 'space-between',
@@ -158,10 +162,10 @@ export default function ProposalCard({
         }}
       >
         <div>
-          <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary, #64748b)', display: 'block' }}>
+          <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary, #71717a)', display: 'block' }}>
             Estimated Range
           </span>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary, #0f172a)' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-main, #38bdf8)' }}>
             {formatCurrency(proposal.costEstimateRange?.min)} - {formatCurrency(proposal.costEstimateRange?.max)}
           </span>
         </div>
@@ -192,7 +196,7 @@ export default function ProposalCard({
             }}
             aria-label={`Cast advisory vote for ${proposal.title}. Current votes: ${proposal.metrics?.voteCount || 0}`}
           >
-            <ThumbsUp size={14} color={userVoteStatus ? '#16a34a' : 'currentColor'} />
+            <ThumbsUp size={14} color={userVoteStatus ? '#4ade80' : 'currentColor'} />
             <span>{proposal.metrics?.voteCount || 0}</span>
           </button>
         </div>
