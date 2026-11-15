@@ -47,6 +47,7 @@ import CommunityFacilityCorrectionQueue from '../components/admin/CommunityFacil
 import LibraryCorrectionQueue from '../components/admin/LibraryCorrectionQueue';
 import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
 import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorrectionQueue';
+import CounterDemandReviewQueue from '../components/admin/CounterDemandReviewQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -739,6 +740,7 @@ const Admin = () => {
               { id: 'duplicates', label: 'Duplicate Detection', badge: null },
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
+              { id: 'counter-demand', label: 'Counter Demand & Staffing', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -1166,6 +1168,9 @@ const Admin = () => {
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                   <AddressChangeCorrectionQueue />
+                </div>
+                <div style={{ marginTop: '2rem' }}>
+                  <CounterDemandReviewQueue />
                 </div>
               </div>
             )}
@@ -1768,6 +1773,13 @@ const Admin = () => {
             {activeTab === 'civic-works' && (
               <div>
                 <CivicWorksModeratorPanel />
+              </div>
+            )}
+
+            {/* Counter Demand & Queue Staffing Moderation Tab (#764) */}
+            {activeTab === 'counter-demand' && (
+              <div>
+                <CounterDemandReviewQueue />
               </div>
             )}
 

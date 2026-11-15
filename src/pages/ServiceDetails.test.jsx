@@ -66,4 +66,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Open Interactive Tree Guide');
     expect(html).toContain('/services/tree-permission-guide');
   });
+
+  it('renders the dedicated Counter Demand Forecasting workspace entry card (#764)', () => {
+    const html = render('/services/counter-demand-forecasting');
+    expect(html).toContain('Civic Service Counter Demand &amp; Queue Staffing Forecast');
+    expect(html).toContain('Dedicated Counter Demand Forecasting &amp; Queue Staffing Workspace');
+    expect(html).toContain('Open Forecasting Workspace');
+    expect(html).toContain('/counter-demand');
+  });
 });

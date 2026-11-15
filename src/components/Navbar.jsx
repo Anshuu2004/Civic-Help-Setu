@@ -25,6 +25,7 @@ import {
   Droplets,
   KeyRound,
   Store,
+  BarChart2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -115,6 +116,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/address-change-planner' ||
           normalizedPath === '/address-change' ||
           normalizedPath === '/move-planner'
+        );
+      }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
         );
       }
 
@@ -819,6 +828,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
               })}
 
               {renderNavLink({

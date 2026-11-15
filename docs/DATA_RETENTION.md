@@ -140,6 +140,7 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_counter_aggregates_v1`, `civicbridge_capacity_plans_v1`, `civicbridge_forecast_runs_v1`, `civicbridge_capacity_audit_logs_v1` | Historical footfall aggregates (Zero-PII), Erlang-C capacity plans, forecast runs, and append-only staffing override audit logs (#764) | Operations and capacity management |
 
 ## Remote data
 
