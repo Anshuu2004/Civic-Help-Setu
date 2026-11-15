@@ -26,11 +26,21 @@ Public service information changes frequently. If you notice outdated or incorre
 Run unit and integration tests locally with Vitest:
 ```bash
 npm test                                                      # run all tests
+npm test -- --run src/services/roadSafetyBlackspotService.test.js # road-safety blackspot engine tests (#769)
+npm test -- --run src/pages/RoadSafetyDashboard.test.jsx          # road-safety dashboard workspace UI tests (#769)
+npm test -- --run src/components/admin/RoadHazardReviewQueue.test.jsx # road-safety hazard review queue tests (#769)
+npm test -- --run tests/road-hazards.test.js                     # road-safety hazard API validation & abuse tests (#769)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
 npm test -- --run src/services/counterDemandForecastingService.test.js # counter demand forecasting tests (#764)
 npm test -- --run src/pages/CounterDemandForecastingWorkspace.test.jsx # counter demand workspace UI tests (#764)
+npx vitest run src/services/treeInventoryService.test.js       # tree inventory domain/security tests (#749)
+npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
+npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
+npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
 ```
+
+Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

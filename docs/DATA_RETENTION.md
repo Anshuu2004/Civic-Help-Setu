@@ -95,9 +95,22 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civicbridge_conflict_records_v1` | `citizenDraftSyncEngine.js` | Local conflict records waiting for user merge resolution | Drafts and in-progress work |
 | `civicbridge_device_cursors_v1` | `citizenDraftSyncEngine.js` | Device sync cursors and high-water revision marks | Drafts and in-progress work |
 | `civicbridge_tombstones_v1` | `citizenDraftSyncEngine.js` | Deletion tombstones to prevent resurrection of deleted drafts | Drafts and in-progress work |
+| `civicbridge_tree_report_attachments_v1` | `treeInventoryService.js` | Validated citizen-report images and metadata (no raw personal identifiers) | Reviews, votes and reports |
+| `civicbridge_tree_citizen_reports_v1` | `treeInventoryService.js` | Citizen tree observations, tracking codes, triage and review state | Reviews, votes and reports |
+| `civicbridge_tree_reports_v1` | `treeInventoryMigrations.js` | Legacy citizen tree reports read once during migration | Reviews, votes and reports |
+| `civicbridge_tree_reporter_key` | `TreeHealthInventory.jsx` | Random local key used only to rate-limit and deduplicate citizen tree reports | Reviews, votes and reports |
 | `civicbridge_civic_works_reports_v1` | `civicWorksBoardService.js` | Ward civic works reports and moderation state | Reviews, votes and reports |
 | `civicbridge_civic_works_clusters_v1` | `civicWorksBoardService.js` | Clustered duplicate ward reports | Reviews, votes and reports |
 | `civicbridge_civic_works_rate_limit_v1` | `civicWorksBoardService.js` | Ward report submission rate limit tracking | Reviews, votes and reports |
+| `civicbridge_hazard_reports_v1` | `roadSafetyBlackspotService.js` | Citizen-reported road hazards and defects (sanitized, PII stripped) | Reviews, votes and reports |
+| `civicbridge_road_segments_v1` | `roadSafetyBlackspotService.js` | Monitored road segment geometries, classifications, and speed limits | Cached public reference data |
+| `civicbridge_crash_aggregates_v1` | `roadSafetyBlackspotService.js` | Aggregated government crash figures and exposure denominators | Cached public reference data |
+| `civicbridge_road_features_v1` | `roadSafetyBlackspotService.js` | Road physical features (lighting, pedestrian crossings, calming devices) | Cached public reference data |
+| `civicbridge_risk_runs_v1` | `roadSafetyBlackspotService.js` | Automated risk run calculation parameters, timestamps, and model version | Audit and execution records |
+| `civicbridge_review_cases_v1` | `roadSafetyBlackspotService.js` | Blackspot review cases, officer inspection findings, and transition history | Operational review cases |
+| `civicbridge_intervention_records_v1` | `roadSafetyBlackspotService.js` | Planned and executed engineering countermeasures, budgets, and outcomes | Operational countermeasure records |
+| `civicbridge_road_safety_rate_limit_v1` | `roadSafetyBlackspotService.js` | Rolling submission rate limit timestamps for hazard reports (15m window) | Technical anti-abuse rate limits |
+| `civicbridge_road_safety_audit_logs_v1` | `roadSafetyBlackspotService.js` | Append-only audit events for municipal blackspot case transitions and interventions | Audit and execution records |
 | `civicbridge_journey_handoffs_v1` | `journeyHandoffService.js` | Journey handoff bundles and shared checklist links | Drafts and in-progress work |
 | `civicbridge_readiness_scorecards` | `readinessScorecardService.js` | Citizen application readiness scores and missing document audits | Drafts and in-progress work |
 | `civicbridge_offline_cache` | `offlineCacheService.js` | Copies of saved guides and application stages for offline use | Offline copies and location |
@@ -141,6 +154,7 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
 | `civicbridge_counter_aggregates_v1`, `civicbridge_capacity_plans_v1`, `civicbridge_forecast_runs_v1`, `civicbridge_capacity_audit_logs_v1` | Historical footfall aggregates (Zero-PII), Erlang-C capacity plans, forecast runs, and append-only staffing override audit logs (#764) | Operations and capacity management |
+| `civicbridge_tree_inventory_meta_v1`, `civicbridge_tree_assets_v1`, `civicbridge_tree_species_v1`, `civicbridge_tree_inspections_v1`, `civicbridge_tree_maintenance_orders_v1`, `civicbridge_tree_pruning_events_v1`, `civicbridge_tree_planting_sites_v1`, `civicbridge_tree_triage_suggestions_v1`, `civicbridge_tree_audit_events_v1`, `civicbridge_tree_idempotency_v1`, `civicbridge_tree_rate_limit_v1`, `civicbridge_tree_migration_backup_v1`, `civicbridge_trees_v1` | Municipal tree register, inspection history, maintenance orders, pruning history, planting sites, triage suggestions, append-only audit chain, idempotency/rate-limit state, schema metadata and rollback backup | Public-authority operating records, not a citizen profile. Kept so clearing a citizen's data cannot erase the public register or audit trail. The tree module applies its own 365-day retention to closed citizen reports |
 
 ## Remote data
 

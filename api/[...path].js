@@ -19,10 +19,12 @@ import sendEmail from "./_lib/handlers/send-email.js";
 import shareByEmail from "./_lib/handlers/share-by-email.js";
 import tenderCorrections from "./_lib/handlers/tender-corrections.js";
 import waterTankerReports from "./_lib/handlers/water-tanker-reports.js";
+import civicSurveys from "./_lib/handlers/civic-surveys.js";
 
 const handlers = {
   "address-change-corrections": addressChange,
   "business-licence-feedback": businessLicence,
+  "civic-surveys": civicSurveys,
   "community-facility-corrections": communityFacility,
   "counter-demand-reports": counterDemandReports,
   "crematorium-corrections": crematorium,

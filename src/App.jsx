@@ -47,16 +47,19 @@ import SmallBusinessLicencePage from './pages/SmallBusinessLicencePage';
 import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
+import TreeHealthInventory from './pages/TreeHealthInventory';
 import CrematoriumDirectory from './pages/CrematoriumDirectory';
 import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
 import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
+import RoadSafetyDashboard from './pages/RoadSafetyDashboard';
 import LibraryDirectory from './pages/LibraryDirectory';
 import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingWorkspace';
+import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -131,8 +134,15 @@ function AppRoot() {
                       <Route path="/counter-demand" element={<CounterDemandForecastingWorkspace />} />
                       <Route path="/counter-demand-forecasting" element={<CounterDemandForecastingWorkspace />} />
                       <Route path="/queue-staffing" element={<CounterDemandForecastingWorkspace />} />
+                      <Route path="/surveys" element={<CivicSurveyWorkspace />} />
+                      <Route path="/survey-builder" element={<CivicSurveyWorkspace />} />
+                      <Route path="/civic-surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/road-safety" element={<RoadSafetyDashboard />} />
+                      <Route path="/blackspots" element={<RoadSafetyDashboard />} />
+                      <Route path="/tree-health" element={<TreeHealthInventory />} />
+                      <Route path="/tree-inventory" element={<TreeHealthInventory />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
