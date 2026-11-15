@@ -16,6 +16,12 @@ import {
   maskPhoneNumber,
   maskEmailAddress,
   clearContinuityMemoryStore,
+  createContinuityBackupSnapshot,
+  rollbackContinuityStores,
+  migrateContinuityStores,
+  writeStore,
+  readStore,
+  STORAGE_KEYS,
   PLAN_STATES,
   EXERCISE_STATES,
   ACTION_ITEM_STATES,
@@ -290,6 +296,90 @@ describe('Continuity Planner Domain Service (#780)', () => {
       expect(auditEntries.length).toBeGreaterThan(0);
       expect(auditEntries[0].action).toBe('RECOMMENDATION_ACCEPTED');
       expect(auditEntries[0].reason).toContain('Authorized emergency budget');
+    });
+  });
+
+  describe('Schema Migration & Rollback Strategy', () => {
+    it('executes clean migration against an empty database without throwing', () => {
+      clearContinuityMemoryStore();
+      const report = migrateContinuityStores();
+      expect(report.currentVersion).toBe(1);
+      expect(report.migratedCount).toBe(0);
+      expect(report.totalInspected).toBe(0);
+    });
+
+    it('migrates a representative legacy dataset missing schemaVersion to current version', () => {
+      clearContinuityMemoryStore();
+
+      // Seed legacy records lacking schemaVersion
+      const legacyPlans = [
+        { id: 'plan_leg_1', title: 'Legacy Monsoon Plan' },
+        { id: 'plan_leg_2', title: 'Legacy Fire Plan', jurisdictionId: 'ward-5' },
+      ];
+      const legacyDeps = [
+        { id: 'dep_leg_1', serviceId: 'svc_1', serviceName: 'Water Pump' },
+      ];
+      const legacyExercises = [
+        { id: 'ex_leg_1', title: 'Old Drill 2024' },
+      ];
+      const legacyActions = [
+        { id: 'act_leg_1', title: 'Fix Backup Line' },
+      ];
+
+      writeStore(STORAGE_KEYS.PLANS, legacyPlans);
+      writeStore(STORAGE_KEYS.DEPENDENCIES, legacyDeps);
+      writeStore(STORAGE_KEYS.EXERCISES, legacyExercises);
+      writeStore(STORAGE_KEYS.ACTION_ITEMS, legacyActions);
+
+      // Perform forward migration
+      const report = migrateContinuityStores();
+      expect(report.currentVersion).toBe(1);
+      expect(report.migratedCount).toBe(5); // 2 plans + 1 dep + 1 exercise + 1 action
+
+      // Verify upgraded records have standard schemaVersion and defaults
+      const migratedPlans = readStore(STORAGE_KEYS.PLANS, []);
+      expect(migratedPlans[0].schemaVersion).toBe(1);
+      expect(migratedPlans[0].status).toBe(PLAN_STATES.DRAFT);
+      expect(migratedPlans[0].recoveryObjectives).toBeDefined();
+
+      const migratedDeps = readStore(STORAGE_KEYS.DEPENDENCIES, []);
+      expect(migratedDeps[0].schemaVersion).toBe(1);
+      expect(migratedDeps[0].upstreamDependencies).toEqual([]);
+
+      const migratedEx = readStore(STORAGE_KEYS.EXERCISES, []);
+      expect(migratedEx[0].schemaVersion).toBe(1);
+      expect(migratedEx[0].decisionLogs).toEqual([]);
+      expect(migratedEx[0].recoveryMetrics.serviceResilienceScore).toBe(100);
+
+      const migratedAct = readStore(STORAGE_KEYS.ACTION_ITEMS, []);
+      expect(migratedAct[0].schemaVersion).toBe(1);
+      expect(migratedAct[0].status).toBe(ACTION_ITEM_STATES.OPEN);
+
+      // Second migration pass is idempotent: skips already migrated records
+      const secondPass = migrateContinuityStores();
+      expect(secondPass.migratedCount).toBe(0);
+      expect(secondPass.skippedCount).toBe(5);
+    });
+
+    it('captures backup snapshot and successfully rolls back on demand', () => {
+      clearContinuityMemoryStore();
+      const initialPlan = saveContinuityPlan({ title: 'Pre-migration baseline' }, { actor: adminActor });
+      const snapshot = createContinuityBackupSnapshot();
+      const baselineCount = snapshot.stores[STORAGE_KEYS.PLANS].length;
+      expect(baselineCount).toBeGreaterThanOrEqual(1);
+
+      // Mutate storage
+      saveContinuityPlan({ title: 'Post-migration plan that caused regression' }, { actor: adminActor });
+      expect(readStore(STORAGE_KEYS.PLANS, [])).toHaveLength(baselineCount + 1);
+
+      // Execute rollback
+      const rollbackResult = rollbackContinuityStores(snapshot);
+      expect(rollbackResult.restoredStores).toContain(STORAGE_KEYS.PLANS);
+
+      // Verify baseline was restored
+      const restoredPlans = readStore(STORAGE_KEYS.PLANS, []);
+      expect(restoredPlans).toHaveLength(baselineCount);
+      expect(restoredPlans.some((p) => p.id === initialPlan.id)).toBe(true);
     });
   });
 });

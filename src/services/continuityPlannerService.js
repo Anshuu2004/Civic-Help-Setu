@@ -160,6 +160,13 @@ export const setContinuityStorage = (storage) => {
 export const clearContinuityMemoryStore = () => {
   memoryStore.clear();
   processedIdempotencyKeys.clear();
+  try {
+    if (typeof globalThis !== 'undefined' && globalThis.localStorage) {
+      Object.values(STORAGE_KEYS).forEach((k) => globalThis.localStorage.removeItem(k));
+    }
+  } catch {
+    // ignore
+  }
 };
 
 const getStorage = () => {
@@ -184,10 +191,10 @@ const processedIdempotencyKeys = new Set();
 export const readStore = (key, fallback = []) => {
   try {
     const raw = getStorage().getItem(key);
-    if (!raw) return fallback;
+    if (!raw) return Array.isArray(fallback) ? [...fallback] : fallback;
     return JSON.parse(raw);
   } catch {
-    return fallback;
+    return Array.isArray(fallback) ? [...fallback] : fallback;
   }
 };
 
@@ -1003,4 +1010,136 @@ export const recordRecommendationDecision = (
   });
 
   return decisionRecord;
+};
+
+// ---------------------------------------------------------------------------
+// SCHEMA MIGRATION & ROLLBACK STRATEGY
+// ---------------------------------------------------------------------------
+
+/**
+ * Creates a complete immutable backup snapshot of all continuity stores
+ * for atomic migration rollback protection.
+ */
+export const createContinuityBackupSnapshot = () => {
+  return {
+    snapshotAt: new Date().toISOString(),
+    schemaVersion: SCHEMA_VERSION,
+    stores: {
+      [STORAGE_KEYS.PLANS]: readStore(STORAGE_KEYS.PLANS, []),
+      [STORAGE_KEYS.SCENARIOS]: readStore(STORAGE_KEYS.SCENARIOS, []),
+      [STORAGE_KEYS.DEPENDENCIES]: readStore(STORAGE_KEYS.DEPENDENCIES, []),
+      [STORAGE_KEYS.EXERCISES]: readStore(STORAGE_KEYS.EXERCISES, []),
+      [STORAGE_KEYS.ACTION_ITEMS]: readStore(STORAGE_KEYS.ACTION_ITEMS, []),
+      [STORAGE_KEYS.RECOMMENDATIONS]: readStore(STORAGE_KEYS.RECOMMENDATIONS, []),
+    },
+  };
+};
+
+/**
+ * Rolls back continuity stores to a previously captured backup snapshot.
+ */
+export const rollbackContinuityStores = (snapshot) => {
+  if (!snapshot || !snapshot.stores) {
+    throw new ContinuityServiceError('Invalid backup snapshot supplied for rollback', ERROR_CODES.VALIDATION_ERROR);
+  }
+  for (const [key, value] of Object.entries(snapshot.stores)) {
+    writeStore(key, value);
+  }
+  return { rolledBackAt: new Date().toISOString(), restoredStores: Object.keys(snapshot.stores) };
+};
+
+/**
+ * Executes idempotent forward schema migrations across all continuity data stores.
+ * Handles both pristine/empty databases and representative legacy datasets lacking schemaVersion.
+ */
+export const migrateContinuityStores = ({ targetVersion = SCHEMA_VERSION } = {}) => {
+  let migratedCount = 0;
+  let skippedCount = 0;
+
+  // 1. Migrate Continuity Plans
+  const plans = readStore(STORAGE_KEYS.PLANS, []);
+  const updatedPlans = plans.map((p) => {
+    if (!p.schemaVersion || p.schemaVersion < targetVersion) {
+      migratedCount++;
+      return {
+        ...p,
+        schemaVersion: targetVersion,
+        version: p.version || 1,
+        status: p.status || PLAN_STATES.DRAFT,
+        jurisdictionId: p.jurisdictionId || 'ward-general',
+        contactTree: Array.isArray(p.contactTree) ? p.contactTree : [],
+        recoveryObjectives: p.recoveryObjectives || { rtoHours: 4, rpoHours: 2 },
+        updatedAt: p.updatedAt || new Date().toISOString(),
+      };
+    }
+    skippedCount++;
+    return p;
+  });
+  if (plans.length > 0) writeStore(STORAGE_KEYS.PLANS, updatedPlans);
+
+  // 2. Migrate Service Dependencies
+  const deps = readStore(STORAGE_KEYS.DEPENDENCIES, []);
+  const updatedDeps = deps.map((d) => {
+    if (!d.schemaVersion || d.schemaVersion < targetVersion) {
+      migratedCount++;
+      return {
+        ...d,
+        schemaVersion: targetVersion,
+        criticality: d.criticality || CRITICALITY_TIERS.TIER_2_ESSENTIAL,
+        upstreamDependencies: Array.isArray(d.upstreamDependencies) ? d.upstreamDependencies : [],
+        estimatedRestorationHours: Number(d.estimatedRestorationHours) || 2,
+      };
+    }
+    skippedCount++;
+    return d;
+  });
+  if (deps.length > 0) writeStore(STORAGE_KEYS.DEPENDENCIES, updatedDeps);
+
+  // 3. Migrate Exercise Runs
+  const exercises = readStore(STORAGE_KEYS.EXERCISES, []);
+  const updatedExercises = exercises.map((e) => {
+    if (!e.schemaVersion || e.schemaVersion < targetVersion) {
+      migratedCount++;
+      return {
+        ...e,
+        schemaVersion: targetVersion,
+        status: e.status || EXERCISE_STATES.SCHEDULED,
+        decisionLogs: Array.isArray(e.decisionLogs) ? e.decisionLogs : [],
+        recoveryMetrics: e.recoveryMetrics || {
+          targetRTOHours: 4,
+          actualEstimatedRTOHours: 4,
+          gapHours: 0,
+          serviceResilienceScore: 100,
+        },
+      };
+    }
+    skippedCount++;
+    return e;
+  });
+  if (exercises.length > 0) writeStore(STORAGE_KEYS.EXERCISES, updatedExercises);
+
+  // 4. Migrate Action Items
+  const actions = readStore(STORAGE_KEYS.ACTION_ITEMS, []);
+  const updatedActions = actions.map((a) => {
+    if (!a.schemaVersion || a.schemaVersion < targetVersion) {
+      migratedCount++;
+      return {
+        ...a,
+        schemaVersion: targetVersion,
+        status: a.status || ACTION_ITEM_STATES.OPEN,
+        priority: a.priority || 'MEDIUM',
+      };
+    }
+    skippedCount++;
+    return a;
+  });
+  if (actions.length > 0) writeStore(STORAGE_KEYS.ACTION_ITEMS, updatedActions);
+
+  return {
+    migratedAt: new Date().toISOString(),
+    currentVersion: targetVersion,
+    migratedCount,
+    skippedCount,
+    totalInspected: migratedCount + skippedCount,
+  };
 };
