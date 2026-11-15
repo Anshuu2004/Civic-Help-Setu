@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import route, { _resetFeedbackStore, sanitizeAndRedactText } from './business-licence-feedback.js';
+import route, { _resetFeedbackStore, sanitizeAndRedactText } from '../api/_lib/handlers/business-licence-feedback.js';
 
 describe('business-licence-feedback API endpoint (#721)', () => {
   beforeEach(() => {
