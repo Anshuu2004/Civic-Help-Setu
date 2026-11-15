@@ -84,7 +84,7 @@ const CivicSurveyWorkspace = () => {
                 letterSpacing: '0.05em',
               }}
             >
-              Public Consultation &amp; Research Tool (#767)
+              Public Consultation &amp; Research Tool
             </span>
           </div>
 

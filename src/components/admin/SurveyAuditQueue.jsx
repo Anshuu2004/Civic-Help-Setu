@@ -81,7 +81,7 @@ export default function SurveyAuditQueue() {
               Civic Survey Quality &amp; Response Audit Queue
             </h3>
             <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              Verifies anonymous citizen response seals, privacy thresholds, and sampling audit logs (#767).
+              Verifies anonymous citizen response seals, privacy thresholds, and sampling audit logs.
             </p>
           </div>
         </div>

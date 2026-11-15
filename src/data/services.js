@@ -961,7 +961,7 @@ export const MOCK_SERVICES = [
       localBody: 'Urban Local Bodies / Municipal Corporations'
     },
     name: 'Civic Survey Builder & Sampling Diagnostics',
-    shortDescription: 'Design structured public surveys, manage sample representation targets, review question missingness, and inspect response-bias diagnostics with anonymous response protection (#767).',
+    shortDescription: 'Design structured public surveys, manage sample representation targets, review question missingness, and inspect response-bias diagnostics with anonymous response protection.',
     category: 'Governance & Planning',
     department: 'Directorate of Public Consultation & Urban Planning',
     type: 'Online',

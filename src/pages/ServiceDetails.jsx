@@ -983,7 +983,7 @@ const ServiceDetails = ({ previewService = null }) => {
                     </h3>
                   </div>
                   <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    End-to-end civic survey creator with branching logic, voluntary demographic quotas, item missingness analysis, and explainable response-bias diagnostics (#767).
+                    End-to-end civic survey creator with branching logic, voluntary demographic quotas, item missingness analysis, and explainable response-bias diagnostics.
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
