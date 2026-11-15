@@ -792,6 +792,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/library-directory',
+                label: 'Public Libraries',
+                icon: BookOpen
+              })}
+
+              {renderNavLink({
                 to: '/tenders',
                 label: t('nav.tenders', 'Tender Readiness'),
                 icon: FileText
