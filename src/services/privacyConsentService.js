@@ -94,6 +94,7 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_conflict_records_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_device_cursors_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_tombstones_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
+  { key: 'civicbridge_senior_tribunal_petitions', category: 'drafts', exportAs: 'seniorCitizenTribunalPetitions', empty: [] }, // seniorCitizenTribunalStorage.js
 ];
 
 /**

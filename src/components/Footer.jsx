@@ -142,6 +142,16 @@ const Footer = () => {
                   {t('nav.civicWorks', 'Ward Works Board')}
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/senior-citizen-tribunal"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Senior Citizen Tribunal
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link
