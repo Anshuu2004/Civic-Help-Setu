@@ -12,6 +12,7 @@
  */
 
 import { createRateLimiter, createSingleFlight } from '../abuseGuard.js';
+import { REPORT_TYPES } from '../../../src/constants/waterTanker.js';
 
 const rateLimiter = createRateLimiter({ limit: 10, windowMs: 60 * 1000 });
 const singleFlight = createSingleFlight();
@@ -23,14 +24,6 @@ const AADHAAR_REGEX = /\b\d{4}\s?\d{4}\s?\d{4}\b/;
 const PAN_REGEX = /\b[A-Z]{5}[0-9]{4}[A-Z]\b/i;
 const PHONE_REGEX = /(?<![\d])(?:\+?91[\s-]?|0)?[6-9]\d{4}[\s-]?\d{5}(?![\d])/;
 const DOOR_REGEX = /\b(?:flat\s*(?:no\.?|#)?\s*[a-z0-9-]+|door\s*(?:no\.?|#)?\s*[a-z0-9/-]+|house\s*(?:no\.?|#)?\s*[a-z0-9/-]+)\b/i;
-
-export const REPORT_TYPES = [
-  'tariff_overcharge',
-  'booking_channel_broken',
-  'unnotified_service_denial',
-  'stale_helpline_number',
-  'general_correction',
-];
 
 const isHttpsUrl = (v) => {
   if (typeof v !== 'string' || v.trim().length === 0) return true;
