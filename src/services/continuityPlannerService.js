@@ -416,6 +416,45 @@ export const getContinuityPlanById = (id, { actor = getCurrentActor() } = {}) =>
   };
 };
 
+/**
+ * Packages a complete continuity plan, its service dependencies, fallback protocols,
+ * and emergency contact trees for offline field execution during grid/network collapse.
+ *
+ * Scopes contact details according to actor permissions (data minimization).
+ */
+export const exportContinuityPlanOfflinePackage = (planId, { actor = getCurrentActor() } = {}) => {
+  const plan = getContinuityPlanById(planId, { actor });
+  const allDeps = readStore(STORAGE_KEYS.DEPENDENCIES, DEFAULT_SERVICE_DEPENDENCIES);
+  const planDeps = allDeps.filter((d) => d.planId === planId);
+  const scenarios = readStore(STORAGE_KEYS.SCENARIOS, DEFAULT_INCIDENT_SCENARIOS);
+
+  const isPrivileged = actor?.role === 'admin' || actor?.role === 'operator';
+
+  return {
+    exportMetadata: {
+      packageType: 'CIVIC_CONTINUITY_OFFLINE_RUNBOOK',
+      packageVersion: '1.0.0',
+      schemaVersion: SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      exportedBy: actor?.id || 'anonymous_officer',
+      isPrivilegedAccess: isPrivileged,
+      environment: 'OFFLINE_DISASTER_RECOVERY',
+    },
+    plan: {
+      ...plan,
+      contactTree: sanitizeContactTree(plan.contactTree, isPrivileged),
+    },
+    dependencies: planDeps,
+    scenarios,
+    offlineExecutionInstructions: [
+      '1. In the event of telecommunication or power grid loss, verify standby diesel generator fuel levels.',
+      '2. Refer to Section 2 (Service Dependency Matrix) for manual valve/bypass operational procedures.',
+      '3. Assemble the Emergency Response Team per priority order in the Contact Tree.',
+      '4. Maintain written paper event log until municipal command servers are restored.',
+    ],
+  };
+};
+
 export const saveContinuityPlan = (planData, { actor = getCurrentActor(), idempotencyKey = null } = {}) => {
   requirePermission('continuity.write');
   if (idempotencyKey && processedIdempotencyKeys.has(idempotencyKey)) {

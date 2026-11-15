@@ -19,6 +19,7 @@ import {
   createContinuityBackupSnapshot,
   rollbackContinuityStores,
   migrateContinuityStores,
+  exportContinuityPlanOfflinePackage,
   writeStore,
   readStore,
   STORAGE_KEYS,
@@ -380,6 +381,46 @@ describe('Continuity Planner Domain Service (#780)', () => {
       const restoredPlans = readStore(STORAGE_KEYS.PLANS, []);
       expect(restoredPlans).toHaveLength(baselineCount);
       expect(restoredPlans.some((p) => p.id === initialPlan.id)).toBe(true);
+    });
+  });
+
+  describe('Offline Disaster Runbook Export', () => {
+    it('packages plan, dependencies, and instructions with PII privacy rules enforced', () => {
+      clearContinuityMemoryStore();
+      const plan = saveContinuityPlan(
+        {
+          title: 'Offline Grid Outage Runbook',
+          jurisdictionId: 'ward-emergency-zone-3',
+          contactTree: [
+            { role: 'Incident Commander', officerName: 'Chief Patil', phone: '9822088888', email: 'patil@city.gov.in' },
+          ],
+        },
+        { actor: adminActor }
+      );
+
+      saveDependency(
+        {
+          planId: plan.id,
+          serviceId: 'svc_generator',
+          serviceName: 'Auxiliary Diesel Plant',
+          criticality: 'TIER_1_CRITICAL',
+        },
+        { actor: adminActor }
+      );
+
+      // Privileged export (Admin) retains contact info
+      const privilegedPkg = exportContinuityPlanOfflinePackage(plan.id, { actor: adminActor });
+      expect(privilegedPkg.exportMetadata.packageType).toBe('CIVIC_CONTINUITY_OFFLINE_RUNBOOK');
+      expect(privilegedPkg.exportMetadata.isPrivilegedAccess).toBe(true);
+      expect(privilegedPkg.plan.contactTree[0].phone).toBe('9822088888');
+      expect(privilegedPkg.dependencies.length).toBeGreaterThanOrEqual(1);
+      expect(privilegedPkg.offlineExecutionInstructions.length).toBeGreaterThan(0);
+
+      // Unprivileged export (Citizen) masks contact info
+      const citizenPkg = exportContinuityPlanOfflinePackage(plan.id, { actor: citizenActor });
+      expect(citizenPkg.exportMetadata.isPrivilegedAccess).toBe(false);
+      expect(citizenPkg.plan.contactTree[0].phone).toBe('XXXXXX8888');
+      expect(citizenPkg.plan.contactTree[0].email).toBe('p***l@city.gov.in');
     });
   });
 });

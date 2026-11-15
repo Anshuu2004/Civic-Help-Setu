@@ -1,10 +1,28 @@
-import { Printer, ArrowLeft } from 'lucide-react';
+import { Printer, ArrowLeft, Download } from 'lucide-react';
+import { exportContinuityPlanOfflinePackage } from '../../services/continuityPlannerService';
 
 export const PrintableContinuityRunbook = ({ plan, dependencies = [], onBack = null }) => {
   if (!plan) return null;
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleExportOfflineJson = () => {
+    try {
+      const offlinePkg = exportContinuityPlanOfflinePackage(plan.id);
+      const blob = new Blob([JSON.stringify(offlinePkg, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `continuity-runbook-${plan.jurisdictionId || plan.id}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      // Graceful fallback for non-browser or test runner environments
+    }
   };
 
   const criticalDeps = dependencies.filter((d) => d.criticality === 'TIER_1_CRITICAL');
@@ -38,9 +56,16 @@ export const PrintableContinuityRunbook = ({ plan, dependencies = [], onBack = n
         )}
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            Printable Offline Emergency Runbook
-          </span>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleExportOfflineJson}
+            title="Download offline JSON runbook for air-gapped disaster operations"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+          >
+            <Download size={15} aria-hidden="true" />
+            <span>Export Offline JSON</span>
+          </button>
           <button
             type="button"
             className="btn btn-primary"
