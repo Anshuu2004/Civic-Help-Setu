@@ -105,6 +105,15 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civicbridge_civic_works_reports_v1` | `civicWorksBoardService.js` | Ward civic works reports and moderation state | Reviews, votes and reports |
 | `civicbridge_civic_works_clusters_v1` | `civicWorksBoardService.js` | Clustered duplicate ward reports | Reviews, votes and reports |
 | `civicbridge_civic_works_rate_limit_v1` | `civicWorksBoardService.js` | Ward report submission rate limit tracking | Reviews, votes and reports |
+| `civicbridge_hazard_reports_v1` | `roadSafetyBlackspotService.js` | Citizen-reported road hazards and defects (sanitized, PII stripped) | Reviews, votes and reports |
+| `civicbridge_road_segments_v1` | `roadSafetyBlackspotService.js` | Monitored road segment geometries, classifications, and speed limits | Cached public reference data |
+| `civicbridge_crash_aggregates_v1` | `roadSafetyBlackspotService.js` | Aggregated government crash figures and exposure denominators | Cached public reference data |
+| `civicbridge_road_features_v1` | `roadSafetyBlackspotService.js` | Road physical features (lighting, pedestrian crossings, calming devices) | Cached public reference data |
+| `civicbridge_risk_runs_v1` | `roadSafetyBlackspotService.js` | Automated risk run calculation parameters, timestamps, and model version | Audit and execution records |
+| `civicbridge_review_cases_v1` | `roadSafetyBlackspotService.js` | Blackspot review cases, officer inspection findings, and transition history | Operational review cases |
+| `civicbridge_intervention_records_v1` | `roadSafetyBlackspotService.js` | Planned and executed engineering countermeasures, budgets, and outcomes | Operational countermeasure records |
+| `civicbridge_road_safety_rate_limit_v1` | `roadSafetyBlackspotService.js` | Rolling submission rate limit timestamps for hazard reports (15m window) | Technical anti-abuse rate limits |
+| `civicbridge_road_safety_audit_logs_v1` | `roadSafetyBlackspotService.js` | Append-only audit events for municipal blackspot case transitions and interventions | Audit and execution records |
 | `civicbridge_journey_handoffs_v1` | `journeyHandoffService.js` | Journey handoff bundles and shared checklist links | Drafts and in-progress work |
 | `civicbridge_readiness_scorecards` | `readinessScorecardService.js` | Citizen application readiness scores and missing document audits | Drafts and in-progress work |
 | `civicbridge_offline_cache` | `offlineCacheService.js` | Copies of saved guides and application stages for offline use | Offline copies and location |
@@ -126,6 +135,16 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civic_tender_readiness_checklists_v1` | `tenderReadinessService.js` | Public procurement eligibility checklists and bids | Drafts and in-progress work |
 | `civicbridge_transactional_delivery_logs` | `transactionalEmailService.js` | Outgoing delivery transaction IDs | Tracking records |
 | `civicbridge_watertanker_requests` | `waterTankerService.js` | Municipal emergency water tanker delivery requests | Tracking records |
+| `civic_address_change_planner_v1` | `addressChangeStorage.js` | Moving-home address change checklists and task statuses | Drafts and in-progress work |
+| `civic_library_checklists_v1` | `libraryChecklistStorage.js` | Library membership application checklists | Drafts and in-progress work |
+| `civicbridge_library_checklist_change` | `libraryChecklistStorage.js` | Local storage update event channel for library checklists | Technical anti-abuse rate limits |
+| `civic_recovery_checklists` | `lostDocumentRecoveryNavigatorService.js` | Lost government document recovery checklists | Drafts and in-progress work |
+| `civicbridge_small_business_establishments_v1` | `smallBusinessLicenceService.js` | Small business establishments registry and licence profiles | Drafts and in-progress work |
+| `civicbridge_business_checklist_progress_v1` | `smallBusinessLicenceService.js` | Small business renewal and closure checklist progress | Drafts and in-progress work |
+| `civic_surveys_v1` | `surveyStorage.js` | Public survey definitions and diagnostic schema | Drafts and in-progress work |
+| `civic_survey_responses_v1` | `surveyStorage.js` | Anonymized citizen survey responses and sample weights | Reviews, votes and reports |
+| `civic_survey_consent_events_v1` | `surveyStorage.js` | Audit records for survey participation consent | Audit and execution records |
+| `civic_survey_audit_events_v1` | `surveyStorage.js` | Append-only audit events for civic surveys | Audit and execution records |
 
 The offline copies only duplicate tracking records and saved items, so clearing either of those clears them too. The result list says so.
 

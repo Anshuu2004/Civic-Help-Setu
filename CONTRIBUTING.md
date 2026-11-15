@@ -26,6 +26,10 @@ Public service information changes frequently. If you notice outdated or incorre
 Run unit and integration tests locally with Vitest:
 ```bash
 npm test                                                      # run all tests
+npm test -- --run src/services/roadSafetyBlackspotService.test.js # road-safety blackspot engine tests (#769)
+npm test -- --run src/pages/RoadSafetyDashboard.test.jsx          # road-safety dashboard workspace UI tests (#769)
+npm test -- --run src/components/admin/RoadHazardReviewQueue.test.jsx # road-safety hazard review queue tests (#769)
+npm test -- --run tests/road-hazards.test.js                     # road-safety hazard API validation & abuse tests (#769)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
 npm test -- --run src/services/continuityPlannerService.test.js # continuity planner service & state machine tests (#780)

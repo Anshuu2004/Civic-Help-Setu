@@ -684,6 +684,88 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-05'
   },
   {
+    id: 'business-licence-checklist',
+    title: 'Small-Business Licence Renewal & Closure Checklist Centre',
+    description: 'Lifecycle compliance tracker for small enterprises across municipal trade licences, Shops & Establishments registrations, FSSAI, SPCB consents, and statutory surrender acknowledgement archiving (#721).',
+    department: 'Urban Local Bodies (Municipal Corporations) & Directorate of Commercial Licencing',
+    category: 'Business & Commercial',
+    popularityScore: 94,
+    eligibility: [
+      'Micro, Small and Medium Enterprises (MSMEs)',
+      'Retail shops, commercial establishments, eateries, and service firms',
+      'Proprietors, partners, or corporate entities holding active or expiring commercial registrations'
+    ],
+    documents: [
+      'Existing Trade Licence / Municipal Enlistment Certificate',
+      'Shops and Establishments Registration Certificate',
+      'Commercial Lease Agreement & Landlord NOC (for premises relocation)',
+      'Electricity / Utility Commercial Meter Zero Dues Bill',
+      'Municipal Property Tax Paid Receipts',
+      'Deed of Dissolution / Partnership Transfer Deed (for constitution amendment)',
+      'Stamped Surrender Acknowledgement Order (for formal closure & deregistration)'
+    ],
+    steps: [
+      { title: 'Select Establishment & Jurisdiction', description: 'Configure branch details, municipal corporation (e.g. MCD, BMC, BBMP), and business category.' },
+      { title: 'Track Dual-Track Licences', description: 'Monitor municipal trade licences and sector-specific registrations (FSSAI, SPCB, Labour) independently.' },
+      { title: 'Monitor Expiry Reminders', description: 'Set 60/30/15-day renewal alert windows and download standard calendar reminders (.ics).' },
+      { title: 'Execute Amendments with Evidence', description: 'Follow structured admissible evidence checklists for address shifts or partner constitution changes.' },
+      { title: 'Execute Closure & Archive Acknowledgements', description: 'Clear municipal and utility final dues, submit surrender applications, and permanently archive the dated surrender acknowledgement receipt.' }
+    ],
+    validityNote: 'Trade licences operate strictly on the financial year basis (expiring 31 March) across most Indian urban local bodies. FSSAI food business licences operate on 1 to 5 year validity. Shops & Establishments registrations may be perpetual or require periodic intimation depending on state rules.',
+    fees: 'Assessed dynamically by local municipal corporations based on covered carpet area, street category, and electric motor horsepower. Sector-specific fees vary by turnover and hazard class. Do not pay unofficial facilitation agents.',
+    processingTime: '7 to 30 working days depending on jurisdiction citizen charters. Instant provisional certificates available under Ease of Doing Business self-certification in select municipalities.',
+    officialSources: [
+      {
+        name: 'Municipal Corporation of Delhi (MCD) Online Portal',
+        url: 'https://mcdonline.nic.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Brihanmumbai Municipal Corporation (BMC) Citizen Portal',
+        url: 'https://portal.mcgm.gov.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Bruhat Bengaluru Mahanagara Palike (BBMP) Portal',
+        url: 'https://bbmptax.karnataka.gov.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Greater Chennai Corporation (GCC) Portal',
+        url: 'https://chennaicorporation.gov.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Food Safety and Standards Authority of India (FoSCoS)',
+        url: 'https://foscos.fssai.gov.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'GST Portal (CBIC)',
+        url: 'https://www.gst.gov.in',
+        verified: true,
+        lastVerified: '2026-11-05'
+      }
+    ],
+    warnings: [
+      'A Municipal Trade Licence DOES NOT confer title or ownership of property, nor does it regularize unauthorized construction.',
+      'Always secure a formal, stamped or digitally signed Surrender Acknowledgement Receipt when closing down a business to defend against trailing tax demands.',
+      'Shifting premises without filing an address amendment is treated as operating without an authorized licence.',
+      'Keep personal identifiers (GSTIN, PAN, Aadhaar) confidential. Never expose them in public links or shared dossiers.'
+    ],
+    contacts: [
+      { label: 'MCD Citizen Helpline', phone: '155305', url: 'https://mcdonline.nic.in' },
+      { label: 'BMC Central Control Room', phone: '1916', url: 'https://portal.mcgm.gov.in' },
+      { label: 'FSSAI National Toll-Free Helpline', phone: '1800112100', url: 'https://foscos.fssai.gov.in' }
+    ],
+    lastVerified: '2026-11-05'
+  },
+  {
     id: 'fire-noc',
     jurisdiction: {
       level: 'state',
@@ -869,6 +951,91 @@ export const MOCK_SERVICES = [
       { label: 'National Forest Vigilance Helpline', phone: '1926', url: 'https://forests.telangana.gov.in' }
     ],
     lastVerified: '2026-10-25'
+  },
+  {
+    id: 'civic-survey-builder',
+    jurisdiction: {
+      level: 'national',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Corporations'
+    },
+    name: 'Civic Survey Builder & Sampling Diagnostics',
+    shortDescription: 'Design structured public surveys, manage sample representation targets, review question missingness, and inspect response-bias diagnostics with anonymous response protection.',
+    category: 'Governance & Planning',
+    department: 'Directorate of Public Consultation & Urban Planning',
+    type: 'Online',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 91,
+    eligibility: [
+      'Accessible to municipal department officers, approved public interest researchers, and community planning teams.',
+      'Public responses are open to all citizens within the specified local ward or urban jurisdiction.',
+      'Anonymous response mode ensures individual submissions cannot be correlated with citizen identification accounts.'
+    ],
+    documents: [
+      'Departmental consultation authorization and gazette topic brief',
+      'Statutory informed consent text with explicit voluntary participation rights',
+      'Sampling quota design specifying minimum target respondents and voluntary strata'
+    ],
+    documentRequirements: {
+      'Departmental consultation authorization and gazette topic brief': {
+        type: 'mandatory'
+      },
+      'Statutory informed consent text with explicit voluntary participation rights': {
+        type: 'mandatory'
+      },
+      'Sampling quota design specifying minimum target respondents and voluntary strata': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Draft Survey Scope & Sampling Target',
+        description: 'Specify consultation objectives, target jurisdiction (ward/city), collection timeline, and minimum demographic representation quotas.'
+      },
+      {
+        title: 'Author Questions & Dynamic Branching Rules',
+        description: 'Configure typed questions, variable names, validation rules, and conditional logic to prevent irrelevant question burden.'
+      },
+      {
+        title: 'Incorporate Informed Consent & Anonymous Protection',
+        description: 'Provide clear consent disclosures and ensure consent tokens remain separated from answer vectors.'
+      },
+      {
+        title: 'Publish Consultation & Monitor Quality Metrics',
+        description: 'Track response intake against sampling targets, evaluate item missingness rates, and inspect demographic balance.'
+      },
+      {
+        title: 'Inspect Diagnostics & Export Open Codebooks',
+        description: 'Review ruleset-versioned recommendations and export data dictionaries for transparent statistical analysis.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs — Citizen Engagement Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National Urban Digital Mission — Public Consultation Standards',
+        url: 'https://nudm.mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Demographic imbalance diagnostics only evaluate voluntary self-reported strata and do not guarantee probabilistic census representativeness.',
+      'Personal identifiers (Aadhaar, PAN, phone numbers) must never be requested or stored in public survey response vectors.',
+      'Small demographic groups with fewer than 5 respondents are suppressed under k-anonymity privacy safeguards.'
+    ],
+    contacts: [
+      { label: 'Citizen Consultation Helpdesk', phone: '1800-11-0033', url: 'https://mohua.gov.in' },
+      { label: 'Urban Analytics & Diagnostics Cell', phone: '011-23061111', url: 'https://nudm.mohua.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
   }
 ];
 

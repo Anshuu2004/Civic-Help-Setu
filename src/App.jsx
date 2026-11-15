@@ -43,6 +43,7 @@ import SharedProfileView from './pages/SharedProfileView';
 import NotFound from './pages/NotFound';
 import VerifyEmail from './pages/VerifyEmail';
 import AadhaarGuidePage from './pages/AadhaarGuidePage';
+import SmallBusinessLicencePage from './pages/SmallBusinessLicencePage';
 import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
@@ -50,9 +51,13 @@ import CrematoriumDirectory from './pages/CrematoriumDirectory';
 import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
 import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
+import RoadSafetyDashboard from './pages/RoadSafetyDashboard';
+import LibraryDirectory from './pages/LibraryDirectory';
 import WaterTankerTracker from './pages/WaterTankerTracker';
+import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
@@ -94,6 +99,8 @@ function AppRoot() {
                       <Route path="/services" element={<Suspense fallback={<ServicesFallback />}><Services /></Suspense>} />
                       <Route path="/services/aadhaar-guide" element={<AadhaarGuidePage />} />
                       <Route path="/aadhaar-guide" element={<AadhaarGuidePage />} />
+                      <Route path="/services/business-licence-checklist" element={<SmallBusinessLicencePage />} />
+                      <Route path="/business-licence-checklist" element={<SmallBusinessLicencePage />} />
                       <Route path="/services/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
@@ -116,13 +123,23 @@ function AppRoot() {
                       <Route path="/rental-checklist" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-transition" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
+                      <Route path="/library-directory" element={<LibraryDirectory />} />
+                      <Route path="/libraries" element={<LibraryDirectory />} />
+                      <Route path="/address-change-planner" element={<AddressChangePlanner />} />
+                      <Route path="/address-change" element={<AddressChangePlanner />} />
+                      <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/surveys" element={<CivicSurveyWorkspace />} />
+                      <Route path="/survey-builder" element={<CivicSurveyWorkspace />} />
+                      <Route path="/civic-surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/continuity-planner" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/continuity-planner/:id" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/incident-drills" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/road-safety" element={<RoadSafetyDashboard />} />
+                      <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />

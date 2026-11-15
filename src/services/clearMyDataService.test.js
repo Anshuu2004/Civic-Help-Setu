@@ -304,6 +304,16 @@ describe('registry covers the keys the app writes', () => {
     'civic_tender_readiness_checklists_v1',
     'civicbridge_transactional_delivery_logs',
     'civicbridge_watertanker_requests',
+    'civic_address_change_planner_v1',
+    'civic_library_checklists_v1',
+    'civicbridge_library_checklist_change',
+    'civic_recovery_checklists',
+    'civicbridge_small_business_establishments_v1',
+    'civicbridge_business_checklist_progress_v1',
+    'civic_surveys_v1',
+    'civic_survey_responses_v1',
+    'civic_survey_consent_events_v1',
+    'civic_survey_audit_events_v1',
   ]);
 
   it('has no unlisted storage key in src', () => {
