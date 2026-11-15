@@ -66,4 +66,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Open Interactive Tree Guide');
     expect(html).toContain('/services/tree-permission-guide');
   });
+
+  it('renders the dedicated Ward Budget Proposal entry card when viewing the ward-budget-proposal service (#765)', () => {
+    const html = render('/services/ward-budget-proposal');
+    expect(html).toContain('Participatory Ward Budget Proposal &amp; Public Deliberation');
+    expect(html).toContain('Open Ward Budget Platform');
+    expect(html).toContain('/services/ward-budget-proposal');
+    expect(html).toContain('/ward-budget');
+  });
 });

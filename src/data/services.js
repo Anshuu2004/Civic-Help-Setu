@@ -685,7 +685,9 @@ export const MOCK_SERVICES = [
   },
   {
     id: 'business-licence-checklist',
+    name: 'Small-Business Licence Renewal & Closure Checklist Centre',
     title: 'Small-Business Licence Renewal & Closure Checklist Centre',
+    shortDescription: 'Lifecycle compliance tracker for small enterprises across municipal trade licences, Shops & Establishments registrations, FSSAI, SPCB consents, and statutory surrender acknowledgement archiving (#721).',
     description: 'Lifecycle compliance tracker for small enterprises across municipal trade licences, Shops & Establishments registrations, FSSAI, SPCB consents, and statutory surrender acknowledgement archiving (#721).',
     department: 'Urban Local Bodies (Municipal Corporations) & Directorate of Commercial Licencing',
     category: 'Business & Commercial',
@@ -951,6 +953,98 @@ export const MOCK_SERVICES = [
       { label: 'National Forest Vigilance Helpline', phone: '1926', url: 'https://forests.telangana.gov.in' }
     ],
     lastVerified: '2026-10-25'
+  },
+  {
+    id: 'ward-budget-proposal',
+    jurisdiction: {
+      level: 'municipal',
+      states: [
+        'All States / Municipal Corporations'
+      ],
+      districts: [],
+      localBody: 'Ward Committees / Municipal Corporations'
+    },
+    name: 'Participatory Ward Budget Proposal & Public Deliberation',
+    shortDescription: 'Submit, deliberate, and track citizen-initiated ward budget proposals for local public infrastructure improvements, pedestrian footpaths, drainage, and parks.',
+    category: 'Civic Participation',
+    department: 'Urban Local Bodies / Ward Committees / Municipal Corporation Directorate',
+    type: 'Online / Ward Sabha',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 45,
+    popularityScore: 95,
+    eligibility: [
+      'Must be a resident, property owner, trader, or registered Resident Welfare Association (RWA) member within the designated municipal ward.',
+      'Proposed works must fall within municipal jurisdiction (roads, footpaths, stormwater drainage, public lighting, parks, or community reading centers).',
+      'Cost estimate must fall within the ward budget ceiling (up to ₹5 Crore per ward envelope).',
+      'Works must not duplicate ongoing capital tenders or encroach upon private property.'
+    ],
+    documents: [
+      'Proof of ward residency or voter registration (Electors Photo Identity Card / utility bill / property tax receipt)',
+      'Photographic evidence or survey notes of location defect / required civic improvement',
+      'Preliminary itemized cost estimate or municipal schedule of rates reference (optional but recommended)'
+    ],
+    documentRequirements: {
+      'Proof of ward residency or voter registration': {
+        type: 'mandatory'
+      },
+      'Photographic evidence or survey notes': {
+        type: 'mandatory'
+      },
+      'Preliminary itemized cost estimate': {
+        type: 'optional'
+      }
+    },
+    steps: [
+      {
+        title: 'Check Ward Budget Cycle Timeline',
+        description: 'Verify that your municipal ward has an open intake or public deliberation cycle active.'
+      },
+      {
+        title: 'Formulate Proposal & Cost Estimate',
+        description: 'Specify the exact street or landmark location, select category, and provide realistic cost estimates within the statutory cap.'
+      },
+      {
+        title: 'Review Automated Duplicate Suggestions',
+        description: 'Inspect duplicate candidate clusters to consolidate repetitive requests with neighbors and build collective support.'
+      },
+      {
+        title: 'Public Neighborhood Deliberation',
+        description: 'Engage with fellow residents, answer municipal engineer queries, and refine specifications during the deliberation window.'
+      },
+      {
+        title: 'Cast Advisory Citizen Vote',
+        description: 'Participate in the advisory ward ballot to signal priority to the Ward Committee.'
+      },
+      {
+        title: 'Track Social Audit & Ground Execution',
+        description: 'Follow milestone updates, tender issuance, contractor assignment, and ground inspection photos.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs (MoHUA) Citizen Participation Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-01'
+      },
+      {
+        name: 'National Urban Governance Platform',
+        url: 'https://smartnet.niua.org',
+        verified: true,
+        lastVerified: '2026-11-05'
+      }
+    ],
+    warnings: [
+      'Citizen deliberation and advisory voting are non-statutory or advisory unless explicitly mandated by state municipal law.',
+      'Proposals proposing works on private property, gated layout internal private alleys, or national highways will be disqualified during technical review.',
+      'Do not include personal contact details, phone numbers, or identity numbers in public proposals or discussion comments.'
+    ],
+    contacts: [
+      { label: 'Central Urban Citizen Helpline', phone: '14420', url: 'https://mohua.gov.in' },
+      { label: 'Local Ward Committee Secretariat', phone: '1912', url: 'https://smartnet.niua.org' }
+    ],
+    lastVerified: '2026-11-15'
   }
 ];
 
