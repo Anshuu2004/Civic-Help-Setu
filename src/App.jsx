@@ -43,6 +43,7 @@ import SharedProfileView from './pages/SharedProfileView';
 import NotFound from './pages/NotFound';
 import VerifyEmail from './pages/VerifyEmail';
 import AadhaarGuidePage from './pages/AadhaarGuidePage';
+import SmallBusinessLicencePage from './pages/SmallBusinessLicencePage';
 import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
@@ -52,6 +53,7 @@ import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
 import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
 import LibraryDirectory from './pages/LibraryDirectory';
 import WaterTankerTracker from './pages/WaterTankerTracker';
+import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 
@@ -94,6 +96,8 @@ function AppRoot() {
                       <Route path="/services" element={<Suspense fallback={<ServicesFallback />}><Services /></Suspense>} />
                       <Route path="/services/aadhaar-guide" element={<AadhaarGuidePage />} />
                       <Route path="/aadhaar-guide" element={<AadhaarGuidePage />} />
+                      <Route path="/services/business-licence-checklist" element={<SmallBusinessLicencePage />} />
+                      <Route path="/business-licence-checklist" element={<SmallBusinessLicencePage />} />
                       <Route path="/services/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
@@ -118,6 +122,9 @@ function AppRoot() {
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
                       <Route path="/library-directory" element={<LibraryDirectory />} />
                       <Route path="/libraries" element={<LibraryDirectory />} />
+                      <Route path="/address-change-planner" element={<AddressChangePlanner />} />
+                      <Route path="/address-change" element={<AddressChangePlanner />} />
+                      <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/track" element={<Track />} />
