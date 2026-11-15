@@ -43,6 +43,7 @@ import SharedProfileView from './pages/SharedProfileView';
 import NotFound from './pages/NotFound';
 import VerifyEmail from './pages/VerifyEmail';
 import AadhaarGuidePage from './pages/AadhaarGuidePage';
+import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
 import CrematoriumDirectory from './pages/CrematoriumDirectory';
@@ -50,7 +51,9 @@ import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
 import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
 import LibraryDirectory from './pages/LibraryDirectory';
+import WaterTankerTracker from './pages/WaterTankerTracker';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
+import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -91,6 +94,8 @@ function AppRoot() {
                       <Route path="/services" element={<Suspense fallback={<ServicesFallback />}><Services /></Suspense>} />
                       <Route path="/services/aadhaar-guide" element={<AadhaarGuidePage />} />
                       <Route path="/aadhaar-guide" element={<AadhaarGuidePage />} />
+                      <Route path="/services/fire-noc-guide" element={<FireSafetyGuidePage />} />
+                      <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/services/:id" element={<ServiceDetails />} />
@@ -106,11 +111,15 @@ function AppRoot() {
                       <Route path="/tender-readiness" element={<TenderReadinessWorkspace />} />
                       <Route path="/community-facilities" element={<CommunityFacilityDirectory />} />
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
+                      <Route path="/water-tanker" element={<WaterTankerTracker />} />
+                      <Route path="/water-tankers" element={<WaterTankerTracker />} />
                       <Route path="/rental-checklist" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-transition" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
                       <Route path="/library-directory" element={<LibraryDirectory />} />
                       <Route path="/libraries" element={<LibraryDirectory />} />
+                      <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />

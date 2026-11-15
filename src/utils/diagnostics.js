@@ -40,6 +40,8 @@ export const ROUTE_PATTERNS = [
   '/nearby-offices',
   '/crematorium-directory',
   '/crematoriums',
+  '/water-tanker',
+  '/water-tankers',
   '/pds-shops',
   '/fair-price-shops',
   '/tenders',
