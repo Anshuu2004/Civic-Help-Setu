@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useParams, Link } from 'react-router-dom';
 import {
   GitFork,
@@ -44,6 +44,14 @@ const LineageExplorerWorkspace = () => {
   const [viewMode, setViewMode] = useState('graph'); // 'graph' | 'table'
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // Sync selectedServiceId if route param or search query changes
+  useEffect(() => {
+    const active = paramId || queryServiceId;
+    if (active && active !== selectedServiceId) {
+      setSelectedServiceId(active);
+    }
+  }, [paramId, queryServiceId, selectedServiceId]);
+
   // Modals state
   const [selectedNode, setSelectedNode] = useState(null);
   const [isNodeModalOpen, setIsNodeModalOpen] = useState(false);
@@ -68,6 +76,8 @@ const LineageExplorerWorkspace = () => {
       };
     }
   }, [target, userRole, refreshKey]);
+
+  const safeDag = dag || { nodes: [], edges: [], reviews: [], supersessions: [] };
 
   const handleSelectNode = (node) => {
     setSelectedNode(node);
@@ -128,7 +138,7 @@ const LineageExplorerWorkspace = () => {
                 aria-label="View statutory supersessions and historical amendments"
               >
                 <History size={15} />
-                Supersessions ({dag.supersessions?.length || 0})
+                Supersessions ({safeDag.supersessions?.length || 0})
               </button>
 
               {isAdminOrReviewer && (
@@ -212,7 +222,7 @@ const LineageExplorerWorkspace = () => {
                 style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', fontSize: '0.875rem' }}
                 aria-label="Select Civic Service to trace"
               >
-                {MOCK_SERVICES.slice(0, 15).map((s) => (
+                {MOCK_SERVICES.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -306,11 +316,22 @@ const LineageExplorerWorkspace = () => {
         {/* Main Content Area */}
         {error && <LineageErrorState error={error} onRetry={() => setRefreshKey((k) => k + 1)} />}
 
-        {!error && dag.nodes.length === 0 && (
-          <LineageEmptyState onReset={() => setSelectedFactField('all')} />
+        {!error && safeDag.nodes.length === 0 && (
+          <LineageEmptyState
+            message={`No statutory provenance records have been linked for "${selectedServiceId}" yet. Explore a grounded statutory service below:`}
+            onSelectSample={(sampleId) => {
+              setSelectedServiceId(sampleId);
+              setSearchParams({ service: sampleId });
+            }}
+            onReset={() => {
+              setSelectedServiceId('tree-pruning-permission');
+              setSelectedFactField('all');
+              setSearchParams({ service: 'tree-pruning-permission' });
+            }}
+          />
         )}
 
-        {!error && dag.nodes.length > 0 && (
+        {!error && safeDag.nodes.length > 0 && (
           <div
             className="card"
             style={{
@@ -322,15 +343,15 @@ const LineageExplorerWorkspace = () => {
           >
             {viewMode === 'graph' ? (
               <LineageGraphView
-                nodes={dag.nodes}
-                edges={dag.edges}
-                reviews={dag.reviews}
+                nodes={safeDag.nodes}
+                edges={safeDag.edges}
+                reviews={safeDag.reviews}
                 onSelectNode={handleSelectNode}
               />
             ) : (
               <LineageTableView
-                nodes={dag.nodes}
-                edges={dag.edges}
+                nodes={safeDag.nodes}
+                edges={safeDag.edges}
                 onSelectNode={handleSelectNode}
               />
             )}
@@ -349,13 +370,13 @@ const LineageExplorerWorkspace = () => {
           onClose={() => setIsReviewModalOpen(false)}
           targetEntityId={selectedFactField !== 'all' ? `${selectedServiceId}:${selectedFactField}` : selectedServiceId}
           onSaveReview={handleSaveReview}
-          currentReview={dag.reviews?.[0] || null}
+          currentReview={safeDag.reviews?.[0] || null}
         />
 
         <SupersessionModal
           isOpen={isSupersessionModalOpen}
           onClose={() => setIsSupersessionModalOpen(false)}
-          supersessions={dag.supersessions || []}
+          supersessions={safeDag.supersessions || []}
         />
       </div>
     </div>

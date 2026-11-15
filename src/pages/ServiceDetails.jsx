@@ -620,6 +620,10 @@ const ServiceDetails = ({ previewService = null }) => {
 
               <Link
                 to={`/provenance?service=${encodeURIComponent(service.id)}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/provenance?service=${encodeURIComponent(service.id)}`);
+                }}
                 className="btn btn-secondary"
                 style={{
                   padding: '0.6rem 1rem',
@@ -632,6 +636,7 @@ const ServiceDetails = ({ previewService = null }) => {
                   borderColor: 'rgba(99, 102, 241, 0.3)',
                   color: 'var(--accent-main)',
                   textDecoration: 'none',
+                  cursor: 'pointer',
                 }}
                 aria-label={`Trace data lineage and authoritative provenance for ${service.name}`}
               >

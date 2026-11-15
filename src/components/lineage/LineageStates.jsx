@@ -12,7 +12,11 @@ export const LineageSkeleton = () => (
   </div>
 );
 
-export const LineageEmptyState = ({ onReset, message = 'No provenance records match your current filters.' }) => (
+export const LineageEmptyState = ({
+  onReset,
+  onSelectSample,
+  message = 'No provenance records match your current filters.',
+}) => (
   <div
     className="card"
     style={{
@@ -30,11 +34,33 @@ export const LineageEmptyState = ({ onReset, message = 'No provenance records ma
     <p style={{ margin: 0, color: 'var(--text-secondary)', maxWidth: '480px', fontSize: '0.9rem' }}>
       {message}
     </p>
-    {onReset && (
-      <button type="button" className="btn btn-secondary" onClick={onReset} style={{ marginTop: '0.5rem' }}>
-        Reset Filters
-      </button>
-    )}
+    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '0.5rem' }}>
+      {onSelectSample && (
+        <>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => onSelectSample('tree-pruning-permission')}
+            style={{ fontSize: '0.85rem' }}
+          >
+            View Tree Pruning Permission
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => onSelectSample('aadhaar-card')}
+            style={{ fontSize: '0.85rem' }}
+          >
+            View Aadhaar Card Lineage
+          </button>
+        </>
+      )}
+      {onReset && (
+        <button type="button" className="btn btn-secondary" onClick={onReset} style={{ fontSize: '0.85rem' }}>
+          Reset Filters
+        </button>
+      )}
+    </div>
   </div>
 );
 
