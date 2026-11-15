@@ -93,8 +93,19 @@ export default function RoadSafetyDashboard() {
   // Full detail for modal
   const caseDetail = useMemo(() => {
     if (!detailCaseId || refreshTick < 0) return null;
-    return getReviewCaseDetail(detailCaseId);
-  }, [detailCaseId, refreshTick]);
+    const detail = getReviewCaseDetail(detailCaseId);
+    if (detail) return detail;
+    const foundInList = filteredCases.find((c) => c.id === detailCaseId || c.segmentId === detailCaseId);
+    if (!foundInList) return null;
+    const segment = foundInList.segment || SEED_ROAD_SEGMENTS.find((s) => s.id === foundInList.segmentId) || SEED_ROAD_SEGMENTS[0];
+    return {
+      ...foundInList,
+      segment,
+      crashes: [],
+      feature: null,
+      hazards: [],
+    };
+  }, [detailCaseId, refreshTick, filteredCases]);
 
   // Summary Metrics
   const metrics = useMemo(() => {

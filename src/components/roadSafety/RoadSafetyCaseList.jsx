@@ -130,9 +130,22 @@ export default function RoadSafetyCaseList({
                         #{index + 1}
                       </span>
                       <div>
-                        <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>
+                        <button
+                          type="button"
+                          onClick={() => onSelectCase(c)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            textAlign: 'left',
+                            fontWeight: '700',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.88rem',
+                            cursor: 'pointer',
+                          }}
+                        >
                           {c.segment?.name || 'Road Corridor'}
-                        </div>
+                        </button>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>
                           Code: {c.segment?.code} • {c.segment?.roadType?.replace('_', ' ').toUpperCase()}
                         </div>

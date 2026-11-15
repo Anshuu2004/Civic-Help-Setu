@@ -96,21 +96,27 @@ export const ensureRoadSafetySeedData = (storage) => {
   const s = getStorage(storage);
   if (!s) return false;
 
-  const existingSegments = s.getItem(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS);
-  if (!existingSegments) {
+  const rawSegments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+  const rawCases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
+
+  let modified = false;
+
+  if (!Array.isArray(rawSegments) || rawSegments.length === 0) {
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, SEED_ROAD_SEGMENTS, s);
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CRASHES, SEED_CRASH_AGGREGATES, s);
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.FEATURES, SEED_ROAD_FEATURES, s);
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, SEED_HAZARD_REPORTS, s);
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.RUNS, [], s);
-    writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
     writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.INTERVENTIONS, [], s);
-
-    // Bootstrap initial candidate review cases from seed data
-    bootstrapInitialCases(s);
-    return true;
+    modified = true;
   }
-  return false;
+
+  if (!Array.isArray(rawCases) || rawCases.length === 0) {
+    bootstrapInitialCases(s);
+    modified = true;
+  }
+
+  return modified;
 };
 
 /**
@@ -122,10 +128,15 @@ function bootstrapInitialCases(storage) {
   const features = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.FEATURES, [], storage);
   const hazards = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [], storage);
 
-  const initialCases = segments.map((segment) => {
-    const segmentCrashes = crashes.filter((c) => c.segmentId === segment.id);
-    const feature = features.find((f) => f.segmentId === segment.id);
-    const segmentHazards = hazards.filter((h) => h.segmentId === segment.id);
+  const effectiveSegments = Array.isArray(segments) && segments.length > 0 ? segments : SEED_ROAD_SEGMENTS;
+  const effectiveCrashes = Array.isArray(crashes) && crashes.length > 0 ? crashes : SEED_CRASH_AGGREGATES;
+  const effectiveFeatures = Array.isArray(features) && features.length > 0 ? features : SEED_ROAD_FEATURES;
+  const effectiveHazards = Array.isArray(hazards) && hazards.length > 0 ? hazards : SEED_HAZARD_REPORTS;
+
+  const initialCases = effectiveSegments.map((segment) => {
+    const segmentCrashes = effectiveCrashes.filter((c) => c.segmentId === segment.id);
+    const feature = effectiveFeatures.find((f) => f.segmentId === segment.id);
+    const segmentHazards = effectiveHazards.filter((h) => h.segmentId === segment.id);
 
     const evaluation = evaluateSegmentRisk(segment, segmentCrashes, feature, segmentHazards);
 
@@ -151,6 +162,7 @@ function bootstrapInitialCases(storage) {
   });
 
   writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, initialCases, storage);
+  return initialCases;
 }
 
 /**
@@ -401,8 +413,16 @@ export const listReviewCases = (filters = {}, storage) => {
   const s = getStorage(storage);
   ensureRoadSafetySeedData(s);
 
-  const cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
-  const segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+  let cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
+  let segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+
+  if (!Array.isArray(cases) || cases.length === 0) {
+    cases = bootstrapInitialCases(s);
+  }
+  if (!Array.isArray(segments) || segments.length === 0) {
+    segments = SEED_ROAD_SEGMENTS;
+    writeStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, SEED_ROAD_SEGMENTS, s);
+  }
 
   let result = cases.map((c) => {
     const seg = segments.find((sItem) => sItem.id === c.segmentId);
@@ -455,16 +475,26 @@ export const getReviewCaseDetail = (caseId, storage) => {
   const s = getStorage(storage);
   ensureRoadSafetySeedData(s);
 
-  const cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
-  const targetCase = cases.find((c) => c.id === caseId);
+  let cases = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CASES, [], s);
+  if (!Array.isArray(cases) || cases.length === 0) {
+    cases = bootstrapInitialCases(s);
+  }
+  const targetCase = cases.find((c) => c.id === caseId || c.segmentId === caseId);
   if (!targetCase) return null;
 
-  const segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
-  const crashes = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CRASHES, [], s);
-  const features = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.FEATURES, [], s);
-  const hazards = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [], s);
+  let segments = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.SEGMENTS, [], s);
+  if (!Array.isArray(segments) || segments.length === 0) segments = SEED_ROAD_SEGMENTS;
 
-  const segment = segments.find((seg) => seg.id === targetCase.segmentId);
+  let crashes = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.CRASHES, [], s);
+  if (!Array.isArray(crashes) || crashes.length === 0) crashes = SEED_CRASH_AGGREGATES;
+
+  let features = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.FEATURES, [], s);
+  if (!Array.isArray(features) || features.length === 0) features = SEED_ROAD_FEATURES;
+
+  let hazards = readStorageJson(ROAD_SAFETY_STORAGE_KEYS.HAZARDS, [], s);
+  if (!Array.isArray(hazards) || hazards.length === 0) hazards = SEED_HAZARD_REPORTS;
+
+  const segment = segments.find((seg) => seg.id === targetCase.segmentId) || SEED_ROAD_SEGMENTS.find((seg) => seg.id === targetCase.segmentId);
   const segmentCrashes = crashes.filter((cr) => cr.segmentId === targetCase.segmentId);
   const feature = features.find((ft) => ft.segmentId === targetCase.segmentId);
   const segmentHazards = hazards.filter((hz) => hz.segmentId === targetCase.segmentId);
