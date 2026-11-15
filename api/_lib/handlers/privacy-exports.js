@@ -1,7 +1,7 @@
 /* global process */
 import { createHash, randomBytes } from 'node:crypto';
-import { createPrivacyExportHandler } from './_lib/privacyExports.js';
-import { createRateLimiter } from './_lib/abuseGuard.js';
+import { createPrivacyExportHandler } from '../privacyExports.js';
+import { createRateLimiter } from '../abuseGuard.js';
 
 let handler;
 

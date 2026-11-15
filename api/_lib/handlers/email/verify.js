@@ -1,8 +1,8 @@
 /* global process */
-import { createVerificationToken, verifyToken, markEmailVerified, deleteVerificationTokensForUser, checkResendRateLimit, cleanupExpiredTokens, TOKEN_EXPIRY_HOURS } from '../../src/services/emailVerificationService.js';
-import { sendVerificationEmail } from '../../src/services/emailService.js';
-import { bearerToken } from '../_lib/firebaseToken.js';
-import { createRateLimiter } from '../_lib/abuseGuard.js';
+import { createVerificationToken, verifyToken, markEmailVerified, deleteVerificationTokensForUser, checkResendRateLimit, cleanupExpiredTokens, TOKEN_EXPIRY_HOURS } from '../../../../src/services/emailVerificationService.js';
+import { sendVerificationEmail } from '../../../../src/services/emailService.js';
+import { bearerToken } from '../../firebaseToken.js';
+import { createRateLimiter } from '../../abuseGuard.js';
 import { verifyToken as verifyClerkToken, createClerkClient } from '@clerk/backend';
 
 const verifyRateLimiter = createRateLimiter({ limit: 10, windowMs: 60 * 1000 });
@@ -129,7 +129,7 @@ export default async function route(req, res) {
     if (!userId) return json(401, { error: 'unauthorized' });
 
     cleanupExpiredTokens();
-    const pending = await import('../../src/services/emailVerificationService.js').then(m => m.getPendingVerifications());
+    const pending = await import('../../../../src/services/emailVerificationService.js').then(m => m.getPendingVerifications());
     const userTokens = pending.filter(t => t.userId === userId && !t.used);
 
     return json(200, {

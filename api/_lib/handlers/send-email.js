@@ -1,4 +1,4 @@
-import { createRateLimiter } from '../_lib/abuseGuard.js';
+import { createRateLimiter } from '../abuseGuard.js';
 
 const emailSendRateLimiter = createRateLimiter({ limit: 20, windowMs: 60 * 1000 });
 

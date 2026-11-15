@@ -1,4 +1,4 @@
-import { createRateLimiter } from './_lib/abuseGuard.js';
+import { createRateLimiter } from '../abuseGuard.js';
 
 const feedbackRateLimiter = createRateLimiter({ limit: 15, windowMs: 60 * 1000 });
 
