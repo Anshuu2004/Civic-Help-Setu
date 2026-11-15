@@ -51,6 +51,7 @@ import CrematoriumDirectory from './pages/CrematoriumDirectory';
 import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
 import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
+import RoadSafetyDashboard from './pages/RoadSafetyDashboard';
 import LibraryDirectory from './pages/LibraryDirectory';
 import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
@@ -129,6 +130,8 @@ function AppRoot() {
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/road-safety" element={<RoadSafetyDashboard />} />
+                      <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
