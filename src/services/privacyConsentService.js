@@ -199,6 +199,11 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Counter demand forecasting and queue capacity planning (#764)
+  'civicbridge_counter_aggregates_v1',
+  'civicbridge_capacity_plans_v1',
+  'civicbridge_forecast_runs_v1',
+  'civicbridge_capacity_audit_logs_v1',
   // Road safety blackspot detection and municipal review workspace (#769)
   'civicbridge_road_segments_v1',
   'civicbridge_crash_aggregates_v1',

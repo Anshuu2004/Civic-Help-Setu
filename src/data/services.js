@@ -955,6 +955,71 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-10-25'
   },
   {
+    id: 'counter-demand-forecasting',
+    name: 'Civic Service Counter Demand & Queue Staffing Forecast',
+    category: 'Civic Governance',
+    department: 'Department of Administrative Reforms & Public Grievances / Municipal Administration',
+    description: 'Statistical estimation of daily and hourly civic service counter footfall from appointment and visit aggregates, combined with Erlang-C queue capacity staffing optimization for municipal facilitation centres.',
+    timeRequired: '1 business day (planning cycle)',
+    fees: 'Free / Internal Operational Planning Tool',
+    eligibility: [
+      'Municipal Facilitation Centre Managers and Supervisors',
+      'Civic Centre Shift Officers and Desk Dispatchers',
+      'Urban Local Body Public Delivery Administrative Reviewers'
+    ],
+    documents: {
+      'Historical hourly appointment and walk-in footfall aggregates': { type: 'mandatory' },
+      'Office physical counter capacity inventory': { type: 'mandatory' },
+      'Jurisdiction gazetted and emergency holiday calendar': { type: 'mandatory' },
+      'Statutory service duration and benchmark wait-time standards': { type: 'mandatory' }
+    },
+    steps: [
+      {
+        title: 'Ingest Anonymized Footfall & Appointment Aggregates',
+        description: 'Aggregate historical daily and hourly arrivals excluding citizen names and application numbers.'
+      },
+      {
+        title: 'Compute Seasonal & Diurnal Demand Baseline',
+        description: 'Calculate day-of-week and hour-of-day seasonal weights, holiday impact multipliers, and 80%/95% prediction intervals.'
+      },
+      {
+        title: 'Run Erlang-C Queue Staffing Optimization',
+        description: 'Solve for minimal counter staffing keeping utilization <= 0.85 and wait exceedance probability within statutory targets.'
+      },
+      {
+        title: 'Draft & Review Capacity Plan with Human-in-the-Loop',
+        description: 'Adjust shift staffing allocations with mandatory justification for >=20% variance.'
+      },
+      {
+        title: 'Authorize & Land Shift Plan',
+        description: 'Centre manager reviews and authorizes final staffing with append-only audit trail.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'DARPG Citizen-Centric Governance Guidelines',
+        url: 'https://darpg.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National e-Governance Division (NeGD) Service Delivery Norms',
+        url: 'https://negd.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Operational planning model only. This service does NOT provide guaranteed individual waiting times or token queue promises to citizens.',
+      'All historical training inputs must strictly exclude citizen names, phone numbers, Aadhaar numbers, and application identifiers.'
+    ],
+    contacts: [
+      { label: 'DARPG Helpdesk', url: 'https://darpg.gov.in' },
+      { label: 'National e-Governance Service Support', url: 'https://negd.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
+  },
+  {
     id: 'ward-budget-proposal',
     jurisdiction: {
       level: 'municipal',
