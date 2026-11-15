@@ -1,18 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
-  CheckSquare,
   AlertTriangle,
-  MessageSquare,
-  Users,
   LogOut,
   Plus,
-  Edit3,
-  Trash2,
   CheckCircle2,
   ShieldCheck,
-  Shield,
   FileCheck,
-  History,
   Upload,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -46,7 +39,9 @@ import TenderCorrectionQueue from '../components/admin/TenderCorrectionQueue';
 import CommunityFacilityCorrectionQueue from '../components/admin/CommunityFacilityCorrectionQueue';
 import LibraryCorrectionQueue from '../components/admin/LibraryCorrectionQueue';
 import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
+import RoadHazardReviewQueue from '../components/admin/RoadHazardReviewQueue';
 import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorrectionQueue';
+import SurveyAuditQueue from '../components/admin/SurveyAuditQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -159,6 +154,7 @@ const Admin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setServices(getAdminServices());
     setReports(getReports());
     setUsers(getUserList());
@@ -1166,6 +1162,10 @@ const Admin = () => {
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                   <AddressChangeCorrectionQueue />
+                </div>
+                <div style={{ marginTop: '2rem' }}>
+                  <SurveyAuditQueue />
+                  <RoadHazardReviewQueue />
                 </div>
               </div>
             )}

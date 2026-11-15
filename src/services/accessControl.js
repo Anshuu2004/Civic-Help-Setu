@@ -46,6 +46,8 @@ export const PERMISSIONS = {
   'ownership.read': { roles: ['admin'], resource: 'civicbridge_service_ownership_v1', description: 'Read who is assigned to review each service guide, with private notes' },
   'ownership.manage': { roles: ['admin'], resource: 'civicbridge_service_ownership_v1', description: 'Assign, reassign or clear the reviewer of a service guide' },
   'civicWorks.moderate': { roles: ['admin'], resource: 'civicbridge_civic_works_reports_v1', description: 'Moderate ward-level civic work reports, cluster duplicates, record official acknowledgements and verify completion evidence' },
+  'roadSafety.review': { roles: ['admin'], resource: 'civicbridge_review_cases_v1', description: 'Review detected road safety blackspots, conduct site inspections, and plan interventions' },
+  'roadSafety.admin': { roles: ['admin'], resource: 'civicbridge_risk_runs_v1', description: 'Configure risk weighting parameters, trigger risk runs, and archive road safety cases' },
 };
 
 export class PermissionDeniedError extends Error {
