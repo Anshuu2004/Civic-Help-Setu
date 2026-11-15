@@ -21,6 +21,7 @@ import {
   Bookmark,
   UserCircle,
   Settings,
+  AlertTriangle,
   Navigation,
   Droplets,
   KeyRound,
@@ -837,6 +838,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/surveys',
+                label: 'Civic Surveys',
+                icon: FileText
+              })}
+
+              {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
                 icon: Settings
@@ -846,6 +853,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/civic-works',
                 label: t('nav.civicWorks', 'Ward Public Works'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/road-safety',
+                label: t('nav.roadSafety', 'Road Safety Blackspots'),
+                icon: AlertTriangle
               })}
 
               {renderNavLink({

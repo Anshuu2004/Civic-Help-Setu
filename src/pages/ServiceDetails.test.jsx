@@ -68,6 +68,14 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/services/tree-permission-guide');
   });
 
+  it('renders the dedicated Civic Survey Builder entry card when viewing the civic-survey-builder service (#767)', () => {
+    const html = render('/services/civic-survey-builder');
+    expect(html).toContain('Civic Survey Builder &amp; Sampling Diagnostics');
+    expect(html).toContain('Dedicated Civic Survey Builder &amp; Sampling Diagnostics Hub');
+    expect(html).toContain('Launch Survey Workspace');
+    expect(html).toContain('/surveys');
+  });
+
   it('renders the dedicated provenance and data lineage action link (#777)', () => {
     const service = MOCK_SERVICES[0];
     const html = render(`/services/${service.id}`);

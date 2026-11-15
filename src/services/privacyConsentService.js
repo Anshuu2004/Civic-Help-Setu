@@ -192,6 +192,16 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Road safety blackspot detection and municipal review workspace (#769)
+  'civicbridge_road_segments_v1',
+  'civicbridge_crash_aggregates_v1',
+  'civicbridge_hazard_reports_v1',
+  'civicbridge_road_features_v1',
+  'civicbridge_risk_runs_v1',
+  'civicbridge_review_cases_v1',
+  'civicbridge_intervention_records_v1',
+  'civicbridge_road_safety_rate_limit_v1',
+  'civicbridge_road_safety_audit_logs_v1',
   // Civic knowledge records lineage and provenance explorer (#777)
   'civicbridge_knowledge_sources_v1',
   'civicbridge_source_snapshots_v1',

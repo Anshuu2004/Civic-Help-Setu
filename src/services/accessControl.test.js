@@ -44,6 +44,7 @@ import { moderateBarrierReport } from './barrierReportService';
 import { recordServiceReview } from './dataFreshnessTrustService';
 import { saveLinkCheck } from './linkHealthService';
 import { moderateCivicWorkReport } from './civicWorksBoardService';
+import { transitionReviewCaseState, executeRiskRun } from './roadSafetyBlackspotService';
 
 const memoryStorage = () => {
   const data = new Map();
@@ -107,6 +108,8 @@ const CALLS = {
   'ownership.read': () => getOwnershipMap(moduleStorage),
   'ownership.manage': () => assignServiceOwnership('svc', { team: 'Docs' }, { storage: moduleStorage }),
   'civicWorks.moderate': () => moderateCivicWorkReport({ reportId: 'cw-1', decision: 'approved' }, moduleStorage),
+  'roadSafety.review': () => transitionReviewCaseState('case-seg-ka-blr-nh44-01', 'inspection_scheduled', {}, moduleStorage),
+  'roadSafety.admin': () => executeRiskRun({}, moduleStorage),
 };
 
 const outcome = (fn) => {
