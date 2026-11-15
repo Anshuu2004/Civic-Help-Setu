@@ -1,7 +1,7 @@
 /* global process */
-import { getNotificationPreferences, saveNotificationPreferences, validatePreferences, getCategoryChoices } from '../../src/services/notificationPreferenceService.js';
-import { bearerToken } from '../_lib/firebaseToken.js';
-import { createRateLimiter } from '../_lib/abuseGuard.js';
+import { getNotificationPreferences, saveNotificationPreferences, validatePreferences, getCategoryChoices } from '../../../../src/services/notificationPreferenceService.js';
+import { bearerToken } from '../../firebaseToken.js';
+import { createRateLimiter } from '../../abuseGuard.js';
 import { verifyToken as verifyClerkToken, createClerkClient } from '@clerk/backend';
 
 const preferenceRateLimiter = createRateLimiter({ limit: 30, windowMs: 60 * 1000 });

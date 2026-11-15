@@ -11,7 +11,7 @@
  *  - Queued for administrator review before affecting public directory records.
  */
 
-import { createRateLimiter, createSingleFlight } from './_lib/abuseGuard.js';
+import { createRateLimiter, createSingleFlight } from '../abuseGuard.js';
 
 const rateLimiter = createRateLimiter({ limit: 10, windowMs: 60 * 1000 });
 const singleFlight = createSingleFlight();

@@ -1,5 +1,5 @@
-import { createRateLimiter } from '../_lib/abuseGuard.js';
-import { createSingleFlight } from '../_lib/abuseGuard.js';
+import { createRateLimiter } from '../abuseGuard.js';
+import { createSingleFlight } from '../abuseGuard.js';
 
 const shareEmailRateLimiter = createRateLimiter({ limit: 10, windowMs: 60 * 1000 });
 const shareEmailSingleFlight = createSingleFlight();

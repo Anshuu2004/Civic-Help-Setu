@@ -9,7 +9,7 @@
  *  - Deterministic cryptographic verification seal for submission tracking.
  */
 
-import { createRateLimiter, createSingleFlight } from './_lib/abuseGuard.js';
+import { createRateLimiter, createSingleFlight } from '../abuseGuard.js';
 
 const rateLimiter = createRateLimiter({ limit: 10, windowMs: 60 * 1000 });
 const singleFlight = createSingleFlight();
