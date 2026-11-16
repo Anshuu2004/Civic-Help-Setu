@@ -62,6 +62,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
 import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
@@ -162,6 +163,9 @@ function AppRoot() {
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/public-projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/public-projects/:id" element={<PublicProjectsWorkspace />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/tree-health" element={<TreeHealthInventory />} />

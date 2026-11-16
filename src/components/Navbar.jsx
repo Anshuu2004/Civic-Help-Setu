@@ -31,6 +31,7 @@ import {
   Trees,
   Scale,
   BarChart2,
+  Building2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -915,6 +916,13 @@ if (normalizedTarget === '/continuity-planner') {
                 to: '/civic-works',
                 label: t('nav.civicWorks', 'Ward Public Works'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/public-projects',
+                activeTarget: '/public-projects',
+                label: 'Public Project Timeline',
+                icon: Building2
               })}
 
               {renderNavLink({
