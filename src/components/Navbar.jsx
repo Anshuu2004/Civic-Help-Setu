@@ -950,6 +950,9 @@ if (normalizedTarget === '/water-quality') {
                 to: '/stray-animal-workspace',
                 label: 'Stray Animal & Rabies PEP',
                 icon: HeartHandshake
+              })}
+
+              {renderNavLink({
                 to: '/noise-pollution-workspace',
                 label: 'Noise Pollution & Curfew',
                 icon: Volume2
