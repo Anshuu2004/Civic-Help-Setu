@@ -63,6 +63,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import PublicToiletDirectory from './pages/PublicToiletDirectory';
 import AccessibleRouteBarrierWorkspace from './pages/AccessibleRouteBarrierWorkspace';
 import StreetlightOutageWorkspace from './pages/StreetlightOutageWorkspace';
 import WaterQualityRegister from './pages/WaterQualityRegister';
@@ -164,6 +165,9 @@ function AppRoot() {
                       <Route path="/surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/survey-builder" element={<CivicSurveyWorkspace />} />
                       <Route path="/civic-surveys" element={<CivicSurveyWorkspace />} />
+                      <Route path="/public-toilets" element={<PublicToiletDirectory />} />
+                      <Route path="/toilet-directory" element={<PublicToiletDirectory />} />
+                      <Route path="/toilets" element={<PublicToiletDirectory />} />
                       <Route path="/pedestrian-barrier-map" element={<AccessibleRouteBarrierWorkspace />} />
                       <Route path="/accessible-routes" element={<AccessibleRouteBarrierWorkspace />} />
                       <Route path="/pedestrian-routes" element={<AccessibleRouteBarrierWorkspace />} />

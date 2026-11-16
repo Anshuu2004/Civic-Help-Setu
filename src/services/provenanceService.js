@@ -400,7 +400,7 @@ export const recordSupersession = ({
   }
 
   // Update predecessor source status to superseded
-  try {
+try {
     updateKnowledgeSourceStatus(predecessorId, PROVENANCE_STATUS.SUPERSEDED, reason, actor);
   } catch (err) {
     // If not in standard transition state, log and continue

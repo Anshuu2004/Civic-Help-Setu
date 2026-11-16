@@ -1282,6 +1282,67 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+    id: 'public-toilet-directory',
+    jurisdiction: {
+      level: 'national',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Corporations'
+    },
+    name: 'Public Toilet Availability, Accessibility & Maintenance Status',
+    shortDescription: 'Searchable public sanitation facility directory with operating hours, wheelchair accessibility, sanitary amenities, cleaning logs, and verified maintenance status.',
+    category: 'Public Amenities & Sanitation',
+    department: 'Municipal Corporation / Urban Local Bodies — Sanitation Wing',
+    type: 'Online',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 94,
+    eligibility: [
+      'Open to all residents, commuters, and visitors requiring municipal sanitation facilities.',
+      'Accessible features (wheelchair ramps, grab bars, diaper changing, all-gender cabins) are available at verified municipal complexes.',
+      'Facility operators and sanitation supervisors have dedicated access to update temporary closures and log cleaning events.'
+    ],
+    documents: [
+      'No documents required for citizen public access or issue reporting'
+    ],
+    documentRequirements: {},
+    steps: [
+      {
+        title: 'Locate Nearest Facility',
+        description: 'Filter verified public toilets by city, ward, wheelchair ramp, running water, or 24/7 operating hours.'
+      },
+      {
+        title: 'Verify Operating Hours & Live Status',
+        description: 'Inspect real-time open/closed calculations, schedule windows, and active temporary closure notices.'
+      },
+      {
+        title: 'Inspect Audited Cleanliness & Amenities',
+        description: 'Review the latest supervisor cleaning timestamp, sanitary napkin availability, and audit score.'
+      },
+      {
+        title: 'Report Issues or Submit Feedback',
+        description: 'Submit maintenance tickets or hygiene observations with instant cryptographic tracking receipts.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs — Swachh Bharat Mission (Urban)',
+        url: 'https://swachhbharaturban.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      }
+    ],
+    warnings: [
+      'Never include personal identifiers (Aadhaar, PAN, phone numbers) when submitting public issue reports.',
+      'Emergency plumbing or sewer overhauls may cause temporary closures as declared by authorized municipal operators.'
+    ],
+    contacts: [
+      { label: 'Swachhata Citizen Helpline', phone: '1969', url: 'https://swachhbharaturban.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'pedestrian-barrier-map',
     name: 'Accessible Pedestrian Route & Barrier Map',
     shortDescription: 'Plan accessible pedestrian routes avoiding broken footpaths, missing curb ramps, steep gradients, and temporary obstructions with community reporting and official municipal audits.',

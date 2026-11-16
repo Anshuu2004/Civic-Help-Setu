@@ -92,7 +92,15 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/surveys');
   });
 
-it('renders the dedicated Open Contracting Red-Flag Analytics entry card when viewing the open-contracting-red-flags service (#751)', () => {
+  it('renders the dedicated Public Toilet Directory entry card when viewing the public-toilet-directory service (#758)', () => {
+    const html = render('/services/public-toilet-directory');
+    expect(html).toContain('Public Toilet Availability, Accessibility &amp; Maintenance Status');
+    expect(html).toContain('Dedicated Public Toilet Availability &amp; Maintenance Directory');
+    expect(html).toContain('Launch Sanitation Directory');
+    expect(html).toContain('/public-toilets');
+  });
+
+  it('renders the dedicated Open Contracting Red-Flag Analytics entry card when viewing the open-contracting-red-flags service (#751)', () => {
     const html = render('/services/open-contracting-red-flags');
     expect(html).toContain('Open Contracting Red-Flag Analytics &amp; Audit Workspace');
     expect(html).toContain('Audit public procurement records across tender notice, bid, award, and amendment stages');
