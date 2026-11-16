@@ -62,6 +62,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import WaterQualityRegister from './pages/WaterQualityRegister';
 import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
 import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
@@ -137,6 +138,9 @@ function AppRoot() {
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
                       <Route path="/water-tanker" element={<WaterTankerTracker />} />
                       <Route path="/water-tankers" element={<WaterTankerTracker />} />
+                      <Route path="/services/water-quality-register" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality-register" element={<WaterQualityRegister />} />
                       <Route path="/rental-checklist" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-transition" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />

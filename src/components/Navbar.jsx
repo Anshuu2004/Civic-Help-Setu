@@ -149,6 +149,15 @@ if (normalizedTarget === '/continuity-planner') {
         );
       }
 
+if (normalizedTarget === '/water-quality') {
+        return (
+          normalizedPath === '/water-quality' ||
+          normalizedPath === '/water-quality-register' ||
+          normalizedPath === '/services/water-quality-register' ||
+          normalizedPath.startsWith('/water-quality/')
+        );
+      }
+
       if (normalizedTarget === '/open-contracting') {
         return (
           normalizedPath === '/open-contracting' ||
@@ -831,6 +840,12 @@ if (normalizedTarget === '/continuity-planner') {
               {renderNavLink({
                 to: '/water-tanker',
                 label: 'Water Tanker Tracker',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
+                to: '/water-quality',
+                label: 'Water Quality Register',
                 icon: Droplets
               })}
 

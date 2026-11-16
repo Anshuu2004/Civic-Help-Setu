@@ -1114,6 +1114,89 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+    id: 'water-quality-register',
+    jurisdiction: {
+      level: 'municipal',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Water Boards / Public Health Engineering Departments'
+    },
+    name: 'Community Water-Quality Sampling & Laboratory Result Register',
+    shortDescription: 'Search public drinking water points, view verified laboratory test parameters against Bureau of Indian Standards IS 10500:2012, and track municipal corrective actions.',
+    category: 'Public Health & Utilities',
+    department: 'Public Health Engineering Department (PHED) / Municipal Water Supply & Sewerage Board',
+    type: 'Public Register / Surveillance',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 3,
+    popularityScore: 92,
+    eligibility: [
+      'Open to all residents, community organizations, and public health monitors.',
+      'Public drinking water points include municipal taps, public standposts, community RO purification kiosks, and public borewells.',
+      'Field sampling submissions must be accompanied by certified container bar code identifiers.'
+    ],
+    documents: [
+      'Accredited NABL laboratory report certificate (for laboratory analysts and officials)',
+      'Sealed container identification code and chain-of-custody log (for field samplers)'
+    ],
+    documentRequirements: {
+      'Accredited NABL laboratory report certificate': {
+        type: 'mandatory'
+      },
+      'Sealed container identification code': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Locate Community Water Point',
+        description: 'Search nearby municipal taps, public borewells, or community RO kiosks by ward or landmark.'
+      },
+      {
+        title: 'Inspect Verified IS 10500 Parameters',
+        description: 'Review physical, chemical, and bacteriological test values (pH, TDS, turbidity, hardness, E. coli) against statutory limits.'
+      },
+      {
+        title: 'Check Cryptographic Verification Seal',
+        description: 'Verify tamper-evident hash seal issued by accredited NABL state water testing laboratory.'
+      },
+      {
+        title: 'Monitor Remedial Corrective Interventions',
+        description: 'Track municipal pipeline repairs, super-chlorination disinfections, or filtration membrane replacements for out-of-range water points.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Bureau of Indian Standards (BIS) IS 10500:2012 Drinking Water Specification',
+        url: 'https://www.services.bis.gov.in',
+        verified: true,
+        lastVerified: '2026-11-01'
+      },
+      {
+        name: 'National Accreditation Board for Testing and Calibration Laboratories (NABL)',
+        url: 'https://nabl-india.org',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Jal Jeevan Mission (JJM) Water Quality Management Information System',
+        url: 'https://ejalshakti.gov.in/wqmis/',
+        verified: true,
+        lastVerified: '2026-11-10'
+      }
+    ],
+    warnings: [
+      'Water surveillance parameter comparisons are deterministic rule evaluations against IS 10500:2012; they do not constitute medical or clinical diagnoses.',
+      'If bacteriological pathogens (Total Coliform / E. coli) are detected, observe precautionary boiling instructions while municipal disinfection is underway.',
+      'Do not disclose private residential door or flat numbers in public field observations.'
+    ],
+    contacts: [
+      { label: 'National Jal Jeevan Mission Helpline', phone: '1800-180-1551', url: 'https://jaljeevanmission.gov.in' },
+      { label: 'Central Public Health Engineering (CPHEEO)', phone: '011-23062331', url: 'https://cpheeo.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'civic-survey-builder',
     jurisdiction: {
       level: 'national',
