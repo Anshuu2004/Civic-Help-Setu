@@ -30,6 +30,11 @@ npm test -- --run src/services/roadSafetyBlackspotService.test.js # road-safety 
 npm test -- --run src/pages/RoadSafetyDashboard.test.jsx          # road-safety dashboard workspace UI tests (#769)
 npm test -- --run src/components/admin/RoadHazardReviewQueue.test.jsx # road-safety hazard review queue tests (#769)
 npm test -- --run tests/road-hazards.test.js                     # road-safety hazard API validation & abuse tests (#769)
+npm test -- --run src/data/openContractingContract.test.js    # open-contracting schema & contract tests (#751)
+npm test -- --run src/services/openContractingAnalyticsService.test.js # procurement red-flag analytics engine tests (#751)
+npm test -- --run src/services/openContractingService.test.js # open-contracting service & storage tests (#751)
+npm test -- --run tests/open-contracting-analytics.test.js    # open-contracting API validation & abuse tests (#751)
+npm test -- --run src/pages/OpenContractingWorkspace.test.jsx # procurement analytics workspace UI tests (#751)
 npm test -- --run src/services/provenanceService.test.js       # lineage DAG & cycle prevention tests (#777)
 npm test -- --run src/pages/LineageExplorerWorkspace.test.jsx  # provenance explorer UI tests (#777)
 npm test -- --run tests/knowledge-provenance.test.js          # provenance serverless API tests (#777)
@@ -54,6 +59,7 @@ npx vitest run src/pages/PublicProjectsWorkspace.test.jsx      # public project 
 Architecture, data model, state machines, CV discrepancy policy, and rollback strategy for public projects are documented in [docs/geospatial-public-projects.md](docs/geospatial-public-projects.md).
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Architecture, data model, k-anonymity privacy safeguards, explainable recommendations, and test suites for the Anonymized Ward-Level Civic Issue Heatmap are documented in [docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md](docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md) (#763).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:
