@@ -162,6 +162,16 @@ const Footer = () => {
                   RERA Homebuyer Rights
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/stray-animal-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Stray Animals &amp; Rabies PEP
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link

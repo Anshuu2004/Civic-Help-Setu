@@ -13,6 +13,7 @@ import {
   INITIAL_VERIFICATION_EVENTS,
 } from '../data/pedestrianBarrierSeed.js';
 import { DEFAULT_ROUTE_PREFERENCES } from '../data/pedestrianBarrierContract.js';
+import { logDiagnostic } from '../utils/diagnostics.js';
 
 const STORAGE_KEY_NODES = 'civicbridge_pedestrian_nodes_v1';
 const STORAGE_KEY_SEGMENTS = 'civicbridge_pedestrian_segments_v1';
@@ -36,7 +37,7 @@ const safeGetItem = (key, fallback) => {
     }
     return fallback;
   } catch (err) {
-    console.warn(`[pedestrianBarrierStorage] Error reading ${key}:`, err);
+    logDiagnostic(`[pedestrianBarrierStorage] Error reading ${key}:`, err);
     return fallback;
   }
 };
@@ -48,7 +49,7 @@ const safeSetItem = (key, value) => {
     }
     inMemoryStore.set(key, JSON.parse(JSON.stringify(value)));
   } catch (err) {
-    console.warn(`[pedestrianBarrierStorage] Error saving ${key}:`, err);
+    logDiagnostic(`[pedestrianBarrierStorage] Error saving ${key}:`, err);
   }
 };
 

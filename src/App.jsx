@@ -72,6 +72,7 @@ import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 import ReraDisputeWorkspace from './pages/ReraDisputeWorkspace';
+import StrayAnimalAbcWorkspace from './pages/StrayAnimalAbcWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
@@ -178,6 +179,9 @@ function AppRoot() {
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/rera-dispute-workspace" element={<ReraDisputeWorkspace />} />
                       <Route path="/rera-homebuyer-rights" element={<ReraDisputeWorkspace />} />
+                      <Route path="/stray-animal-workspace" element={<StrayAnimalAbcWorkspace />} />
+                      <Route path="/rabies-pep-tracker" element={<StrayAnimalAbcWorkspace />} />
+                      <Route path="/animal-birth-control" element={<StrayAnimalAbcWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/public-projects" element={<PublicProjectsWorkspace />} />

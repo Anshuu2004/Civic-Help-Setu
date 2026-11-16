@@ -33,6 +33,7 @@ import {
   GitFork,
   Scale,
   BarChart2,
+  HeartHandshake,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -941,6 +942,12 @@ if (normalizedTarget === '/water-quality') {
                 to: '/rera-dispute-workspace',
                 label: 'RERA Homebuyer Rights',
                 icon: Building2
+              })}
+
+              {renderNavLink({
+                to: '/stray-animal-workspace',
+                label: 'Stray Animal & Rabies PEP',
+                icon: HeartHandshake
               })}
               {renderNavLink({
                 to: '/tenants',
