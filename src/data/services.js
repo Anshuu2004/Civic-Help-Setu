@@ -230,6 +230,7 @@ export const MOCK_SERVICES = [
       'UIDAI strictly caps official fees at ₹0 for enrolment, ₹50 for demographic updates, and ₹100 for biometrics. If any centre overcharges, demand a computer receipt and escalate to 1947 or helpdesk@uidai.gov.in.',
       'Never laminate or purchase unauthorized plastic smart cards from local cyber cafes. Order the official ₹50 PVC card exclusively on myAadhaar.'
     ],
+    lineageRecordId: 'aadhaar-card',
     lastVerified: '2026-11-12'
   },
   {
@@ -685,7 +686,9 @@ export const MOCK_SERVICES = [
   },
   {
     id: 'business-licence-checklist',
+    name: 'Small-Business Licence Renewal & Closure Checklist Centre',
     title: 'Small-Business Licence Renewal & Closure Checklist Centre',
+    shortDescription: 'Lifecycle compliance tracker for small enterprises across municipal trade licences, Shops & Establishments registrations, FSSAI, SPCB consents, and statutory surrender acknowledgement archiving (#721).',
     description: 'Lifecycle compliance tracker for small enterprises across municipal trade licences, Shops & Establishments registrations, FSSAI, SPCB consents, and statutory surrender acknowledgement archiving (#721).',
     department: 'Urban Local Bodies (Municipal Corporations) & Directorate of Commercial Licencing',
     category: 'Business & Commercial',
@@ -950,7 +953,165 @@ export const MOCK_SERVICES = [
       { label: 'BMC Disaster Management Helpline (Mumbai)', phone: '1916', url: 'https://www.mcgm.gov.in' },
       { label: 'National Forest Vigilance Helpline', phone: '1926', url: 'https://forests.telangana.gov.in' }
     ],
+    lineageRecordId: 'tree-pruning-permission',
     lastVerified: '2026-10-25'
+  },
+  {
+    id: 'counter-demand-forecasting',
+    name: 'Civic Service Counter Demand & Queue Staffing Forecast',
+    category: 'Civic Governance',
+    department: 'Department of Administrative Reforms & Public Grievances / Municipal Administration',
+    description: 'Statistical estimation of daily and hourly civic service counter footfall from appointment and visit aggregates, combined with Erlang-C queue capacity staffing optimization for municipal facilitation centres.',
+    timeRequired: '1 business day (planning cycle)',
+    fees: 'Free / Internal Operational Planning Tool',
+    eligibility: [
+      'Municipal Facilitation Centre Managers and Supervisors',
+      'Civic Centre Shift Officers and Desk Dispatchers',
+      'Urban Local Body Public Delivery Administrative Reviewers'
+    ],
+    documents: {
+      'Historical hourly appointment and walk-in footfall aggregates': { type: 'mandatory' },
+      'Office physical counter capacity inventory': { type: 'mandatory' },
+      'Jurisdiction gazetted and emergency holiday calendar': { type: 'mandatory' },
+      'Statutory service duration and benchmark wait-time standards': { type: 'mandatory' }
+    },
+    steps: [
+      {
+        title: 'Ingest Anonymized Footfall & Appointment Aggregates',
+        description: 'Aggregate historical daily and hourly arrivals excluding citizen names and application numbers.'
+      },
+      {
+        title: 'Compute Seasonal & Diurnal Demand Baseline',
+        description: 'Calculate day-of-week and hour-of-day seasonal weights, holiday impact multipliers, and 80%/95% prediction intervals.'
+      },
+      {
+        title: 'Run Erlang-C Queue Staffing Optimization',
+        description: 'Solve for minimal counter staffing keeping utilization <= 0.85 and wait exceedance probability within statutory targets.'
+      },
+      {
+        title: 'Draft & Review Capacity Plan with Human-in-the-Loop',
+        description: 'Adjust shift staffing allocations with mandatory justification for >=20% variance.'
+      },
+      {
+        title: 'Authorize & Land Shift Plan',
+        description: 'Centre manager reviews and authorizes final staffing with append-only audit trail.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'DARPG Citizen-Centric Governance Guidelines',
+        url: 'https://darpg.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National e-Governance Division (NeGD) Service Delivery Norms',
+        url: 'https://negd.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Operational planning model only. This service does NOT provide guaranteed individual waiting times or token queue promises to citizens.',
+      'All historical training inputs must strictly exclude citizen names, phone numbers, Aadhaar numbers, and application identifiers.'
+    ],
+    contacts: [
+      { label: 'DARPG Helpdesk', url: 'https://darpg.gov.in' },
+      { label: 'National e-Governance Service Support', url: 'https://negd.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
+  },
+  {
+    id: 'ward-budget-proposal',
+    jurisdiction: {
+      level: 'municipal',
+      states: [
+        'All States / Municipal Corporations'
+      ],
+      districts: [],
+      localBody: 'Ward Committees / Municipal Corporations'
+    },
+    name: 'Participatory Ward Budget Proposal & Public Deliberation',
+    shortDescription: 'Submit, deliberate, and track citizen-initiated ward budget proposals for local public infrastructure improvements, pedestrian footpaths, drainage, and parks.',
+    category: 'Civic Participation',
+    department: 'Urban Local Bodies / Ward Committees / Municipal Corporation Directorate',
+    type: 'Online / Ward Sabha',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 45,
+    popularityScore: 95,
+    eligibility: [
+      'Must be a resident, property owner, trader, or registered Resident Welfare Association (RWA) member within the designated municipal ward.',
+      'Proposed works must fall within municipal jurisdiction (roads, footpaths, stormwater drainage, public lighting, parks, or community reading centers).',
+      'Cost estimate must fall within the ward budget ceiling (up to ₹5 Crore per ward envelope).',
+      'Works must not duplicate ongoing capital tenders or encroach upon private property.'
+    ],
+    documents: [
+      'Proof of ward residency or voter registration (Electors Photo Identity Card / utility bill / property tax receipt)',
+      'Photographic evidence or survey notes of location defect / required civic improvement',
+      'Preliminary itemized cost estimate or municipal schedule of rates reference (optional but recommended)'
+    ],
+    documentRequirements: {
+      'Proof of ward residency or voter registration': {
+        type: 'mandatory'
+      },
+      'Photographic evidence or survey notes': {
+        type: 'mandatory'
+      },
+      'Preliminary itemized cost estimate': {
+        type: 'optional'
+      }
+    },
+    steps: [
+      {
+        title: 'Check Ward Budget Cycle Timeline',
+        description: 'Verify that your municipal ward has an open intake or public deliberation cycle active.'
+      },
+      {
+        title: 'Formulate Proposal & Cost Estimate',
+        description: 'Specify the exact street or landmark location, select category, and provide realistic cost estimates within the statutory cap.'
+      },
+      {
+        title: 'Review Automated Duplicate Suggestions',
+        description: 'Inspect duplicate candidate clusters to consolidate repetitive requests with neighbors and build collective support.'
+      },
+      {
+        title: 'Public Neighborhood Deliberation',
+        description: 'Engage with fellow residents, answer municipal engineer queries, and refine specifications during the deliberation window.'
+      },
+      {
+        title: 'Cast Advisory Citizen Vote',
+        description: 'Participate in the advisory ward ballot to signal priority to the Ward Committee.'
+      },
+      {
+        title: 'Track Social Audit & Ground Execution',
+        description: 'Follow milestone updates, tender issuance, contractor assignment, and ground inspection photos.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs (MoHUA) Citizen Participation Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-01'
+      },
+      {
+        name: 'National Urban Governance Platform',
+        url: 'https://smartnet.niua.org',
+        verified: true,
+        lastVerified: '2026-11-05'
+      }
+    ],
+    warnings: [
+      'Citizen deliberation and advisory voting are non-statutory or advisory unless explicitly mandated by state municipal law.',
+      'Proposals proposing works on private property, gated layout internal private alleys, or national highways will be disqualified during technical review.',
+      'Do not include personal contact details, phone numbers, or identity numbers in public proposals or discussion comments.'
+    ],
+    contacts: [
+      { label: 'Central Urban Citizen Helpline', phone: '14420', url: 'https://mohua.gov.in' },
+      { label: 'Local Ward Committee Secretariat', phone: '1912', url: 'https://smartnet.niua.org' }
+    ],
+    lastVerified: '2026-11-15'
   },
   {
     id: 'civic-survey-builder',

@@ -30,12 +30,24 @@ npm test -- --run src/services/roadSafetyBlackspotService.test.js # road-safety 
 npm test -- --run src/pages/RoadSafetyDashboard.test.jsx          # road-safety dashboard workspace UI tests (#769)
 npm test -- --run src/components/admin/RoadHazardReviewQueue.test.jsx # road-safety hazard review queue tests (#769)
 npm test -- --run tests/road-hazards.test.js                     # road-safety hazard API validation & abuse tests (#769)
+npm test -- --run src/services/provenanceService.test.js       # lineage DAG & cycle prevention tests (#777)
+npm test -- --run src/pages/LineageExplorerWorkspace.test.jsx  # provenance explorer UI tests (#777)
+npm test -- --run tests/knowledge-provenance.test.js          # provenance serverless API tests (#777)
+npm test -- --run tests/knowledge-provenance-security.test.js # provenance security & PII tests (#777)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
 npm test -- --run src/services/continuityPlannerService.test.js # continuity planner service & state machine tests (#780)
 npm test -- --run src/services/dependencyGraphEngine.test.js  # graph analysis, cycle detection & SPOF tests (#780)
 npm test -- --run src/pages/ContinuityPlannerWorkspace.test.jsx # incident response drill workspace & runbook tests (#780)
+npm test -- --run src/services/counterDemandForecastingService.test.js # counter demand forecasting tests (#764)
+npm test -- --run src/pages/CounterDemandForecastingWorkspace.test.jsx # counter demand workspace UI tests (#764)
+npx vitest run src/services/treeInventoryService.test.js       # tree inventory domain/security tests (#749)
+npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
+npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
+npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
 ```
+
+Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

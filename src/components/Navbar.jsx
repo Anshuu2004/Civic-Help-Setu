@@ -27,6 +27,11 @@ import {
   KeyRound,
   Store,
   ShieldAlert,
+  GitFork,
+  Trees
+  Scale,
+  BarChart2,
+  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -120,13 +125,43 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
-      if (normalizedTarget === '/continuity-planner') {
+if (normalizedTarget === '/continuity-planner') {
         return (
           normalizedPath === '/continuity-planner' ||
           normalizedPath.startsWith('/continuity-planner/') ||
           normalizedPath === '/incident-drills'
         );
       }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
+        );
+      }
+
+      if (normalizedTarget === '/ward-budget') {
+        return (
+          normalizedPath === '/ward-budget' ||
+          normalizedPath === '/services/ward-budget-proposal' ||
+          normalizedPath.startsWith('/ward-budget/')
+        );
+      }
+
+      if (normalizedTarget === '/road-safety') {
+        return (
+          normalizedPath === '/road-safety' ||
+          normalizedPath === '/blackspots' ||
+          normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/provenance') {
+        return (
+          normalizedPath === '/provenance' ||
+          normalizedPath.startsWith('/provenance/') ||
+          normalizedPath === '/lineage-explorer'
 
       if (normalizedTarget === '/admin') {
         return (
@@ -831,6 +866,18 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 icon: FileText
               })}
 
+             {renderNavLink({
+                to: '/provenance',
+                label: 'Data Lineage',
+                icon: GitFork
+              })}
+
+              {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
+              })}
+
               {renderNavLink({
                 to: '/surveys',
                 label: 'Civic Surveys',
@@ -845,6 +892,11 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/senior-citizen-tribunal',
+                label: 'Senior Citizen Tribunal',
+                icon: Scale
+              })}
+              {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
                 icon: Settings
@@ -857,9 +909,22 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/ward-budget',
+                label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
+                icon: Users
+              })}
+
+              {renderNavLink({
                 to: '/road-safety',
                 label: t('nav.roadSafety', 'Road Safety Blackspots'),
                 icon: AlertTriangle
+              })}
+
+              {renderNavLink({
+                to: '/tree-health',
+                activeTarget: '/tree-health',
+                label: t('nav.treeHealth', 'Tree Health Inventory'),
+                icon: Trees
               })}
 
               {renderNavLink({

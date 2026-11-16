@@ -47,6 +47,7 @@ import SmallBusinessLicencePage from './pages/SmallBusinessLicencePage';
 import FireSafetyGuidePage from './pages/FireSafetyGuidePage';
 import TreePermissionGuidePage from './pages/TreePermissionGuidePage';
 import CivicWorksBoard from './pages/CivicWorksBoard';
+import TreeHealthInventory from './pages/TreeHealthInventory';
 import CrematoriumDirectory from './pages/CrematoriumDirectory';
 import FairPriceShopBoard from './pages/FairPriceShopBoard';
 import TenderReadinessWorkspace from './pages/TenderReadinessWorkspace';
@@ -57,8 +58,12 @@ import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingWorkspace';
+import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
+import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
+import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -105,6 +110,9 @@ function AppRoot() {
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/tree-permission-guide" element={<TreePermissionGuidePage />} />
+                      <Route path="/services/ward-budget-proposal" element={<WardBudgetWorkspace />} />
+                      <Route path="/ward-budget" element={<WardBudgetWorkspace />} />
+                      <Route path="/ward-budget/:id" element={<WardBudgetWorkspace />} />
                       <Route path="/services/:id" element={<ServiceDetails />} />
                       <Route path="/acronyms" element={<Acronyms />} />
                       <Route path="/eligibility" element={<Eligibility />} />
@@ -130,16 +138,26 @@ function AppRoot() {
                       <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/provenance" element={<LineageExplorerWorkspace />} />
+                      <Route path="/provenance/:id" element={<LineageExplorerWorkspace />} />
+                      <Route path="/lineage-explorer" element={<LineageExplorerWorkspace />} />
+                      <Route path="/counter-demand" element={<CounterDemandForecastingWorkspace />} />
+                      <Route path="/counter-demand-forecasting" element={<CounterDemandForecastingWorkspace />} />
+                      <Route path="/queue-staffing" element={<CounterDemandForecastingWorkspace />} />
                       <Route path="/surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/survey-builder" element={<CivicSurveyWorkspace />} />
                       <Route path="/civic-surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/continuity-planner" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/continuity-planner/:id" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/incident-drills" element={<ContinuityPlannerWorkspace />} />
+                      <Route path="/senior-citizen-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
+                      <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
+                      <Route path="/tree-health" element={<TreeHealthInventory />} />
+                      <Route path="/tree-inventory" element={<TreeHealthInventory />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
