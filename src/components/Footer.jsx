@@ -182,6 +182,16 @@ const Footer = () => {
                   Solid Waste &amp; NGT
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/clinical-establishment-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Clinical Establishment &amp; Patient Rights
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link

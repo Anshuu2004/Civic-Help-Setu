@@ -36,6 +36,7 @@ import {
   HeartHandshake,
   Volume2,
   Recycle,
+  HeartPulse,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -962,6 +963,12 @@ if (normalizedTarget === '/water-quality') {
                 to: '/solid-waste-workspace',
                 label: 'Solid Waste & NGT',
                 icon: Recycle
+              })}
+
+              {renderNavLink({
+                to: '/clinical-establishment-workspace',
+                label: 'Clinical Establishment & Patient Rights',
+                icon: HeartPulse
               })}
               {renderNavLink({
                 to: '/tenants',

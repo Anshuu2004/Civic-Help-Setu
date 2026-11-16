@@ -122,6 +122,7 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_abc_conflict_records', category: 'drafts', exportAs: 'strayAnimalConflictRecords', empty: [] }, // strayAnimalStorage.js
   { key: 'civicbridge_noise_pollution_logs', category: 'drafts', exportAs: 'noisePollutionLogs', empty: [] }, // noisePollutionStorage.js
   { key: 'civicbridge_solid_waste_audits', category: 'drafts', exportAs: 'solidWasteAudits', empty: [] }, // solidWasteStorage.js
+  { key: 'civicbridge_patient_grievance_records', category: 'drafts', exportAs: 'patientGrievanceRecords', empty: [] }, // clinicalEstablishmentStorage.js
 ];
 
 /**
