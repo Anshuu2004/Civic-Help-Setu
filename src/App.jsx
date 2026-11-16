@@ -62,6 +62,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import StreetlightOutageWorkspace from './pages/StreetlightOutageWorkspace';
 import WaterQualityRegister from './pages/WaterQualityRegister';
 import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
 import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
@@ -174,6 +175,9 @@ function AppRoot() {
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/tree-health" element={<TreeHealthInventory />} />
                       <Route path="/tree-inventory" element={<TreeHealthInventory />} />
+                      <Route path="/streetlights" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/streetlight-outages" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/services/streetlight-outages" element={<StreetlightOutageWorkspace />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />

@@ -26,9 +26,10 @@ import {
   Droplets,
   KeyRound,
   Store,
+  Trees,
+  Lightbulb,
   ShieldAlert,
   GitFork,
-  Trees,
   Scale,
   BarChart2,
   Building2,
@@ -963,6 +964,13 @@ if (normalizedTarget === '/water-quality') {
                 activeTarget: '/tree-health',
                 label: t('nav.treeHealth', 'Tree Health Inventory'),
                 icon: Trees
+              })}
+
+              {renderNavLink({
+                to: '/streetlights',
+                activeTarget: '/streetlights',
+                label: t('nav.streetlights', 'Streetlight Outages'),
+                icon: Lightbulb
               })}
 
               {renderNavLink({
