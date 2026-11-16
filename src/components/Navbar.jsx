@@ -871,6 +871,12 @@ if (normalizedTarget === '/water-quality') {
               })}
 
               {renderNavLink({
+                to: '/public-toilets',
+                label: 'Public Toilets',
+                icon: MapPin
+              })}
+
+              {renderNavLink({
                 to: '/library-directory',
                 label: 'Public Libraries',
                 icon: BookOpen
