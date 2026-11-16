@@ -735,6 +735,7 @@ const Admin = () => {
               { id: 'duplicates', label: 'Duplicate Detection', badge: null },
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
+              { id: 'public-projects', label: 'Public Project Timeline', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -1768,6 +1769,26 @@ const Admin = () => {
             {activeTab === 'civic-works' && (
               <div>
                 <CivicWorksModeratorPanel />
+              </div>
+            )}
+
+            {/* Public Infrastructure Projects Verification Tab */}
+            {activeTab === 'public-projects' && (
+              <div style={{ background: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
+                  Geospatial Public Project Verification &amp; Evidence Timeline
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
+                  Manage public civil infrastructure projects across roads, stormwater drains, schools, and civic buildings. Review photographic evidence submissions and commit authorized verification decisions.
+                </p>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => navigate('/public-projects')}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  Open Public Projects Workspace &amp; Review Queue
+                </button>
               </div>
             )}
 

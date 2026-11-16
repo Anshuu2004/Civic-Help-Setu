@@ -36,7 +36,13 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/publicProjectService.test.js       # public project domain & state transition tests (#752)
+npx vitest run src/services/evidenceVerificationService.test.js # evidence integrity & CV advisory tests (#752)
+npx vitest run tests/public-projects.test.js                 # public project serverless API & abuse tests (#752)
+npx vitest run src/pages/PublicProjectsWorkspace.test.jsx      # public project workspace UI & a11y tests (#752)
 ```
+
+Architecture, data model, state machines, CV discrepancy policy, and rollback strategy for public projects are documented in [docs/geospatial-public-projects.md](docs/geospatial-public-projects.md).
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
 
