@@ -50,6 +50,11 @@ import {
 } from './continuityPlannerService';
 import { moderateCivicWorkReport } from './civicWorksBoardService';
 import { transitionReviewCaseState, executeRiskRun } from './roadSafetyBlackspotService';
+import {
+  createPublicProject,
+  recordVerificationReview,
+  getProjectAuditTrail,
+} from './publicProjectService';
 
 const memoryStorage = () => {
   const data = new Map();
@@ -115,6 +120,9 @@ const CALLS = {
   'civicWorks.moderate': () => moderateCivicWorkReport({ reportId: 'cw-1', decision: 'approved' }, moduleStorage),
   'roadSafety.review': () => transitionReviewCaseState('case-seg-ka-blr-nh44-01', 'inspection_scheduled', {}, moduleStorage),
   'roadSafety.admin': () => executeRiskRun({}, moduleStorage),
+  'publicProjects.create': () => createPublicProject({ title: 'Sample Road Paving Test Corridor', description: 'Testing corridor paving description length', category: 'roads', jurisdiction: { wardNumber: 'Ward 10' } }, moduleStorage),
+  'publicProjects.verify': () => recordVerificationReview({ projectId: 'proj-1', milestoneId: 'ms-1', submissionId: 'sub-1', decision: 'APPROVE', findings: 'Valid verification findings test' }, moduleStorage),
+  'publicProjects.audit': () => getProjectAuditTrail('proj-1', moduleStorage),
   'continuity.write': () => saveContinuityPlan({ title: 'ContPlan' }),
   'continuity.approve': () => transitionPlanState('plan_pune_ward_12', 'APPROVED', { reason: 'Test' }),
   'continuity.drill': () => createExerciseRun({ title: 'Test Drill' }),
