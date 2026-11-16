@@ -1199,6 +1199,106 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+{
+    id: 'open-contracting-red-flags',
+    jurisdiction: {
+      level: 'national',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Central, State & Municipal Procurement Entities'
+    },
+    name: 'Open Contracting Red-Flag Analytics & Audit Workspace',
+    shortDescription: 'Audit public procurement records across tender notice, bid, award, and amendment stages using explainable anomaly detection and OCDS red-flag benchmarks without declaring wrongdoing.',
+    category: 'Governance & Planning',
+    department: 'Central Vigilance Commission & State Public Procurement Oversight Authorities',
+    type: 'Online',
+    difficulty: 'Intermediate',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 94,
+    tags: [
+      'Procurement',
+      'Tenders',
+      'Auditing',
+      'Red Flags',
+      'Open Contracting',
+      'OCDS',
+      'Contract Amendments',
+      'Single Bid',
+      'Price Outlier'
+    ],
+    summary: 'Auditors, researchers, and citizens can review public procurement notices, detect statistical anomalies (repeated single-bid awards, unusual amendments, price creep, abbreviated notice periods), inspect linked procurement lifecycles, and document reasoned human review outcomes.',
+    eligibility: {
+      whoCanApply: [
+        'Municipal and state auditors conducting procurement reviews',
+        'Civil society oversight researchers and transparency watchdogs',
+        'Citizen observers reviewing local public works and goods tenders',
+        'Procurement analysts verifying supplier concentrations'
+      ],
+      criteria: [
+        'Public procurement records published under Open Contracting Data Standard (OCDS) or state e-Procurement portals',
+        'Auditors must provide statutory justifications when recording review decisions or clearing flags'
+      ]
+    },
+    documents: [
+      'Published Tender Notice & Corrigenda (Official tender advertisement with dates and criteria)',
+      'Technical & Financial Bid Evaluation Sheets (Documenting received quotes and bidder rankings)',
+      'Contract Award Order & Amendments (Documenting awarded amount and variation orders)'
+    ],
+    processSteps: [
+      {
+        step: 1,
+        title: 'Import & Harmonize Procurement Records',
+        description: 'Tender notices, bids, award details, and contract amendments are normalized under Open Contracting schemas.'
+      },
+      {
+        step: 2,
+        title: 'Run Explainable Anomaly Analytics',
+        description: 'Deterministic rulesets detect single-bid awards, short turnaround windows, excessive amendments, and price outliers with comparison cohorts.'
+      },
+      {
+        step: 3,
+        title: 'Inspect Linked Lifecycle Stages',
+        description: 'Reviewers explore the timeline connecting notice to bids, award to amendments, and compare against category cohort benchmarks.'
+      },
+      {
+        step: 4,
+        title: 'Record Human Audit Review & Issue Seal',
+        description: 'Authorized auditors examine file records, mark false positives with documented reasons or escalate for formal audit with cryptographic seals.'
+      }
+    ],
+    officialPortals: [
+      {
+        name: 'Government e-Marketplace (GeM)',
+        url: 'https://gem.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Central Public Procurement Portal (CPPP)',
+        url: 'https://eprocure.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Open Contracting Partnership (OCDS)',
+        url: 'https://www.open-contracting.org',
+        verified: true,
+        lastVerified: '2026-11-16'
+      }
+    ],
+    warnings: [
+      'Red-flag anomaly indicators are statistical and procedural prompts for auditor review; they do not declare wrongdoing or legal liability.',
+      'Auditors must review the complete procurement file before taking formal administrative or investigative actions.',
+      'Personal identifiers (Aadhaar, PAN, phone numbers, private emails) must never be entered into public audit review notes.'
+    ],
+    contacts: [
+      { label: 'Central Vigilance Commission Helpline', phone: '1800-11-5555', url: 'https://cvc.gov.in' },
+      { label: 'State Public Procurement Authority Helpdesk', phone: '080-22250000', url: 'https://kppp.karnataka.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'ward-issue-heatmap',
     jurisdiction: {
       level: 'municipal',

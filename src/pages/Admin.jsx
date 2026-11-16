@@ -44,6 +44,7 @@ import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorre
 import ProvenanceReviewQueue from '../components/admin/ProvenanceReviewQueue';
 import CounterDemandReviewQueue from '../components/admin/CounterDemandReviewQueue';
 import SurveyAuditQueue from '../components/admin/SurveyAuditQueue';
+import OpenContractingAuditQueue from '../components/admin/OpenContractingAuditQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -1173,6 +1174,7 @@ const Admin = () => {
                 <div style={{ marginTop: '2rem' }}>
                   <SurveyAuditQueue />
                   <RoadHazardReviewQueue />
+                  <OpenContractingAuditQueue />
                 </div>
               </div>
             )}

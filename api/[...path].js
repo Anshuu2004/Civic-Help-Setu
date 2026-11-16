@@ -19,6 +19,7 @@ import rentalChecklist from "./_lib/handlers/rental-checklist-corrections.js";
 import sendEmail from "./_lib/handlers/send-email.js";
 import shareByEmail from "./_lib/handlers/share-by-email.js";
 import tenderCorrections from "./_lib/handlers/tender-corrections.js";
+import openContractingAnalytics from "./_lib/handlers/open-contracting-analytics.js";
 import wardBudgetProposals from "./_lib/handlers/ward-budget-proposals.js";
 import waterTankerReports from "./_lib/handlers/water-tanker-reports.js";
 import civicSurveys from "./_lib/handlers/civic-surveys.js";
@@ -36,6 +37,7 @@ const handlers = {
   "fire-compliance-feedback": fireCompliance,
   "knowledge-provenance": knowledgeProvenance,
   "library-corrections": libraryCorrections,
+  "open-contracting-analytics": openContractingAnalytics,
   "pds-observations": pdsObservations,
   "privacy-exports": privacyExports,
   "rental-checklist-corrections": rentalChecklist,

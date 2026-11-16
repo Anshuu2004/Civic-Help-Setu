@@ -148,6 +148,14 @@ if (normalizedTarget === '/continuity-planner') {
         );
       }
 
+      if (normalizedTarget === '/open-contracting') {
+        return (
+          normalizedPath === '/open-contracting' ||
+          normalizedPath === '/procurement-analytics' ||
+          normalizedPath.startsWith('/open-contracting/')
+        );
+      }
+
       if (normalizedTarget === '/road-safety') {
         return (
           normalizedPath === '/road-safety' ||
@@ -913,6 +921,12 @@ if (normalizedTarget === '/continuity-planner') {
                 to: '/ward-budget',
                 label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/open-contracting',
+                label: t('nav.openContracting', 'Procurement Red Flags'),
+                icon: ShieldAlert
               })}
 
               {renderNavLink({

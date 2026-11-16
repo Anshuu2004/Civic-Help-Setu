@@ -92,6 +92,14 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/surveys');
   });
 
+it('renders the dedicated Open Contracting Red-Flag Analytics entry card when viewing the open-contracting-red-flags service (#751)', () => {
+    const html = render('/services/open-contracting-red-flags');
+    expect(html).toContain('Open Contracting Red-Flag Analytics &amp; Audit Workspace');
+    expect(html).toContain('Audit public procurement records across tender notice, bid, award, and amendment stages');
+    expect(html).toContain('Open Contracting Workspace');
+    expect(html).toContain('/open-contracting');
+  });
+
   it('renders the dedicated Ward Issue Heatmap entry card when viewing the ward-issue-heatmap service', () => {
     const html = render('/services/ward-issue-heatmap');
     expect(html).toContain('Anonymized Ward-Level Civic Issue Heatmap &amp; Trend Explorer');

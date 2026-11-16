@@ -65,6 +65,7 @@ import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
+import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -128,6 +129,9 @@ function AppRoot() {
                       <Route path="/fair-price-shops" element={<FairPriceShopBoard />} />
                       <Route path="/tenders" element={<TenderReadinessWorkspace />} />
                       <Route path="/tender-readiness" element={<TenderReadinessWorkspace />} />
+                      <Route path="/open-contracting" element={<OpenContractingWorkspace />} />
+                      <Route path="/procurement-analytics" element={<OpenContractingWorkspace />} />
+                      <Route path="/open-contracting/:id" element={<OpenContractingWorkspace />} />
                       <Route path="/community-facilities" element={<CommunityFacilityDirectory />} />
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
                       <Route path="/water-tanker" element={<WaterTankerTracker />} />
