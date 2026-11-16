@@ -119,6 +119,8 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_continuity_recommendations_v1', category: 'drafts', exportAs: null, empty: [] }, // continuityPlannerService.js
   { key: 'civicbridge_senior_tribunal_petitions', category: 'drafts', exportAs: 'seniorCitizenTribunalPetitions', empty: [] }, // seniorCitizenTribunalStorage.js
   { key: 'civicbridge_rera_complaints', category: 'drafts', exportAs: 'reraComplaints', empty: [] }, // reraDisputeStorage.js
+  { key: 'civicbridge_abc_conflict_records', category: 'drafts', exportAs: 'strayAnimalConflictRecords', empty: [] }, // strayAnimalStorage.js
+  { key: 'civicbridge_noise_pollution_logs', category: 'drafts', exportAs: 'noisePollutionLogs', empty: [] }, // noisePollutionStorage.js
   { key: 'civicbridge_solid_waste_audits', category: 'drafts', exportAs: 'solidWasteAudits', empty: [] }, // solidWasteStorage.js
   { key: 'civicbridge_patient_grievance_records', category: 'drafts', exportAs: 'patientGrievanceRecords', empty: [] }, // clinicalEstablishmentStorage.js
 ];

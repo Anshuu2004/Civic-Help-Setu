@@ -33,6 +33,8 @@ import {
   GitFork,
   Scale,
   BarChart2,
+  HeartHandshake,
+  Volume2,
   Recycle,
   HeartPulse,
 } from 'lucide-react';
@@ -943,6 +945,15 @@ if (normalizedTarget === '/water-quality') {
                 to: '/rera-dispute-workspace',
                 label: 'RERA Homebuyer Rights',
                 icon: Building2
+              })}
+
+              {renderNavLink({
+                to: '/stray-animal-workspace',
+                label: 'Stray Animal & Rabies PEP',
+                icon: HeartHandshake
+                to: '/noise-pollution-workspace',
+                label: 'Noise Pollution & Curfew',
+                icon: Volume2
               })}
 
               {renderNavLink({
