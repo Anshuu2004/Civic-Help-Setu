@@ -28,10 +28,9 @@ import {
   Store,
   ShieldAlert,
   GitFork,
-  Trees
+  Trees,
   Scale,
   BarChart2,
-  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
