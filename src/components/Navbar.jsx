@@ -161,6 +161,8 @@ if (normalizedTarget === '/continuity-planner') {
           normalizedPath === '/provenance' ||
           normalizedPath.startsWith('/provenance/') ||
           normalizedPath === '/lineage-explorer'
+        );
+      }
 
       if (normalizedTarget === '/admin') {
         return (
