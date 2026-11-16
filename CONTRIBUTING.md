@@ -28,6 +28,8 @@ Run unit and integration tests locally with Vitest:
 npm test                                                      # run all tests
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
+npm test -- --run src/services/syntheticGeneratorEngine.test.js # synthetic dataset engine tests (#778)
+npm test -- --run src/pages/SyntheticDatasetWorkspace.test.jsx # synthetic dataset workspace tests (#778)
 ```
 
 ## Security checks

@@ -112,6 +112,10 @@ A responsive design with theme support, built to provide a consistent experience
 
 Clear navigation, readable content, consistent interaction patterns, and a user-centered approach to public-service information.
 
+### 🧪 14. Privacy-Safe Synthetic Civic Dataset Generator
+
+Generate reproducible, schema-aware service guides, citizen applications, and grievance records with zero production PII, complete referential integrity, and one-click local development database loading (#778).
+
 ---
 
 ## 📊 Project at a Glance
@@ -151,6 +155,7 @@ The platform includes the following major application areas:
 | Open Source     | Explore community contributions           |
 | Privacy Policy  | Review privacy-related information        |
 | Admin           | Access authorized administrative features |
+| Synthetic Datasets | Generate privacy-safe civic datasets (`/synthetic-datasets`) |
 
 The availability of individual features depends on the application's current implementation and configuration.
 

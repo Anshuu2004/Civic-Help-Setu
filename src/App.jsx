@@ -53,6 +53,7 @@ import CommunityFacilityDirectory from './pages/CommunityFacilityDirectory';
 import WaterTankerTracker from './pages/WaterTankerTracker';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import SyntheticDatasetWorkspace from './pages/SyntheticDatasetWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -117,6 +118,8 @@ function AppRoot() {
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/synthetic-datasets" element={<SyntheticDatasetWorkspace />} />
+                      <Route path="/dataset-generator" element={<SyntheticDatasetWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />

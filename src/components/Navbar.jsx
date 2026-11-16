@@ -23,7 +23,8 @@ import {
   Settings,
   Droplets,
   KeyRound,
-  Store
+  Store,
+  Database
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -113,6 +114,13 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         return (
           normalizedPath === '/admin' ||
           normalizedPath.startsWith('/admin/')
+        );
+      }
+
+      if (normalizedTarget === '/synthetic-datasets') {
+        return (
+          normalizedPath === '/synthetic-datasets' ||
+          normalizedPath === '/dataset-generator'
         );
       }
 
@@ -798,6 +806,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/synthetic-datasets',
+                label: 'Synthetic Dataset Generator',
+                icon: Database
               })}
 
               {renderNavLink({
