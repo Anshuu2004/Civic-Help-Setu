@@ -497,8 +497,7 @@ export function purgeRevokedCategoryData(categoryId, actorId = 'citizen_user') {
  */
 export function updateConsentPreference(
   categoryId,
-  granted,
-  actorId = 'citizen_user',
+  granted,  actorId = 'citizen_user',
   options = {}
 ) {
   const category = CONSENT_CATEGORIES[categoryId];
@@ -929,18 +928,6 @@ export function enforceRetentionPolicies({
 
 export { verifyPrivacyAuditLogIntegrity, verifyExportedDataIntegrity };
 
-function readStoredJson(storage, key, empty) {
-  const raw = storage.getItem(key);
-  if (raw === null || raw === undefined || raw === '') return empty;
-  try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
-    return parsed;
-  } catch {
-    return empty;
-  }
-}
-
 /**
  * Exports all user-owned data into a documented, machine-readable JSON dossier
  * sealed with a canonical SHA-256 integrityDigest.
@@ -998,7 +985,6 @@ export function exportUserData(userId = 'citizen_user') {
  */
 export function purgeAllUserData(userId = 'citizen_user', options = { preserveAuditTrail: true }) {
   const storage = getStorage();
-
   const deletedKeys = [];
   for (const key of [...USER_DATA_STORAGE_KEYS, ...getPrefixedUserDataKeys(storage)]) {
     if (storage.getItem(key) !== null) {
