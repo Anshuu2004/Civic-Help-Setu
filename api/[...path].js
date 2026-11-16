@@ -23,6 +23,7 @@ import openContractingAnalytics from "./_lib/handlers/open-contracting-analytics
 import wardBudgetProposals from "./_lib/handlers/ward-budget-proposals.js";
 import waterTankerReports from "./_lib/handlers/water-tanker-reports.js";
 import civicSurveys from "./_lib/handlers/civic-surveys.js";
+import wardIssueHeatmap from "./_lib/handlers/ward-issue-heatmap.js";
 
 const handlers = {
   "address-change-corrections": addressChange,
@@ -44,6 +45,7 @@ const handlers = {
   "share-by-email": shareByEmail,
   "tender-corrections": tenderCorrections,
   "ward-budget-proposals": wardBudgetProposals,
+  "ward-issue-heatmap": wardIssueHeatmap,
   "water-tanker-reports": waterTankerReports,
 };
 

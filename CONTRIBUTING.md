@@ -53,6 +53,7 @@ npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree comp
 ```
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Architecture, data model, k-anonymity privacy safeguards, explainable recommendations, and test suites for the Anonymized Ward-Level Civic Issue Heatmap are documented in [docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md](docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md) (#763).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

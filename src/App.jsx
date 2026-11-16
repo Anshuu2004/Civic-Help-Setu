@@ -62,6 +62,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
@@ -111,6 +112,9 @@ function AppRoot() {
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/tree-permission-guide" element={<TreePermissionGuidePage />} />
+                      <Route path="/services/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/civic-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
                       <Route path="/services/ward-budget-proposal" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget/:id" element={<WardBudgetWorkspace />} />

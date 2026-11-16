@@ -1199,6 +1199,7 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+{
     id: 'open-contracting-red-flags',
     jurisdiction: {
       level: 'national',
@@ -1296,6 +1297,84 @@ export const MOCK_SERVICES = [
       { label: 'State Public Procurement Authority Helpdesk', phone: '080-22250000', url: 'https://kppp.karnataka.gov.in' }
     ],
     lastVerified: '2026-11-16'
+  },
+  {
+    id: 'ward-issue-heatmap',
+    jurisdiction: {
+      level: 'municipal',
+      states: ['All States & Urban Local Bodies'],
+      districts: [],
+      localBody: 'Municipal Corporations / Urban Local Bodies'
+    },
+    name: 'Anonymized Ward-Level Civic Issue Heatmap & Trend Explorer',
+    shortDescription: 'Aggregate analytics view for understanding recurring civic issues across municipal wards without exposing individual complainants or exact private locations.',
+    category: 'Governance & Analytics',
+    department: 'Directorate of Municipal Administration & Urban Data Governance Cell',
+    type: 'Online Analytics & Public Dashboard',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 96,
+    eligibility: [
+      'Accessible to all citizens, community researchers, Resident Welfare Associations (RWAs), and municipal ward committees.',
+      'Public view enforces k-anonymity (k >= 5) small-cell suppression: sparse cohorts are withheld from public display to prevent complainant re-identification.',
+      'Municipal operators and administrators have authorized access to triage intervention recommendations and view aggregate trends across jurisdictions.'
+    ],
+    documents: [
+      'Factual observation or geo-tagged location landmark for eligible civic defects',
+      'No personal identity documents (Aadhaar/PAN) or private contact details required or permitted'
+    ],
+    documentRequirements: {
+      'Factual observation or geo-tagged location landmark for eligible civic defects': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Explore Ward Heatmap & Issue Densities',
+        description: 'Review ward-level distribution of recurring civic issues including road damage, water supply, solid waste, and waterlogging.'
+      },
+      {
+        title: 'Inspect k-Anonymity & Suppression Safeguards',
+        description: 'Verify active privacy rules (k >= 5) where cohorts with fewer than 5 events are suppressed to safeguard complainant confidentiality.'
+      },
+      {
+        title: 'Compare Multi-Ward Trend Velocities',
+        description: 'Evaluate reporting velocities across consecutive time windows to identify emerging hotspots and seasonal patterns.'
+      },
+      {
+        title: 'Review Explainable Municipal Interventions',
+        description: 'Inspect automated, ruleset-versioned recommendations with explainable data signals and human-in-the-loop review actions.'
+      },
+      {
+        title: 'Submit Anonymized Civic Observation',
+        description: 'Contribute ground observations with coordinates snapped strictly to the municipal ward centroid.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs (MoHUA) — Urban Data Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National Urban Digital Mission — Open Urban Analytics Standards',
+        url: 'https://nudm.mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Exact residential door numbers, private coordinates, and complainant identities are never published or retained in heatmap analytics.',
+      'Small cohorts with fewer than 5 reports are suppressed under k-anonymity privacy safeguards to prevent deanonymization.',
+      'Automated recommendations are advisory and require human-in-the-loop validation by authorized municipal engineers.'
+    ],
+    contacts: [
+      { label: 'Urban Analytics & Diagnostics Helpline', phone: '1800-11-4455', url: 'https://mohua.gov.in' },
+      { label: 'Municipal Control Room', phone: '1916', url: 'https://nudm.mohua.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
   }
 ];
 
