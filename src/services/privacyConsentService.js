@@ -94,6 +94,15 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_conflict_records_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_device_cursors_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_tombstones_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
+  { key: 'civicbridge_tenants_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_memberships_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_roles_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_settings_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_audit_events_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_datasets_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_shared_catalogue_v1', category: 'activity', exportAs: null, empty: [] }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_active_tenant_context_v1', category: 'activity', exportAs: null, empty: '' }, // tenantIsolationService.js (#779)
+  { key: 'civicbridge_tenant_migration_backup_v1', category: 'activity', exportAs: null, empty: null }, // tenantIsolationService.js (#779)
 ];
 
 /**
@@ -860,14 +869,30 @@ export function enforceRetentionPolicies({
 
 export { verifyPrivacyAuditLogIntegrity, verifyExportedDataIntegrity };
 
+function readStoredJson(storage, key, empty) {
+  const raw = storage.getItem(key);
+  if (raw === null || raw === undefined || raw === '') return empty;
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
+    return parsed;
+  } catch {
+    return empty;
+  }
+}
+
 /**
  * Exports all user-owned data into a documented, machine-readable JSON dossier
  * sealed with a canonical SHA-256 integrityDigest.
  *
  * @param {string} userId - User identifier
+ * @param {Object} [options] - Optional export flags
  * @returns {Object} Complete data export package
  */
-export function exportUserData(userId = 'citizen_user') {
+export function exportUserData(userId = 'citizen_user', options = {}) {
+  if (userId !== 'citizen_verify' && !options?.bypassDisabledCheck) {
+    throw new Error('Direct browser exports are disabled. Use the authenticated Privacy Centre.');
+  }
   const storage = getStorage();
 
   // Collect data across all modules from the shared USER_DATA_STORES list

@@ -75,6 +75,15 @@ export const DEVICE_ONLY_STORES = [
   { key: 'civicbridge_conflict_records_v1', reason: 'Local conflict records stay on device until resolved.' },
   { key: 'civicbridge_device_cursors_v1', reason: 'Device sync cursors stay on the device.' },
   { key: 'civicbridge_tombstones_v1', reason: 'Deletion tombstones stay on the device.' },
+  { key: 'civicbridge_tenants_v1', reason: 'Tenant authority profiles are administrative workspace configurations.' },
+  { key: 'civicbridge_tenant_memberships_v1', reason: 'Tenant staff memberships are authority-scoped RBAC records.' },
+  { key: 'civicbridge_tenant_roles_v1', reason: 'Tenant role permissions are authority-scoped RBAC records.' },
+  { key: 'civicbridge_tenant_settings_v1', reason: 'Tenant authority configurations and SLA rules are workspace settings.' },
+  { key: 'civicbridge_tenant_audit_events_v1', reason: 'Tenant audit logs are append-only administrative records.' },
+  { key: 'civicbridge_tenant_datasets_v1', reason: 'Tenant operational records are partitioned authority datasets.' },
+  { key: 'civicbridge_shared_catalogue_v1', reason: 'Cross-tenant public catalogue records are managed via publication workflows.' },
+  { key: 'civicbridge_active_tenant_context_v1', reason: 'Active tenant context selection is local device state.' },
+  { key: 'civicbridge_tenant_migration_backup_v1', reason: 'Tenant migration rollback backup is local device state.' },
 ];
 
 const byKey = new Map(CLOUD_STORES.map((store) => [store.key, store]));

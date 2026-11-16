@@ -140,6 +140,15 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_tenants_v1` | Multi-authority civic administration workspace profiles | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_memberships_v1` | Authority staff memberships, assigned roles, and ward jurisdictions | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_roles_v1` | Granular tenant role permission schemas | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_settings_v1` | Authority-specific SLA rules, emergency notices, and dispatch boundaries | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_audit_events_v1` | SHA-256 tamper-evident hash-chained authority audit trail | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_datasets_v1` | Partitioned authority operational datasets and ward service tickets | Multi-tenant isolation feature (#779) |
+| `civicbridge_shared_catalogue_v1` | Controlled cross-tenant public catalogue guides with PII redacted | Multi-tenant isolation feature (#779) |
+| `civicbridge_active_tenant_context_v1` | Active authority context selection on device | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_migration_backup_v1` | Snapshot backup for tenant schema migration rollback | Multi-tenant isolation feature (#779) |
 
 ## Remote data
 

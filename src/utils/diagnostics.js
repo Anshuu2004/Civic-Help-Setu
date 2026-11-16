@@ -51,10 +51,12 @@ export const ROUTE_PATTERNS = [
   '/rental-records',
   '/track',
   '/civic-works',
-  '/services/aadhaar-guide',
-  '/aadhaar-guide',
   '/services/tree-permission-guide',
   '/tree-permission-guide',
+  '/services/fire-noc-guide',
+  '/fire-noc-guide',
+  '/citizen-drafts',
+  '/draft-sync',
   '/shared-checklist/:token',
   '/shared-directory/:token',
   '/app-status/:token',
@@ -65,6 +67,9 @@ export const ROUTE_PATTERNS = [
   '/open-source',
   '/privacy',
   '/admin',
+  '/tenants',
+  '/tenants/:tenantId',
+  '/tenant-workspace',
 ];
 
 export const UNKNOWN_ROUTE = '/[other]';

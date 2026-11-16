@@ -36,6 +36,7 @@ import Profile from './pages/Profile';
 import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
+import TenantAdministrationWorkspace from './pages/TenantAdministrationWorkspace';
 import SharedChecklistView from './pages/SharedChecklistView';
 import SharedDirectoryView from './pages/SharedDirectoryView';
 import PublicApplicationStatusView from './pages/PublicApplicationStatusView';
@@ -150,6 +151,10 @@ function AppRoot() {
                           <Admin />
                         </ProtectedRoute>
                       } />
+
+                      <Route path="/tenants" element={<TenantAdministrationWorkspace />} />
+                      <Route path="/tenants/:tenantId" element={<TenantAdministrationWorkspace />} />
+                      <Route path="/tenant-workspace" element={<TenantAdministrationWorkspace />} />
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>

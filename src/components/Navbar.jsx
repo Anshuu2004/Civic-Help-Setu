@@ -23,7 +23,8 @@ import {
   Settings,
   Droplets,
   KeyRound,
-  Store
+  Store,
+  Building2
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -801,6 +802,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/tenants',
+                label: 'Authority Workspaces',
+                icon: Building2
+              })}
+
+              {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
                 icon: Settings
@@ -860,6 +867,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                   to: '/citizen-drafts',
                   label: 'Drafts & Offline Sync',
                   icon: FileText
+                })}
+
+                {renderNavLink({
+                  to: '/tenants',
+                  label: 'Authority Workspaces',
+                  icon: Building2
                 })}
 
                 {renderNavLink({

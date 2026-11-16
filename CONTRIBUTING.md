@@ -28,6 +28,9 @@ Run unit and integration tests locally with Vitest:
 npm test                                                      # run all tests
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
+npm test -- --run src/services/tenantIsolationService.test.js # tenant isolation service tests (#779)
+npm test -- --run src/pages/TenantAdministrationWorkspace.test.jsx # tenant administration workspace tests (#779)
+npm test -- --run tests/tenant-administration.test.js          # tenant administration API tests (#779)
 ```
 
 ## Security checks
