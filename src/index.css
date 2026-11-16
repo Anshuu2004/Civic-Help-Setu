@@ -319,6 +319,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   padding: 0.5rem 1rem;
 }
 .nav-link:hover { color: var(--text-primary); }
+.desktop-nav-items {
+  display: flex;
+}
+.mobile-only-tools {
+  display: none !important;
+}
 
 /* Navbar on phones: brand + language + menu have to fit in one row (320px and up) */
 .nav-mobile-actions { flex-shrink: 0; }
@@ -338,11 +344,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   }
 }
 
+@media (max-width: 700px) {
+  .mobile-only-tools {
+    display: flex !important;
+  }
+  
+  .desktop-nav-items {
+    display: none !important;
+  }
+}
+
 /* Navigation Drawer Links (#575) */
 .nav-drawer-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 44px;
   padding: 0.6rem 0.85rem;
   border-radius: var(--radius-sm, 0.5rem);
   font-size: 1.125rem;
