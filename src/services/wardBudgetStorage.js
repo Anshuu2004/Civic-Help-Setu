@@ -32,8 +32,7 @@ const safeGetItem = (key, fallback) => {
       return inMemoryStore.get(key);
     }
     return fallback;
-  } catch (err) {
-    console.warn(`[wardBudgetStorage] Error reading ${key}:`, err);
+  } catch {
     return fallback;
   }
 };
@@ -44,8 +43,8 @@ const safeSetItem = (key, value) => {
       window.localStorage.setItem(key, JSON.stringify(value));
     }
     inMemoryStore.set(key, JSON.parse(JSON.stringify(value)));
-  } catch (err) {
-    console.warn(`[wardBudgetStorage] Error saving ${key}:`, err);
+  } catch {
+    // In-memory fallback preserved
   }
 };
 

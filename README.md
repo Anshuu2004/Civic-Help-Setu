@@ -112,6 +112,10 @@ A responsive design with theme support, built to provide a consistent experience
 
 Clear navigation, readable content, consistent interaction patterns, and a user-centered approach to public-service information.
 
+### 🚨 14. Civic Incident Response Drill & Public Service Continuity Planner
+
+A dedicated preparedness workspace for municipal authorities and disaster response teams. Model critical service dependencies, detect single points of failure (SPOF) and dependency cycles with graph analysis, run tabletop exercises with timed inject simulations, record tactical decisions, calculate recovery time objective (RTO) gaps, generate printable offline continuity runbooks, and track corrective action items to closure. See [architecture and operational documentation](docs/civic-incident-response-drill-planner.md).
+
 ---
 
 ## 📊 Project at a Glance

@@ -43,6 +43,11 @@ import { addNotice, updateNotice, changeNoticeStatus, resetNoticesToDefault } fr
 import { moderateBarrierReport } from './barrierReportService';
 import { recordServiceReview } from './dataFreshnessTrustService';
 import { saveLinkCheck } from './linkHealthService';
+import {
+  saveContinuityPlan,
+  transitionPlanState,
+  createExerciseRun,
+} from './continuityPlannerService';
 import { moderateCivicWorkReport } from './civicWorksBoardService';
 import { transitionReviewCaseState, executeRiskRun } from './roadSafetyBlackspotService';
 
@@ -110,6 +115,9 @@ const CALLS = {
   'civicWorks.moderate': () => moderateCivicWorkReport({ reportId: 'cw-1', decision: 'approved' }, moduleStorage),
   'roadSafety.review': () => transitionReviewCaseState('case-seg-ka-blr-nh44-01', 'inspection_scheduled', {}, moduleStorage),
   'roadSafety.admin': () => executeRiskRun({}, moduleStorage),
+  'continuity.write': () => saveContinuityPlan({ title: 'ContPlan' }),
+  'continuity.approve': () => transitionPlanState('plan_pune_ward_12', 'APPROVED', { reason: 'Test' }),
+  'continuity.drill': () => createExerciseRun({ title: 'Test Drill' }),
 };
 
 const outcome = (fn) => {
