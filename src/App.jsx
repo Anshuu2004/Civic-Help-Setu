@@ -72,6 +72,7 @@ import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 import ReraDisputeWorkspace from './pages/ReraDisputeWorkspace';
+import NoisePollutionWorkspace from './pages/NoisePollutionWorkspace';
 import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
@@ -179,6 +180,9 @@ function AppRoot() {
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/rera-dispute-workspace" element={<ReraDisputeWorkspace />} />
                       <Route path="/rera-homebuyer-rights" element={<ReraDisputeWorkspace />} />
+                      <Route path="/noise-pollution-workspace" element={<NoisePollutionWorkspace />} />
+                      <Route path="/decibel-logger" element={<NoisePollutionWorkspace />} />
+                      <Route path="/noise-curfew-auditor" element={<NoisePollutionWorkspace />} />
                       <Route path="/solid-waste-workspace" element={<SolidWasteAuditWorkspace />} />
                       <Route path="/bulk-waste-audit" element={<SolidWasteAuditWorkspace />} />
                       <Route path="/ngt-compensation" element={<SolidWasteAuditWorkspace />} />

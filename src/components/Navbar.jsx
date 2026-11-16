@@ -33,6 +33,7 @@ import {
   GitFork,
   Scale,
   BarChart2,
+  Volume2,
   Recycle,
 } from 'lucide-react';
 
@@ -945,6 +946,9 @@ if (normalizedTarget === '/water-quality') {
               })}
 
               {renderNavLink({
+                to: '/noise-pollution-workspace',
+                label: 'Noise Pollution & Curfew',
+                icon: Volume2
                 to: '/solid-waste-workspace',
                 label: 'Solid Waste & NGT',
                 icon: Recycle
