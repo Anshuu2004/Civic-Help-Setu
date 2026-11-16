@@ -27,6 +27,8 @@ import {
   KeyRound,
   Store,
   Scale,
+  BarChart2,
+  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -117,6 +119,30 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/address-change-planner' ||
           normalizedPath === '/address-change' ||
           normalizedPath === '/move-planner'
+        );
+      }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
+        );
+      }
+
+      if (normalizedTarget === '/ward-budget') {
+        return (
+          normalizedPath === '/ward-budget' ||
+          normalizedPath === '/services/ward-budget-proposal' ||
+          normalizedPath.startsWith('/ward-budget/')
+        );
+      }
+
+      if (normalizedTarget === '/road-safety') {
+        return (
+          normalizedPath === '/road-safety' ||
+          normalizedPath === '/blackspots' ||
+          normalizedPath.startsWith('/road-safety/')
         );
       }
 
@@ -824,6 +850,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
+              })}
+
+              {renderNavLink({
                 to: '/surveys',
                 label: 'Civic Surveys',
                 icon: FileText
@@ -848,9 +880,22 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/ward-budget',
+                label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
+                icon: Users
+              })}
+
+              {renderNavLink({
                 to: '/road-safety',
                 label: t('nav.roadSafety', 'Road Safety Blackspots'),
                 icon: AlertTriangle
+              })}
+
+              {renderNavLink({
+                to: '/tree-health',
+                activeTarget: '/tree-health',
+                label: t('nav.treeHealth', 'Tree Health Inventory'),
+                icon: Trees
               })}
 
               {renderNavLink({

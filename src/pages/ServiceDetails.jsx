@@ -964,6 +964,83 @@ const ServiceDetails = ({ previewService = null }) => {
             </div>
           )}
 
+          {service.id === 'counter-demand-forecasting' && (
+            <div
+              className="card"
+              style={{
+                marginBottom: '1.5rem',
+                border: '1.5px solid var(--accent-main, #2563eb)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldCheck size={18} color="var(--accent-main, #2563eb)" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Dedicated Counter Demand Forecasting &amp; Queue Staffing Workspace
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Internal operational capacity planning model using Erlang-C queue theory, historical aggregate arrivals, walk-forward backtesting, and auditable shift staffing.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/counter-demand"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Open Forecasting Workspace
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {service.id === 'ward-budget-proposal' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <Users size={18} color="#3b82f6" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Participatory Ward Budget Proposal &amp; Public Deliberation Platform
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Submit local infrastructure proposals, deliberate with neighbors, participate in advisory ward ballots, and track ground implementation.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/services/ward-budget-proposal"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Open Ward Budget Platform
+                  </Link>
+                  <Link
+                    to="/ward-budget"
+                    className="btn btn-secondary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Deliberation Board
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {service.id === 'civic-survey-builder' && (
             <div
               style={{

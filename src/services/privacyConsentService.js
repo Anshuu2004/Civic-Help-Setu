@@ -87,6 +87,13 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_sent_digests', category: 'tracking', exportAs: 'sentNewsletterDigests', empty: [] }, // newsletterSubscriptionService.js
   { key: 'civicbridge_newsletter_delivery_failures', category: 'tracking', exportAs: 'newsletterDeliveryFailures', empty: [] }, // newsletterSubscriptionService.js
   { key: 'civicbridge_civic_works_reports_v1', category: 'activity', exportAs: 'civicWorksReports', empty: [] }, // civicWorksBoardService.js
+  // Citizen-authored tree reports and their attachments are the citizen's data.
+  // The municipal register, inspections, work orders, audit chain and migration
+  // metadata are public-authority operating records and live in RETAINED_STORAGE_KEYS.
+  { key: 'civicbridge_tree_report_attachments_v1', category: 'activity', exportAs: null }, // treeInventoryService.js
+  { key: 'civicbridge_tree_citizen_reports_v1', category: 'activity', exportAs: null }, // treeInventoryService.js
+  { key: 'civicbridge_tree_reports_v1', category: 'activity', exportAs: null }, // legacy tree reports
+  { key: 'civicbridge_tree_reporter_key', category: 'activity', exportAs: null }, // TreeHealthInventory.jsx
   { key: 'civicbridge_citizen_drafts_v1', category: 'drafts', exportAs: 'citizenDrafts', empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_offline_operations_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_sync_sessions_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
@@ -193,6 +200,11 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Counter demand forecasting and queue capacity planning (#764)
+  'civicbridge_counter_aggregates_v1',
+  'civicbridge_capacity_plans_v1',
+  'civicbridge_forecast_runs_v1',
+  'civicbridge_capacity_audit_logs_v1',
   // Road safety blackspot detection and municipal review workspace (#769)
   'civicbridge_road_segments_v1',
   'civicbridge_crash_aggregates_v1',
@@ -203,6 +215,23 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_intervention_records_v1',
   'civicbridge_road_safety_rate_limit_v1',
   'civicbridge_road_safety_audit_logs_v1',
+  // Municipal tree register, inspections, work orders and audit records. These
+  // are public-authority operating records, not a citizen's profile data: the
+  // tree module enforces its own 365-day report retention policy. Citizen tree
+  // reports and attachments are in USER_DATA_STORES above and are cleared.
+  'civicbridge_tree_inventory_meta_v1',
+  'civicbridge_tree_assets_v1',
+  'civicbridge_tree_species_v1',
+  'civicbridge_tree_inspections_v1',
+  'civicbridge_tree_maintenance_orders_v1',
+  'civicbridge_tree_pruning_events_v1',
+  'civicbridge_tree_planting_sites_v1',
+  'civicbridge_tree_triage_suggestions_v1',
+  'civicbridge_tree_audit_events_v1',
+  'civicbridge_tree_idempotency_v1',
+  'civicbridge_tree_rate_limit_v1',
+  'civicbridge_tree_migration_backup_v1',
+  'civicbridge_trees_v1',
   // Handled by purge itself: consents are reset, the audit log keeps the deletion receipt
   CONSENT_STORAGE_KEY,
   AUDIT_STORAGE_KEY,
@@ -311,6 +340,18 @@ function getSessionStorage() {
     return typeof window !== 'undefined' && window.sessionStorage ? window.sessionStorage : null;
   } catch {
     return null;
+  }
+}
+
+// Reads and parses a JSON value from storage, falling back when the key is
+// absent or holds malformed data so an export never fails on one bad entry.
+function readStoredJson(storage, key, fallback = null) {
+  try {
+    const raw = storage?.getItem(key);
+    if (raw === null || raw === undefined) return fallback;
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
   }
 }
 
