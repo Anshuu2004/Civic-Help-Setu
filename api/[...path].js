@@ -27,6 +27,7 @@ import pedestrianBarriers from "./_lib/handlers/pedestrian-barriers.js";
 import waterQualityRegister from "./_lib/handlers/water-quality-register.js";
 import publicProjects from "./_lib/handlers/public-projects.js";
 import wardIssueHeatmap from "./_lib/handlers/ward-issue-heatmap.js";
+import tenantAdministration from "./_lib/handlers/tenant-administration.js";
 
 const handlers = {
   "address-change-corrections": addressChange,
@@ -53,6 +54,7 @@ const handlers = {
   "ward-issue-heatmap": wardIssueHeatmap,
   "water-tanker-reports": waterTankerReports,
   "public-projects": publicProjects,
+  "tenant-administration": tenantAdministration,
 };
 
 function getRoute(req) {

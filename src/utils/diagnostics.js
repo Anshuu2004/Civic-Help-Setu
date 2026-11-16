@@ -112,6 +112,9 @@ export const ROUTE_PATTERNS = [
   '/open-source',
   '/privacy',
   '/admin',
+  '/tenants',
+  '/tenants/:tenantId',
+  '/tenant-workspace',
 ];
 
 export const UNKNOWN_ROUTE = '/[other]';

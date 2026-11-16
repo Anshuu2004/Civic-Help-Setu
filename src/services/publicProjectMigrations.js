@@ -25,6 +25,7 @@ import {
   SEED_AUDIT_LOGS,
 } from './publicProjectService';
 import { computeAssetHash } from './evidenceVerificationService';
+import { logDiagnostic } from '../utils/diagnostics';
 
 export const PUBLIC_PROJECTS_META_KEY = 'civicbridge_public_projects_meta_v1';
 export const PUBLIC_PROJECTS_BACKUP_KEY = 'civicbridge_public_projects_migration_backup_v1';
@@ -88,7 +89,7 @@ const safeWrite = (storage, key, val) => {
   try {
     s.setItem(key, JSON.stringify(val));
   } catch (err) {
-    console.error(`Migration write failed for key ${key}:`, err);
+    logDiagnostic(`Migration write failed for key ${key}:`, err);
   }
 };
 

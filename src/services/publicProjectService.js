@@ -12,6 +12,7 @@
 
 import { requirePermission, getCurrentActor, actorLabel } from './accessControl';
 import { computeAssetHash, applyPublicRedactionFilter } from './evidenceVerificationService';
+import { logDiagnostic } from '../utils/diagnostics';
 
 export const PUBLIC_PROJECTS_STORAGE_KEY = 'civicbridge_public_projects_v1';
 export const PROJECT_MILESTONES_STORAGE_KEY = 'civicbridge_project_milestones_v1';
@@ -112,7 +113,7 @@ const readStorageJson = (key, fallback, storage) => {
         return JSON.parse(raw);
       }
     } catch (err) {
-      console.warn(`[publicProjectService] Error reading ${key} from storage:`, err);
+      logDiagnostic(`[publicProjectService] Error reading ${key} from storage:`, err);
     }
   }
   if (inMemoryStore.has(key)) {
@@ -127,7 +128,7 @@ const writeStorageJson = (key, value, storage) => {
     try {
       s.setItem(key, JSON.stringify(value));
     } catch (err) {
-      console.warn(`[publicProjectService] Failed to persist key: ${key}`, err);
+      logDiagnostic(`[publicProjectService] Failed to persist key: ${key}`, err);
     }
   }
   try {
