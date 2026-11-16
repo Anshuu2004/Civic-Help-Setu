@@ -120,6 +120,7 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_senior_tribunal_petitions', category: 'drafts', exportAs: 'seniorCitizenTribunalPetitions', empty: [] }, // seniorCitizenTribunalStorage.js
   { key: 'civicbridge_rera_complaints', category: 'drafts', exportAs: 'reraComplaints', empty: [] }, // reraDisputeStorage.js
   { key: 'civicbridge_solid_waste_audits', category: 'drafts', exportAs: 'solidWasteAudits', empty: [] }, // solidWasteStorage.js
+  { key: 'civicbridge_patient_grievance_records', category: 'drafts', exportAs: 'patientGrievanceRecords', empty: [] }, // clinicalEstablishmentStorage.js
 ];
 
 /**
