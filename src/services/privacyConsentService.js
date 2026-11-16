@@ -239,6 +239,16 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_tree_rate_limit_v1',
   'civicbridge_tree_migration_backup_v1',
   'civicbridge_trees_v1',
+  // Anonymized ward-level civic issue heatmap, aggregation runs, and privacy rules
+  'civicbridge_ward_issue_events_v1',
+  'civicbridge_ward_geometries_v1',
+  'civicbridge_ward_metrics_v1',
+  'civicbridge_aggregation_runs_v1',
+  'civicbridge_privacy_rules_v1',
+  'civicbridge_ward_recommendations_v1',
+  'civicbridge_ward_issue_audit_logs_v1',
+  'civicbridge_ward_issue_rate_limit_v1',
+  'civicbridge_ward_heatmap_migration_backup_v1',
   // Civic knowledge records lineage and provenance explorer (#777)
   'civicbridge_knowledge_sources_v1',
   'civicbridge_source_snapshots_v1',
@@ -497,8 +507,7 @@ export function purgeRevokedCategoryData(categoryId, actorId = 'citizen_user') {
  */
 export function updateConsentPreference(
   categoryId,
-  granted,
-  actorId = 'citizen_user',
+  granted,  actorId = 'citizen_user',
   options = {}
 ) {
   const category = CONSENT_CATEGORIES[categoryId];
@@ -986,7 +995,6 @@ export function exportUserData(userId = 'citizen_user') {
  */
 export function purgeAllUserData(userId = 'citizen_user', options = { preserveAuditTrail: true }) {
   const storage = getStorage();
-
   const deletedKeys = [];
   for (const key of [...USER_DATA_STORAGE_KEYS, ...getPrefixedUserDataKeys(storage)]) {
     if (storage.getItem(key) !== null) {

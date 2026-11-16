@@ -45,6 +45,7 @@ import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorre
 import ProvenanceReviewQueue from '../components/admin/ProvenanceReviewQueue';
 import CounterDemandReviewQueue from '../components/admin/CounterDemandReviewQueue';
 import SurveyAuditQueue from '../components/admin/SurveyAuditQueue';
+import OpenContractingAuditQueue from '../components/admin/OpenContractingAuditQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
 import ServiceRecordList from '../components/admin/ServiceRecordList';
@@ -739,6 +740,7 @@ const Admin = () => {
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
               { id: 'pedestrian-barriers', label: 'Pedestrian Route Barriers', badge: null },
+              { id: 'public-projects', label: 'Public Project Timeline', badge: null },
               { id: 'provenance-reviews', label: 'Knowledge Provenance', badge: null },
               { id: 'counter-demand', label: 'Counter Demand & Staffing', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
@@ -1178,6 +1180,7 @@ const Admin = () => {
                   <div style={{ marginTop: '2rem' }}>
                     <PedestrianBarrierReviewQueue />
                   </div>
+                  <OpenContractingAuditQueue />
                 </div>
               </div>
             )}
@@ -1787,6 +1790,45 @@ const Admin = () => {
             {activeTab === 'pedestrian-barriers' && (
               <div>
                 <PedestrianBarrierReviewQueue />
+              </div>
+            )}
+
+            {/* Public Infrastructure Projects Verification Tab */}
+            {activeTab === 'public-projects' && (
+              <div
+                style={{
+                  background: 'var(--bg-card)',
+                  padding: '1.5rem',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-light)',
+                }}
+              >
+                <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
+                  Geospatial Public Project Verification &amp; Evidence Timeline
+                </h3>
+                <p
+                  style={{
+                    color: 'var(--text-secondary)',
+                    fontSize: '0.9rem',
+                    marginBottom: '1.25rem',
+                  }}
+                >
+                  Manage public civil infrastructure projects across roads, stormwater
+                  drains, schools, and civic buildings. Review photographic evidence
+                  submissions and commit authorized verification decisions.
+                </p>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => navigate('/public-projects')}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  Open Public Projects Workspace &amp; Review Queue
+                </button>
               </div>
             )}
 

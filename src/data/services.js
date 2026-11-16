@@ -1114,6 +1114,89 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+    id: 'water-quality-register',
+    jurisdiction: {
+      level: 'municipal',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Water Boards / Public Health Engineering Departments'
+    },
+    name: 'Community Water-Quality Sampling & Laboratory Result Register',
+    shortDescription: 'Search public drinking water points, view verified laboratory test parameters against Bureau of Indian Standards IS 10500:2012, and track municipal corrective actions.',
+    category: 'Public Health & Utilities',
+    department: 'Public Health Engineering Department (PHED) / Municipal Water Supply & Sewerage Board',
+    type: 'Public Register / Surveillance',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 3,
+    popularityScore: 92,
+    eligibility: [
+      'Open to all residents, community organizations, and public health monitors.',
+      'Public drinking water points include municipal taps, public standposts, community RO purification kiosks, and public borewells.',
+      'Field sampling submissions must be accompanied by certified container bar code identifiers.'
+    ],
+    documents: [
+      'Accredited NABL laboratory report certificate (for laboratory analysts and officials)',
+      'Sealed container identification code and chain-of-custody log (for field samplers)'
+    ],
+    documentRequirements: {
+      'Accredited NABL laboratory report certificate': {
+        type: 'mandatory'
+      },
+      'Sealed container identification code': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Locate Community Water Point',
+        description: 'Search nearby municipal taps, public borewells, or community RO kiosks by ward or landmark.'
+      },
+      {
+        title: 'Inspect Verified IS 10500 Parameters',
+        description: 'Review physical, chemical, and bacteriological test values (pH, TDS, turbidity, hardness, E. coli) against statutory limits.'
+      },
+      {
+        title: 'Check Cryptographic Verification Seal',
+        description: 'Verify tamper-evident hash seal issued by accredited NABL state water testing laboratory.'
+      },
+      {
+        title: 'Monitor Remedial Corrective Interventions',
+        description: 'Track municipal pipeline repairs, super-chlorination disinfections, or filtration membrane replacements for out-of-range water points.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Bureau of Indian Standards (BIS) IS 10500:2012 Drinking Water Specification',
+        url: 'https://www.services.bis.gov.in',
+        verified: true,
+        lastVerified: '2026-11-01'
+      },
+      {
+        name: 'National Accreditation Board for Testing and Calibration Laboratories (NABL)',
+        url: 'https://nabl-india.org',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Jal Jeevan Mission (JJM) Water Quality Management Information System',
+        url: 'https://ejalshakti.gov.in/wqmis/',
+        verified: true,
+        lastVerified: '2026-11-10'
+      }
+    ],
+    warnings: [
+      'Water surveillance parameter comparisons are deterministic rule evaluations against IS 10500:2012; they do not constitute medical or clinical diagnoses.',
+      'If bacteriological pathogens (Total Coliform / E. coli) are detected, observe precautionary boiling instructions while municipal disinfection is underway.',
+      'Do not disclose private residential door or flat numbers in public field observations.'
+    ],
+    contacts: [
+      { label: 'National Jal Jeevan Mission Helpline', phone: '1800-180-1551', url: 'https://jaljeevanmission.gov.in' },
+      { label: 'Central Public Health Engineering (CPHEEO)', phone: '011-23062331', url: 'https://cpheeo.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'civic-survey-builder',
     jurisdiction: {
       level: 'national',
@@ -1274,6 +1357,183 @@ export const MOCK_SERVICES = [
       { label: 'Universal Accessibility Cell', phone: '080-22660000', url: 'https://dult.karnataka.gov.in' }
     ],
     lastVerified: '2026-11-16'
+  },
+  {
+    id: 'open-contracting-red-flags',
+    jurisdiction: {
+      level: 'national',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Central, State & Municipal Procurement Entities'
+    },
+    name: 'Open Contracting Red-Flag Analytics & Audit Workspace',
+    shortDescription: 'Audit public procurement records across tender notice, bid, award, and amendment stages using explainable anomaly detection and OCDS red-flag benchmarks without declaring wrongdoing.',
+    category: 'Governance & Planning',
+    department: 'Central Vigilance Commission & State Public Procurement Oversight Authorities',
+    type: 'Online',
+    difficulty: 'Intermediate',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 94,
+    tags: [
+      'Procurement',
+      'Tenders',
+      'Auditing',
+      'Red Flags',
+      'Open Contracting',
+      'OCDS',
+      'Contract Amendments',
+      'Single Bid',
+      'Price Outlier'
+    ],
+    summary: 'Auditors, researchers, and citizens can review public procurement notices, detect statistical anomalies (repeated single-bid awards, unusual amendments, price creep, abbreviated notice periods), inspect linked procurement lifecycles, and document reasoned human review outcomes.',
+    eligibility: {
+      whoCanApply: [
+        'Municipal and state auditors conducting procurement reviews',
+        'Civil society oversight researchers and transparency watchdogs',
+        'Citizen observers reviewing local public works and goods tenders',
+        'Procurement analysts verifying supplier concentrations'
+      ],
+      criteria: [
+        'Public procurement records published under Open Contracting Data Standard (OCDS) or state e-Procurement portals',
+        'Auditors must provide statutory justifications when recording review decisions or clearing flags'
+      ]
+    },
+    documents: [
+      'Published Tender Notice & Corrigenda (Official tender advertisement with dates and criteria)',
+      'Technical & Financial Bid Evaluation Sheets (Documenting received quotes and bidder rankings)',
+      'Contract Award Order & Amendments (Documenting awarded amount and variation orders)'
+    ],
+    processSteps: [
+      {
+        step: 1,
+        title: 'Import & Harmonize Procurement Records',
+        description: 'Tender notices, bids, award details, and contract amendments are normalized under Open Contracting schemas.'
+      },
+      {
+        step: 2,
+        title: 'Run Explainable Anomaly Analytics',
+        description: 'Deterministic rulesets detect single-bid awards, short turnaround windows, excessive amendments, and price outliers with comparison cohorts.'
+      },
+      {
+        step: 3,
+        title: 'Inspect Linked Lifecycle Stages',
+        description: 'Reviewers explore the timeline connecting notice to bids, award to amendments, and compare against category cohort benchmarks.'
+      },
+      {
+        step: 4,
+        title: 'Record Human Audit Review & Issue Seal',
+        description: 'Authorized auditors examine file records, mark false positives with documented reasons or escalate for formal audit with cryptographic seals.'
+      }
+    ],
+    officialPortals: [
+      {
+        name: 'Government e-Marketplace (GeM)',
+        url: 'https://gem.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Central Public Procurement Portal (CPPP)',
+        url: 'https://eprocure.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Open Contracting Partnership (OCDS)',
+        url: 'https://www.open-contracting.org',
+        verified: true,
+        lastVerified: '2026-11-16'
+      }
+    ],
+    warnings: [
+      'Red-flag anomaly indicators are statistical and procedural prompts for auditor review; they do not declare wrongdoing or legal liability.',
+      'Auditors must review the complete procurement file before taking formal administrative or investigative actions.',
+      'Personal identifiers (Aadhaar, PAN, phone numbers, private emails) must never be entered into public audit review notes.'
+    ],
+    contacts: [
+      { label: 'Central Vigilance Commission Helpline', phone: '1800-11-5555', url: 'https://cvc.gov.in' },
+      { label: 'State Public Procurement Authority Helpdesk', phone: '080-22250000', url: 'https://kppp.karnataka.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
+    id: 'ward-issue-heatmap',
+    jurisdiction: {
+      level: 'municipal',
+      states: ['All States & Urban Local Bodies'],
+      districts: [],
+      localBody: 'Municipal Corporations / Urban Local Bodies'
+    },
+    name: 'Anonymized Ward-Level Civic Issue Heatmap & Trend Explorer',
+    shortDescription: 'Aggregate analytics view for understanding recurring civic issues across municipal wards without exposing individual complainants or exact private locations.',
+    category: 'Governance & Analytics',
+    department: 'Directorate of Municipal Administration & Urban Data Governance Cell',
+    type: 'Online Analytics & Public Dashboard',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 96,
+    eligibility: [
+      'Accessible to all citizens, community researchers, Resident Welfare Associations (RWAs), and municipal ward committees.',
+      'Public view enforces k-anonymity (k >= 5) small-cell suppression: sparse cohorts are withheld from public display to prevent complainant re-identification.',
+      'Municipal operators and administrators have authorized access to triage intervention recommendations and view aggregate trends across jurisdictions.'
+    ],
+    documents: [
+      'Factual observation or geo-tagged location landmark for eligible civic defects',
+      'No personal identity documents (Aadhaar/PAN) or private contact details required or permitted'
+    ],
+    documentRequirements: {
+      'Factual observation or geo-tagged location landmark for eligible civic defects': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Explore Ward Heatmap & Issue Densities',
+        description: 'Review ward-level distribution of recurring civic issues including road damage, water supply, solid waste, and waterlogging.'
+      },
+      {
+        title: 'Inspect k-Anonymity & Suppression Safeguards',
+        description: 'Verify active privacy rules (k >= 5) where cohorts with fewer than 5 events are suppressed to safeguard complainant confidentiality.'
+      },
+      {
+        title: 'Compare Multi-Ward Trend Velocities',
+        description: 'Evaluate reporting velocities across consecutive time windows to identify emerging hotspots and seasonal patterns.'
+      },
+      {
+        title: 'Review Explainable Municipal Interventions',
+        description: 'Inspect automated, ruleset-versioned recommendations with explainable data signals and human-in-the-loop review actions.'
+      },
+      {
+        title: 'Submit Anonymized Civic Observation',
+        description: 'Contribute ground observations with coordinates snapped strictly to the municipal ward centroid.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Ministry of Housing and Urban Affairs (MoHUA) — Urban Data Guidelines',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      },
+      {
+        name: 'National Urban Digital Mission — Open Urban Analytics Standards',
+        url: 'https://nudm.mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-15'
+      }
+    ],
+    warnings: [
+      'Exact residential door numbers, private coordinates, and complainant identities are never published or retained in heatmap analytics.',
+      'Small cohorts with fewer than 5 reports are suppressed under k-anonymity privacy safeguards to prevent deanonymization.',
+      'Automated recommendations are advisory and require human-in-the-loop validation by authorized municipal engineers.'
+    ],
+    contacts: [
+      { label: 'Urban Analytics & Diagnostics Helpline', phone: '1800-11-4455', url: 'https://mohua.gov.in' },
+      { label: 'Municipal Control Room', phone: '1916', url: 'https://nudm.mohua.gov.in' }
+    ],
+    lastVerified: '2026-11-15'
   }
 ];
 
