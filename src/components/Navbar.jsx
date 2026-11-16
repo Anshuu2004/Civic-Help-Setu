@@ -26,11 +26,13 @@ import {
   Droplets,
   KeyRound,
   Store,
+  Building2,
+  Trees,
+  Lightbulb,
   ShieldAlert,
   GitFork,
   Scale,
   BarChart2,
-  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -148,11 +150,36 @@ if (normalizedTarget === '/continuity-planner') {
         );
       }
 
+if (normalizedTarget === '/water-quality') {
+        return (
+          normalizedPath === '/water-quality' ||
+          normalizedPath === '/water-quality-register' ||
+          normalizedPath === '/services/water-quality-register' ||
+          normalizedPath.startsWith('/water-quality/')
+        );
+      }
+
+      if (normalizedTarget === '/open-contracting') {
+        return (
+          normalizedPath === '/open-contracting' ||
+          normalizedPath === '/procurement-analytics' ||
+          normalizedPath.startsWith('/open-contracting/')
+        );
+      }
+
       if (normalizedTarget === '/road-safety') {
         return (
           normalizedPath === '/road-safety' ||
           normalizedPath === '/blackspots' ||
           normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/pedestrian-barrier-map') {
+        return (
+          normalizedPath === '/pedestrian-barrier-map' ||
+          normalizedPath === '/accessible-routes' ||
+          normalizedPath.startsWith('/pedestrian-barrier-map/')
         );
       }
 
@@ -826,6 +853,12 @@ if (normalizedTarget === '/continuity-planner') {
               })}
 
               {renderNavLink({
+                to: '/water-quality',
+                label: 'Water Quality Register',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
                 to: '/pds-shops',
                 label: 'Fair Price Shops (PDS)',
                 icon: Store
@@ -903,6 +936,18 @@ if (normalizedTarget === '/continuity-planner') {
                 label: 'Senior Citizen Tribunal',
                 icon: Scale
               })}
+
+              {renderNavLink({
+                to: '/rera-dispute-workspace',
+                label: 'RERA Homebuyer Rights',
+                icon: Building2
+              })}
+              {renderNavLink({
+                to: '/tenants',
+                label: 'Authority Workspaces',
+                icon: Building2
+              })}
+
               {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
@@ -916,9 +961,22 @@ if (normalizedTarget === '/continuity-planner') {
               })}
 
               {renderNavLink({
+                to: '/public-projects',
+                activeTarget: '/public-projects',
+                label: 'Public Project Timeline',
+                icon: Building2
+              })}
+
+              {renderNavLink({
                 to: '/ward-budget',
                 label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/open-contracting',
+                label: t('nav.openContracting', 'Procurement Red Flags'),
+                icon: ShieldAlert
               })}
 
               {renderNavLink({
@@ -928,10 +986,23 @@ if (normalizedTarget === '/continuity-planner') {
               })}
 
               {renderNavLink({
+                to: '/pedestrian-barrier-map',
+                label: t('nav.pedestrianBarriers', 'Pedestrian Barrier Map'),
+                icon: Navigation
+              })}
+
+              {renderNavLink({
                 to: '/tree-health',
                 activeTarget: '/tree-health',
                 label: t('nav.treeHealth', 'Tree Health Inventory'),
                 icon: Trees
+              })}
+
+              {renderNavLink({
+                to: '/streetlights',
+                activeTarget: '/streetlights',
+                label: t('nav.streetlights', 'Streetlight Outages'),
+                icon: Lightbulb
               })}
 
               {renderNavLink({
@@ -982,6 +1053,12 @@ if (normalizedTarget === '/continuity-planner') {
                   to: '/citizen-drafts',
                   label: 'Drafts & Offline Sync',
                   icon: FileText
+                })}
+
+                {renderNavLink({
+                  to: '/tenants',
+                  label: 'Authority Workspaces',
+                  icon: Building2
                 })}
 
                 {renderNavLink({

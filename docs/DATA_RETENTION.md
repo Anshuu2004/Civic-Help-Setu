@@ -50,6 +50,7 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | Key | Written by | What it holds | Category |
 |---|---|---|---|
 | `civicbridge_senior_tribunal_petitions` | `seniorCitizenTribunalStorage.js` | Saved senior citizen maintenance and Section 23 property revocation tribunal petitions | Drafts and in-progress work |
+| `civicbridge_rera_complaints` | `reraDisputeStorage.js` | Saved RERA delayed possession, defect liability and Form M/N dispute complaints | Drafts and in-progress work |
 | `civicbridge_checklists` | `checklistStorage.js` | Which checklist items are ticked, per checklist or application id | Drafts and in-progress work |
 | `civicbridge_preparation_plans_v1` | `applicationPreparationPlanService.js` | Saved application preparation plan and customized checklist progress | Drafts and in-progress work |
 | `civic_journey_progress_<journeyId>` (one per journey) | `journeyDependencyEngine.js` | Completed tasks of a journey plan | Drafts and in-progress work |
@@ -186,8 +187,18 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_tenants_v1` | Multi-authority civic administration workspace profiles | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_memberships_v1` | Authority staff memberships, assigned roles, and ward jurisdictions | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_roles_v1` | Granular tenant role permission schemas | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_settings_v1` | Authority-specific SLA rules, emergency notices, and dispatch boundaries | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_audit_events_v1` | SHA-256 tamper-evident hash-chained authority audit trail | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_datasets_v1` | Partitioned authority operational datasets and ward service tickets | Multi-tenant isolation feature (#779) |
+| `civicbridge_shared_catalogue_v1` | Controlled cross-tenant public catalogue guides with PII redacted | Multi-tenant isolation feature (#779) |
+| `civicbridge_active_tenant_context_v1` | Active authority context selection on device | Multi-tenant isolation feature (#779) |
+| `civicbridge_tenant_migration_backup_v1` | Snapshot backup for tenant schema migration rollback | Multi-tenant isolation feature (#779) |
 | `civicbridge_counter_aggregates_v1`, `civicbridge_capacity_plans_v1`, `civicbridge_forecast_runs_v1`, `civicbridge_capacity_audit_logs_v1` | Historical footfall aggregates (Zero-PII), Erlang-C capacity plans, forecast runs, and append-only staffing override audit logs (#764) | Operations and capacity management |
 | `civicbridge_tree_inventory_meta_v1`, `civicbridge_tree_assets_v1`, `civicbridge_tree_species_v1`, `civicbridge_tree_inspections_v1`, `civicbridge_tree_maintenance_orders_v1`, `civicbridge_tree_pruning_events_v1`, `civicbridge_tree_planting_sites_v1`, `civicbridge_tree_triage_suggestions_v1`, `civicbridge_tree_audit_events_v1`, `civicbridge_tree_idempotency_v1`, `civicbridge_tree_rate_limit_v1`, `civicbridge_tree_migration_backup_v1`, `civicbridge_trees_v1` | Municipal tree register, inspection history, maintenance orders, pruning history, planting sites, triage suggestions, append-only audit chain, idempotency/rate-limit state, schema metadata and rollback backup | Public-authority operating records, not a citizen profile. Kept so clearing a citizen's data cannot erase the public register or audit trail. The tree module applies its own 365-day retention to closed citizen reports |
+| `civicbridge_ward_issue_events_v1`, `civicbridge_ward_geometries_v1`, `civicbridge_ward_metrics_v1`, `civicbridge_aggregation_runs_v1`, `civicbridge_privacy_rules_v1`, `civicbridge_ward_recommendations_v1`, `civicbridge_ward_issue_audit_logs_v1`, `civicbridge_ward_issue_rate_limit_v1`, `civicbridge_ward_heatmap_migration_backup_v1` | Anonymized ward-level civic issue heatmap, coarse events, published metrics, k-anonymity privacy thresholds, explainable recommendations, and audit logs | Municipal aggregate analytics and operating records. Coarse ward-level centroids only, zero citizen PII stored. Kept under retained operational records. |
 | `civicbridge_knowledge_sources_v1`, `civicbridge_source_snapshots_v1`, `civicbridge_transformation_runs_v1`, `civicbridge_provenance_edges_v1`, `civicbridge_editorial_reviews_v1`, `civicbridge_supersession_links_v1`, `civicbridge_provenance_audit_v1` | Public knowledge sources, snapshots, transformations, provenance DAG edges, editorial reviews, supersession links, and audit logs (#777) | Statutory provenance records, not citizen personal data |
 
 ## Remote data

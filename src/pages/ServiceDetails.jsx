@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, GitFork } from 'lucide-react';
+import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, Navigation, GitFork, ShieldAlert } from 'lucide-react';
 import { getServiceById } from '../services/serviceCatalog';
 import RetiredServiceNotice from '../components/common/RetiredServiceNotice';
 import ServiceQrHandout from '../components/services/ServiceQrHandout';
@@ -46,6 +46,11 @@ import SmallBusinessLicenceCentre from '../components/services/SmallBusinessLice
 import FireSafetyComplianceGuide from '../components/services/FireSafetyComplianceGuide';
 import TreePermissionGuide from '../components/services/TreePermissionGuide';
 
+import ServicePrintPacketModal from '../components/services/ServicePrintPacketModal';
+import ShareByEmailModal from '../components/services/ShareByEmailModal';
+import CivicAcronymTooltip from '../components/acronyms/CivicAcronymTooltip.jsx';
+import { CIVIC_ACRONYMS } from '../data/civicAcronyms.js';
+
 const getSavedServices = () => {
   try {
     const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
@@ -55,17 +60,12 @@ const getSavedServices = () => {
   }
 };
 
-import ServicePrintPacketModal from '../components/services/ServicePrintPacketModal';
-import ShareByEmailModal from '../components/services/ShareByEmailModal';
-import CivicAcronymTooltip from '../components/acronyms/CivicAcronymTooltip.jsx';
-import { CIVIC_ACRONYMS } from '../data/civicAcronyms.js';
 const copyServiceLink = async (url) => {
   try {
     if (navigator?.clipboard?.writeText) {
       await navigator.clipboard.writeText(url);
       return true;
     }
-
     return false;
   } catch {
     return false;
@@ -76,7 +76,6 @@ const getServiceUrl = (serviceId) => {
   if (typeof window === 'undefined') {
     return `/services/${encodeURIComponent(serviceId)}`;
   }
-
   return `${window.location.origin}/services/${encodeURIComponent(serviceId)}`;
 };
 
@@ -1137,6 +1136,117 @@ const ServiceDetails = ({ previewService = null }) => {
             </div>
           )}
 
+          {/* Accessible Pedestrian Route & Barrier Map */}
+          {service.id === 'pedestrian-barrier-map' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <Navigation size={18} color="#3b82f6" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Accessible Pedestrian Route &amp; Barrier Map
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Calculate accessible walking routes, configure mobility constraints without medical diagnosis, report street obstacles, and view official inspection records.
+                  </p>
+                </div>
+                <Link
+                  to="/pedestrian-barrier-map"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                >
+                  Open Route &amp; Barrier Map
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Open Contracting Red-Flag Analytics */}
+          {service.id === 'open-contracting-red-flags' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #38bdf8)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldAlert size={18} color="#38bdf8" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Open Contracting Red-Flag Analytics &amp; Audit Workspace
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Audit public procurement records across tender notice, bid, award, and amendment stages using explainable anomaly detection and OCDS red-flag benchmarks without declaring wrongdoing.
+                  </p>
+                </div>
+                <Link
+                  to="/open-contracting"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                >
+                  Open Contracting Workspace
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Anonymized Ward-Level Civic Issue Heatmap */}
+          {service.id === 'ward-issue-heatmap' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #38bdf8)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldCheck size={18} color="var(--accent-main, #38bdf8)" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Anonymized Ward-Level Civic Issue Heatmap &amp; Trend Explorer
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Explore recurring civic issues across municipal wards with k-anonymity privacy safeguards, trend velocity comparisons, and explainable intervention recommendations.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/ward-issue-heatmap"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Open Heatmap &amp; Explorer
+                  </Link>
+                  <Link
+                    to="/services/ward-issue-heatmap"
+                    className="btn btn-secondary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Dedicated Workspace
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {service.id === 'business-licence-checklist' && showDedicatedBusinessLicenceCentre ? (
             <SmallBusinessLicenceCentre />
           ) : service.id === 'aadhaar-card' && showDedicatedAadhaarGuide ? (
@@ -1218,205 +1328,4 @@ const ServiceDetails = ({ previewService = null }) => {
                       gap: '0.35rem',
                     }}
                   >
-                    <Edit2 size={14} /> Edit checklist
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      clearServiceChecklist(service.id);
-                      setCustomChecklistState(false);
-                    }}
-                    style={{
-                      fontSize: '0.82rem',
-                      padding: '0.35rem 0.75rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                    }}
-                  >
-                    <RotateCcw size={14} /> Reset
-                  </button>
-                </div>
-              </div>
-
-              <Checklist
-                key={service.id}
-                checklistId={`service_${service.id}`}
-                items={customChecklist.items}
-                requirements={customChecklist.requirements}
-                label={`Application checklist for ${service.name}`}
-              />
-            </section>
-          )}
-
-          <div style={{ margin: '1rem 0 0.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setShowDocGuidanceModal(true)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.85rem' }}
-            >
-              <FileText size={15} color="var(--accent-main)" />
-              Document-Type Requirements Guidance
-            </button>
-          </div>
-
-          <InlineStatusLegend
-            categories={[
-              'requirement',
-              'intakeWindow',
-              'fee',
-              'eligibility',
-            ]}
-            title="Status Legend for This Service"
-            fullLegendLabel="View full legend"
-          />
-
-          <DocumentPreflightInspectionCard service={service} />
-
-          {/* Civic Application Readiness Scorecard */}
-          <ApplicationReadinessScorecard
-            service={service}
-          />
-        </div>
-      </div>
-
-      {/* Report Issue Modal */}
-      {showReportModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.55)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1rem',
-          }}
-          onClick={() => setShowReportModal(false)}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="report-issue-title"
-            style={{
-              width: 'min(90vw, 520px)',
-              background: 'var(--bg-card)',
-              borderRadius: '1rem',
-              padding: '1.5rem',
-              border: '1px solid var(--border-light)',
-            }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <h3
-              id="report-issue-title"
-              style={{ marginBottom: '0.75rem' }}
-            >
-              Report issue
-            </h3>
-
-            <p
-              style={{
-                color: 'var(--text-secondary)',
-                marginBottom: '1rem',
-              }}
-            >
-              Please contact the civic support desk to report
-              incorrect information for this service.
-            </p>
-
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => setShowReportModal(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      <JourneyHandoffModal
-        isOpen={handoffModalOpen}
-        onClose={() => setHandoffModalOpen(false)}
-        serviceId={service.id}
-        serviceName={service.name}
-        availableTasks={service.steps || []}
-        currentUser={user}
-      />
-
-      <ServicePrintPacketModal
-        isOpen={showPrintPacketModal}
-        onClose={() => setShowPrintPacketModal(false)}
-        service={service}
-      />
-
-      <LowBandwidthShareModal
-        isOpen={showLowBandwidthModal}
-        onClose={() => setShowLowBandwidthModal(false)}
-        service={service}
-      />
-
-      <AppointmentVisitPackModal
-        isOpen={showVisitPackModal}
-        onClose={() => setShowVisitPackModal(false)}
-        service={service}
-      />
-
-      <InteractiveFeeEstimatorModal
-        isOpen={showFeeEstimatorModal}
-        onClose={() => setShowFeeEstimatorModal(false)}
-        service={service}
-      />
-
-      <BarrierReportModal
-        isOpen={showBarrierModal}
-        onClose={() => setShowBarrierModal(false)}
-        service={service}
-      />
-
-      <AccessibleReaderPreferencesModal
-        isOpen={showReaderModal}
-        onClose={() => setShowReaderModal(false)}
-        onPreferencesChange={(updated) => setReaderStyle(computeReaderStyle(updated))}
-      />
-
-      <DocumentTypeGuidanceModal
-        isOpen={showDocGuidanceModal}
-        onClose={() => setShowDocGuidanceModal(false)}
-        service={service}
-      />
-
-      <MakeChecklistModal
-        isOpen={showMakeChecklistModal}
-        onClose={() => setShowMakeChecklistModal(false)}
-        service={service}
-        onSaveChecklist={(saved) => setCustomChecklistState(saved)}
-      />
-
-      <ApplicationPreparationPlanModal
-        isOpen={showPrepPlanModal}
-        onClose={() => setShowPrepPlanModal(false)}
-        service={service}
-      />
-
-      <ApplicationReadinessCheckerModal
-        isOpen={showReadinessCheckerModal}
-        onClose={() => setShowReadinessCheckerModal(false)}
-        service={service}
-      />
-
-      <ShareByEmailModal
-        isOpen={showShareByEmailModal}
-        services={[service]}
-        preSelectedIds={[service.id]}
-        onClose={() => setShowShareByEmailModal(false)}
-        onSent={() => setShowShareByEmailModal(false)}
-      />
-    </div>
-  );
-};
-
-export default ServiceDetails;
+                    <Edit2 size={

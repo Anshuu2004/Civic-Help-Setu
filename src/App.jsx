@@ -36,6 +36,7 @@ import Profile from './pages/Profile';
 import OpenSource from './pages/OpenSource';
 import Privacy from './pages/Privacy';
 import Admin from './pages/Admin';
+import TenantAdministrationWorkspace from './pages/TenantAdministrationWorkspace';
 import SharedChecklistView from './pages/SharedChecklistView';
 import SharedDirectoryView from './pages/SharedDirectoryView';
 import PublicApplicationStatusView from './pages/PublicApplicationStatusView';
@@ -63,8 +64,15 @@ import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import PublicToiletDirectory from './pages/PublicToiletDirectory';
+import AccessibleRouteBarrierWorkspace from './pages/AccessibleRouteBarrierWorkspace';
+import StreetlightOutageWorkspace from './pages/StreetlightOutageWorkspace';
+import WaterQualityRegister from './pages/WaterQualityRegister';
+import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
+import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
+import ReraDisputeWorkspace from './pages/ReraDisputeWorkspace';
+import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -111,6 +119,9 @@ function AppRoot() {
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/tree-permission-guide" element={<TreePermissionGuidePage />} />
+                      <Route path="/services/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/civic-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
                       <Route path="/services/ward-budget-proposal" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget/:id" element={<WardBudgetWorkspace />} />
@@ -125,10 +136,16 @@ function AppRoot() {
                       <Route path="/fair-price-shops" element={<FairPriceShopBoard />} />
                       <Route path="/tenders" element={<TenderReadinessWorkspace />} />
                       <Route path="/tender-readiness" element={<TenderReadinessWorkspace />} />
+                      <Route path="/open-contracting" element={<OpenContractingWorkspace />} />
+                      <Route path="/procurement-analytics" element={<OpenContractingWorkspace />} />
+                      <Route path="/open-contracting/:id" element={<OpenContractingWorkspace />} />
                       <Route path="/community-facilities" element={<CommunityFacilityDirectory />} />
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
                       <Route path="/water-tanker" element={<WaterTankerTracker />} />
                       <Route path="/water-tankers" element={<WaterTankerTracker />} />
+                      <Route path="/services/water-quality-register" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality-register" element={<WaterQualityRegister />} />
                       <Route path="/rental-checklist" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-transition" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
@@ -151,17 +168,28 @@ function AppRoot() {
                       <Route path="/public-toilets" element={<PublicToiletDirectory />} />
                       <Route path="/toilet-directory" element={<PublicToiletDirectory />} />
                       <Route path="/toilets" element={<PublicToiletDirectory />} />
+                      <Route path="/pedestrian-barrier-map" element={<AccessibleRouteBarrierWorkspace />} />
+                      <Route path="/accessible-routes" element={<AccessibleRouteBarrierWorkspace />} />
+                      <Route path="/pedestrian-routes" element={<AccessibleRouteBarrierWorkspace />} />
                       <Route path="/continuity-planner" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/continuity-planner/:id" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/incident-drills" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/senior-citizen-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
+                      <Route path="/rera-dispute-workspace" element={<ReraDisputeWorkspace />} />
+                      <Route path="/rera-homebuyer-rights" element={<ReraDisputeWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/public-projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/public-projects/:id" element={<PublicProjectsWorkspace />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/tree-health" element={<TreeHealthInventory />} />
                       <Route path="/tree-inventory" element={<TreeHealthInventory />} />
+                      <Route path="/streetlights" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/streetlight-outages" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/services/streetlight-outages" element={<StreetlightOutageWorkspace />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
@@ -193,6 +221,10 @@ function AppRoot() {
                           <Admin />
                         </ProtectedRoute>
                       } />
+
+                      <Route path="/tenants" element={<TenantAdministrationWorkspace />} />
+                      <Route path="/tenants/:tenantId" element={<TenantAdministrationWorkspace />} />
+                      <Route path="/tenant-workspace" element={<TenantAdministrationWorkspace />} />
 
                       <Route path="*" element={<NotFound />} />
                     </Routes>

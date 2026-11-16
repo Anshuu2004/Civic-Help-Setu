@@ -100,6 +100,22 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/public-toilets');
   });
 
+  it('renders the dedicated Open Contracting Red-Flag Analytics entry card when viewing the open-contracting-red-flags service (#751)', () => {
+    const html = render('/services/open-contracting-red-flags');
+    expect(html).toContain('Open Contracting Red-Flag Analytics &amp; Audit Workspace');
+    expect(html).toContain('Audit public procurement records across tender notice, bid, award, and amendment stages');
+    expect(html).toContain('Open Contracting Workspace');
+    expect(html).toContain('/open-contracting');
+  });
+
+  it('renders the dedicated Ward Issue Heatmap entry card when viewing the ward-issue-heatmap service', () => {
+    const html = render('/services/ward-issue-heatmap');
+    expect(html).toContain('Anonymized Ward-Level Civic Issue Heatmap &amp; Trend Explorer');
+    expect(html).toContain('Open Heatmap &amp; Explorer');
+    expect(html).toContain('/ward-issue-heatmap');
+    expect(html).toContain('/services/ward-issue-heatmap');
+  });
+
   it('renders the dedicated provenance and data lineage action link (#777)', () => {
     const service = MOCK_SERVICES[0];
     const html = render(`/services/${service.id}`);
