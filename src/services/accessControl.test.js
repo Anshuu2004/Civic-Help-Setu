@@ -43,6 +43,11 @@ import { addNotice, updateNotice, changeNoticeStatus, resetNoticesToDefault } fr
 import { moderateBarrierReport } from './barrierReportService';
 import { recordServiceReview } from './dataFreshnessTrustService';
 import { saveLinkCheck } from './linkHealthService';
+import {
+  saveContinuityPlan,
+  transitionPlanState,
+  createExerciseRun,
+} from './continuityPlannerService';
 import { moderateCivicWorkReport } from './civicWorksBoardService';
 import { transitionReviewCaseState, executeRiskRun } from './roadSafetyBlackspotService';
 import {
@@ -118,6 +123,9 @@ const CALLS = {
   'publicProjects.create': () => createPublicProject({ title: 'Sample Road Paving Test Corridor', description: 'Testing corridor paving description length', category: 'roads', jurisdiction: { wardNumber: 'Ward 10' } }, moduleStorage),
   'publicProjects.verify': () => recordVerificationReview({ projectId: 'proj-1', milestoneId: 'ms-1', submissionId: 'sub-1', decision: 'APPROVE', findings: 'Valid verification findings test' }, moduleStorage),
   'publicProjects.audit': () => getProjectAuditTrail('proj-1', moduleStorage),
+  'continuity.write': () => saveContinuityPlan({ title: 'ContPlan' }),
+  'continuity.approve': () => transitionPlanState('plan_pune_ward_12', 'APPROVED', { reason: 'Test' }),
+  'continuity.drill': () => createExerciseRun({ title: 'Test Drill' }),
 };
 
 const outcome = (fn) => {

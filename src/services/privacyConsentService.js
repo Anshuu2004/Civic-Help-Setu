@@ -101,6 +101,14 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_conflict_records_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_device_cursors_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_tombstones_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
+  { key: 'civicbridge_continuity_plans_v1', category: 'drafts', exportAs: 'continuityPlans', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_incident_scenarios_v1', category: 'drafts', exportAs: 'incidentScenarios', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_service_dependencies_v1', category: 'drafts', exportAs: 'serviceDependencies', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_exercise_runs_v1', category: 'activity', exportAs: 'exerciseRuns', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_action_items_v1', category: 'tracking', exportAs: 'actionItems', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_continuity_audit_logs_v1', category: 'activity', exportAs: null, empty: [] }, // continuityAuditService.js
+  { key: 'civicbridge_continuity_recommendations_v1', category: 'drafts', exportAs: null, empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_senior_tribunal_petitions', category: 'drafts', exportAs: 'seniorCitizenTribunalPetitions', empty: [] }, // seniorCitizenTribunalStorage.js
 ];
 
 /**
@@ -199,6 +207,11 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Counter demand forecasting and queue capacity planning (#764)
+  'civicbridge_counter_aggregates_v1',
+  'civicbridge_capacity_plans_v1',
+  'civicbridge_forecast_runs_v1',
+  'civicbridge_capacity_audit_logs_v1',
   // Road safety blackspot detection and municipal review workspace (#769)
   'civicbridge_road_segments_v1',
   'civicbridge_crash_aggregates_v1',
@@ -226,6 +239,14 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_tree_rate_limit_v1',
   'civicbridge_tree_migration_backup_v1',
   'civicbridge_trees_v1',
+  // Civic knowledge records lineage and provenance explorer (#777)
+  'civicbridge_knowledge_sources_v1',
+  'civicbridge_source_snapshots_v1',
+  'civicbridge_transformation_runs_v1',
+  'civicbridge_provenance_edges_v1',
+  'civicbridge_editorial_reviews_v1',
+  'civicbridge_supersession_links_v1',
+  'civicbridge_provenance_audit_v1',
   // Handled by purge itself: consents are reset, the audit log keeps the deletion receipt
   CONSENT_STORAGE_KEY,
   AUDIT_STORAGE_KEY,
@@ -338,14 +359,16 @@ function getSessionStorage() {
 }
 
 // Reads and parses a JSON value from storage, falling back when the key is
-// absent or holds malformed data so an export never fails on one bad entry.
-function readStoredJson(storage, key, fallback = null) {
+// absent, corrupt or wrong-shaped so an export never fails on one bad entry.
+function readStoredJson(storage, key, empty = null) {
   try {
     const raw = storage?.getItem(key);
-    if (raw === null || raw === undefined) return fallback;
-    return JSON.parse(raw);
+    if (raw === null || raw === undefined || raw === '') return empty;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
+    return parsed;
   } catch {
-    return fallback;
+    return empty;
   }
 }
 
@@ -474,8 +497,7 @@ export function purgeRevokedCategoryData(categoryId, actorId = 'citizen_user') {
  */
 export function updateConsentPreference(
   categoryId,
-  granted,
-  actorId = 'citizen_user',
+  granted,  actorId = 'citizen_user',
   options = {}
 ) {
   const category = CONSENT_CATEGORIES[categoryId];
@@ -963,7 +985,6 @@ export function exportUserData(userId = 'citizen_user') {
  */
 export function purgeAllUserData(userId = 'citizen_user', options = { preserveAuditTrail: true }) {
   const storage = getStorage();
-
   const deletedKeys = [];
   for (const key of [...USER_DATA_STORAGE_KEYS, ...getPrefixedUserDataKeys(storage)]) {
     if (storage.getItem(key) !== null) {

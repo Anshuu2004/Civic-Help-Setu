@@ -51,6 +51,9 @@ export const PERMISSIONS = {
   'publicProjects.create': { roles: ['admin'], resource: 'civicbridge_public_projects_v1', description: 'Create and configure public infrastructure projects, milestones and geometries' },
   'publicProjects.verify': { roles: ['admin'], resource: 'civicbridge_verification_reviews_v1', description: 'Verify evidence and record milestone decisions for public projects' },
   'publicProjects.audit': { roles: ['admin'], resource: 'civicbridge_project_audit_logs_v1', description: 'Inspect append-only project verification audit logs and unredacted assets' },
+  'continuity.write': { roles: ['admin'], resource: 'civicbridge_continuity_plans_v1', description: 'Create or update public service continuity plans and service dependencies' },
+  'continuity.approve': { roles: ['admin'], resource: 'civicbridge_continuity_plans_v1', description: 'Approve, activate or supersede continuity plans' },
+  'continuity.drill': { roles: ['admin'], resource: 'civicbridge_exercise_runs_v1', description: 'Schedule and facilitate incident tabletop exercises and record decisions' },
 };
 
 export class PermissionDeniedError extends Error {

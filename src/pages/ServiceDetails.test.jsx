@@ -29,6 +29,7 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Make checklist');
     expect(html).toContain('Preparation Plan');
     expect(html).toContain('Simplify this service');
+    expect(html).toContain('Trace Data Lineage');
   });
 
   it('says so when the guide does not exist', () => {
@@ -67,6 +68,14 @@ describe('ServiceDetails', () => {
     expect(html).toContain('/services/tree-permission-guide');
   });
 
+  it('renders the dedicated Counter Demand Forecasting workspace entry card (#764)', () => {
+    const html = render('/services/counter-demand-forecasting');
+    expect(html).toContain('Civic Service Counter Demand &amp; Queue Staffing Forecast');
+    expect(html).toContain('Dedicated Counter Demand Forecasting &amp; Queue Staffing Workspace');
+    expect(html).toContain('Open Forecasting Workspace');
+    expect(html).toContain('/counter-demand');
+  });
+
   it('renders the dedicated Ward Budget Proposal entry card when viewing the ward-budget-proposal service (#765)', () => {
     const html = render('/services/ward-budget-proposal');
     expect(html).toContain('Participatory Ward Budget Proposal &amp; Public Deliberation');
@@ -81,5 +90,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Dedicated Civic Survey Builder &amp; Sampling Diagnostics Hub');
     expect(html).toContain('Launch Survey Workspace');
     expect(html).toContain('/surveys');
+  });
+
+  it('renders the dedicated provenance and data lineage action link (#777)', () => {
+    const service = MOCK_SERVICES[0];
+    const html = render(`/services/${service.id}`);
+    expect(html).toContain('Trace Data Lineage');
+    expect(html).toContain(`/provenance?service=${encodeURIComponent(service.id)}`);
   });
 });

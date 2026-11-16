@@ -41,6 +41,8 @@ import LibraryCorrectionQueue from '../components/admin/LibraryCorrectionQueue';
 import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
 import RoadHazardReviewQueue from '../components/admin/RoadHazardReviewQueue';
 import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorrectionQueue';
+import ProvenanceReviewQueue from '../components/admin/ProvenanceReviewQueue';
+import CounterDemandReviewQueue from '../components/admin/CounterDemandReviewQueue';
 import SurveyAuditQueue from '../components/admin/SurveyAuditQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
 import ServiceImportPanel from '../components/admin/ServiceImportPanel';
@@ -736,6 +738,8 @@ const Admin = () => {
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
               { id: 'public-projects', label: 'Public Project Timeline', badge: null },
+              { id: 'provenance-reviews', label: 'Knowledge Provenance', badge: null },
+              { id: 'counter-demand', label: 'Counter Demand & Staffing', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -1163,6 +1167,9 @@ const Admin = () => {
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                   <AddressChangeCorrectionQueue />
+                </div>
+                <div style={{ marginTop: '2rem' }}>
+                  <CounterDemandReviewQueue />
                 </div>
                 <div style={{ marginTop: '2rem' }}>
                   <SurveyAuditQueue />
@@ -1789,6 +1796,20 @@ const Admin = () => {
                 >
                   Open Public Projects Workspace &amp; Review Queue
                 </button>
+              </div>
+            )}
+
+            {/* Knowledge Provenance Review Queue Tab (#777) */}
+            {activeTab === 'provenance-reviews' && (
+              <div>
+                <ProvenanceReviewQueue />
+              </div>
+            )}
+
+            {/* Counter Demand & Queue Staffing Moderation Tab (#764) */}
+            {activeTab === 'counter-demand' && (
+              <div>
+                <CounterDemandReviewQueue />
               </div>
             )}
 
