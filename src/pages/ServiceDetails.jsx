@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, GitFork, ShieldAlert } from 'lucide-react';
+import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, Navigation, GitFork, ShieldAlert } from 'lucide-react';
 import { getServiceById } from '../services/serviceCatalog';
 import RetiredServiceNotice from '../components/common/RetiredServiceNotice';
 import ServiceQrHandout from '../components/services/ServiceQrHandout';
@@ -46,6 +46,11 @@ import SmallBusinessLicenceCentre from '../components/services/SmallBusinessLice
 import FireSafetyComplianceGuide from '../components/services/FireSafetyComplianceGuide';
 import TreePermissionGuide from '../components/services/TreePermissionGuide';
 
+import ServicePrintPacketModal from '../components/services/ServicePrintPacketModal';
+import ShareByEmailModal from '../components/services/ShareByEmailModal';
+import CivicAcronymTooltip from '../components/acronyms/CivicAcronymTooltip.jsx';
+import { CIVIC_ACRONYMS } from '../data/civicAcronyms.js';
+
 const getSavedServices = () => {
   try {
     const saved = JSON.parse(localStorage.getItem('civicbridge_saved') || '[]');
@@ -55,17 +60,12 @@ const getSavedServices = () => {
   }
 };
 
-import ServicePrintPacketModal from '../components/services/ServicePrintPacketModal';
-import ShareByEmailModal from '../components/services/ShareByEmailModal';
-import CivicAcronymTooltip from '../components/acronyms/CivicAcronymTooltip.jsx';
-import { CIVIC_ACRONYMS } from '../data/civicAcronyms.js';
 const copyServiceLink = async (url) => {
   try {
     if (navigator?.clipboard?.writeText) {
       await navigator.clipboard.writeText(url);
       return true;
     }
-
     return false;
   } catch {
     return false;
@@ -76,7 +76,6 @@ const getServiceUrl = (serviceId) => {
   if (typeof window === 'undefined') {
     return `/services/${encodeURIComponent(serviceId)}`;
   }
-
   return `${window.location.origin}/services/${encodeURIComponent(serviceId)}`;
 };
 
@@ -154,7 +153,7 @@ const ServiceDetails = ({ previewService = null }) => {
 
     const updatedServices = alreadySaved
       ? savedServices.filter(
-          (savedService) => savedService.id === service.id
+          (savedService) => savedService.id !== service.id
         )
       : [
           ...savedServices,
@@ -1102,6 +1101,41 @@ const ServiceDetails = ({ previewService = null }) => {
             </div>
           )}
 
+          {/* Accessible Pedestrian Route & Barrier Map */}
+          {service.id === 'pedestrian-barrier-map' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <Navigation size={18} color="#3b82f6" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Accessible Pedestrian Route &amp; Barrier Map
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Calculate accessible walking routes, configure mobility constraints without medical diagnosis, report street obstacles, and view official inspection records.
+                  </p>
+                </div>
+                <Link
+                  to="/pedestrian-barrier-map"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                >
+                  Open Route &amp; Barrier Map
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Open Contracting Red-Flag Analytics */}
           {service.id === 'open-contracting-red-flags' && (
             <div
               style={{
@@ -1124,19 +1158,18 @@ const ServiceDetails = ({ previewService = null }) => {
                     Audit public procurement records across tender notice, bid, award, and amendment stages using explainable anomaly detection and OCDS red-flag benchmarks without declaring wrongdoing.
                   </p>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <Link
-                    to="/open-contracting"
-                    className="btn btn-primary"
-                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
-                  >
-                    Open Contracting Workspace
-                  </Link>
-                </div>
+                <Link
+                  to="/open-contracting"
+                  className="btn btn-primary"
+                  style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                >
+                  Open Contracting Workspace
+                </Link>
               </div>
             </div>
           )}
 
+          {/* Anonymized Ward-Level Civic Issue Heatmap */}
           {service.id === 'ward-issue-heatmap' && (
             <div
               style={{

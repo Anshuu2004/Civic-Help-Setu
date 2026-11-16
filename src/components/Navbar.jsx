@@ -27,9 +27,10 @@ import {
   KeyRound,
   Store,
   Building2,
+  Trees,
+  Lightbulb,
   ShieldAlert,
   GitFork,
-  Trees,
   Scale,
   BarChart2,
 } from 'lucide-react';
@@ -149,6 +150,15 @@ if (normalizedTarget === '/continuity-planner') {
         );
       }
 
+if (normalizedTarget === '/water-quality') {
+        return (
+          normalizedPath === '/water-quality' ||
+          normalizedPath === '/water-quality-register' ||
+          normalizedPath === '/services/water-quality-register' ||
+          normalizedPath.startsWith('/water-quality/')
+        );
+      }
+
       if (normalizedTarget === '/open-contracting') {
         return (
           normalizedPath === '/open-contracting' ||
@@ -162,6 +172,14 @@ if (normalizedTarget === '/continuity-planner') {
           normalizedPath === '/road-safety' ||
           normalizedPath === '/blackspots' ||
           normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/pedestrian-barrier-map') {
+        return (
+          normalizedPath === '/pedestrian-barrier-map' ||
+          normalizedPath === '/accessible-routes' ||
+          normalizedPath.startsWith('/pedestrian-barrier-map/')
         );
       }
 
@@ -835,6 +853,12 @@ if (normalizedTarget === '/continuity-planner') {
               })}
 
               {renderNavLink({
+                to: '/water-quality',
+                label: 'Water Quality Register',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
                 to: '/pds-shops',
                 label: 'Fair Price Shops (PDS)',
                 icon: Store
@@ -906,6 +930,12 @@ if (normalizedTarget === '/continuity-planner') {
                 label: 'Senior Citizen Tribunal',
                 icon: Scale
               })}
+
+              {renderNavLink({
+                to: '/rera-dispute-workspace',
+                label: 'RERA Homebuyer Rights',
+                icon: Building2
+              })}
               {renderNavLink({
                 to: '/tenants',
                 label: 'Authority Workspaces',
@@ -950,10 +980,23 @@ if (normalizedTarget === '/continuity-planner') {
               })}
 
               {renderNavLink({
+                to: '/pedestrian-barrier-map',
+                label: t('nav.pedestrianBarriers', 'Pedestrian Barrier Map'),
+                icon: Navigation
+              })}
+
+              {renderNavLink({
                 to: '/tree-health',
                 activeTarget: '/tree-health',
                 label: t('nav.treeHealth', 'Tree Health Inventory'),
                 icon: Trees
+              })}
+
+              {renderNavLink({
+                to: '/streetlights',
+                activeTarget: '/streetlights',
+                label: t('nav.streetlights', 'Streetlight Outages'),
+                icon: Lightbulb
               })}
 
               {renderNavLink({

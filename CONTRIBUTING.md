@@ -53,6 +53,26 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/pedestrianBarrierService.test.js       # pedestrian barrier graph & service tests (#757)
+npx vitest run src/services/pedestrianBarrierMigrations.test.js    # pedestrian schema migration/rollback tests (#757)
+npx vitest run tests/pedestrian-barriers.test.js                   # pedestrian barrier API validation tests (#757)
+npx vitest run tests/pedestrian-barriers-security.test.js          # pedestrian security, injection & replay tests (#757)
+npx vitest run src/pages/AccessibleRouteBarrierWorkspace.test.jsx  # accessible barrier workspace UI tests (#757)
+```
+
+Architecture, data model, state machine, graph routing rules, and verification integrity for the accessible pedestrian route barrier map are documented in [docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md](docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md).
+npx vitest run src/services/streetlightService.test.js        # streetlight clustering & repair service tests (#756)
+npx vitest run src/services/streetlightAccessControl.test.js  # streetlight RBAC & privacy scoping tests (#756)
+npx vitest run src/services/streetlightMigrations.test.js     # streetlight schema migration & rollback tests (#756)
+npx vitest run src/pages/StreetlightOutageWorkspace.test.jsx   # streetlight workspace & accessible UI tests (#756)
+```
+
+Architecture, data model, spatial clustering algorithms, explainability ruleset, and technician workflows for streetlight outages are documented in [docs/streetlight-outage-clustering.md](docs/streetlight-outage-clustering.md).
+npx vitest run src/services/waterQualityService.test.js        # water quality domain & supersession tests (#754)
+npx vitest run src/services/waterQualityRulesEngine.test.js    # deterministic IS 10500 compliance tests (#754)
+npx vitest run src/services/waterQualityValidation.test.js     # anti-PII & schema validation tests (#754)
+npx vitest run tests/water-quality-register.test.js            # serverless API abuse guard tests (#754)
+npx vitest run src/pages/WaterQualityRegister.test.jsx         # water register UI & accessibility tests (#754)
 npx vitest run src/services/publicProjectService.test.js       # public project domain & state transition tests (#752)
 npx vitest run src/services/evidenceVerificationService.test.js # evidence integrity & CV advisory tests (#752)
 npx vitest run tests/public-projects.test.js                 # public project serverless API & abuse tests (#752)
@@ -62,6 +82,7 @@ npx vitest run src/pages/PublicProjectsWorkspace.test.jsx      # public project 
 Architecture, data model, state machines, CV discrepancy policy, and rollback strategy for public projects are documented in [docs/geospatial-public-projects.md](docs/geospatial-public-projects.md).
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Water quality standards (IS 10500:2012), data models, cryptographic seals, and audit runbooks are documented in [docs/water-quality-register.md](docs/water-quality-register.md).
 Architecture, data model, k-anonymity privacy safeguards, explainable recommendations, and test suites for the Anonymized Ward-Level Civic Issue Heatmap are documented in [docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md](docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md) (#763).
 
 ## Security checks

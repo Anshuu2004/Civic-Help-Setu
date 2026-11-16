@@ -152,6 +152,16 @@ const Footer = () => {
                   Senior Citizen Tribunal
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/rera-dispute-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  RERA Homebuyer Rights
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link

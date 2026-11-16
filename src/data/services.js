@@ -1114,6 +1114,89 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+    id: 'water-quality-register',
+    jurisdiction: {
+      level: 'municipal',
+      states: ['All States & Union Territories'],
+      districts: [],
+      localBody: 'Urban Local Bodies / Municipal Water Boards / Public Health Engineering Departments'
+    },
+    name: 'Community Water-Quality Sampling & Laboratory Result Register',
+    shortDescription: 'Search public drinking water points, view verified laboratory test parameters against Bureau of Indian Standards IS 10500:2012, and track municipal corrective actions.',
+    category: 'Public Health & Utilities',
+    department: 'Public Health Engineering Department (PHED) / Municipal Water Supply & Sewerage Board',
+    type: 'Public Register / Surveillance',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 3,
+    popularityScore: 92,
+    eligibility: [
+      'Open to all residents, community organizations, and public health monitors.',
+      'Public drinking water points include municipal taps, public standposts, community RO purification kiosks, and public borewells.',
+      'Field sampling submissions must be accompanied by certified container bar code identifiers.'
+    ],
+    documents: [
+      'Accredited NABL laboratory report certificate (for laboratory analysts and officials)',
+      'Sealed container identification code and chain-of-custody log (for field samplers)'
+    ],
+    documentRequirements: {
+      'Accredited NABL laboratory report certificate': {
+        type: 'mandatory'
+      },
+      'Sealed container identification code': {
+        type: 'mandatory'
+      }
+    },
+    steps: [
+      {
+        title: 'Locate Community Water Point',
+        description: 'Search nearby municipal taps, public borewells, or community RO kiosks by ward or landmark.'
+      },
+      {
+        title: 'Inspect Verified IS 10500 Parameters',
+        description: 'Review physical, chemical, and bacteriological test values (pH, TDS, turbidity, hardness, E. coli) against statutory limits.'
+      },
+      {
+        title: 'Check Cryptographic Verification Seal',
+        description: 'Verify tamper-evident hash seal issued by accredited NABL state water testing laboratory.'
+      },
+      {
+        title: 'Monitor Remedial Corrective Interventions',
+        description: 'Track municipal pipeline repairs, super-chlorination disinfections, or filtration membrane replacements for out-of-range water points.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Bureau of Indian Standards (BIS) IS 10500:2012 Drinking Water Specification',
+        url: 'https://www.services.bis.gov.in',
+        verified: true,
+        lastVerified: '2026-11-01'
+      },
+      {
+        name: 'National Accreditation Board for Testing and Calibration Laboratories (NABL)',
+        url: 'https://nabl-india.org',
+        verified: true,
+        lastVerified: '2026-11-05'
+      },
+      {
+        name: 'Jal Jeevan Mission (JJM) Water Quality Management Information System',
+        url: 'https://ejalshakti.gov.in/wqmis/',
+        verified: true,
+        lastVerified: '2026-11-10'
+      }
+    ],
+    warnings: [
+      'Water surveillance parameter comparisons are deterministic rule evaluations against IS 10500:2012; they do not constitute medical or clinical diagnoses.',
+      'If bacteriological pathogens (Total Coliform / E. coli) are detected, observe precautionary boiling instructions while municipal disinfection is underway.',
+      'Do not disclose private residential door or flat numbers in public field observations.'
+    ],
+    contacts: [
+      { label: 'National Jal Jeevan Mission Helpline', phone: '1800-180-1551', url: 'https://jaljeevanmission.gov.in' },
+      { label: 'Central Public Health Engineering (CPHEEO)', phone: '011-23062331', url: 'https://cpheeo.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'civic-survey-builder',
     jurisdiction: {
       level: 'national',
@@ -1197,6 +1280,83 @@ export const MOCK_SERVICES = [
       { label: 'Urban Analytics & Diagnostics Cell', phone: '011-23061111', url: 'https://nudm.mohua.gov.in' }
     ],
     lastVerified: '2026-11-15'
+  },
+  {
+    id: 'pedestrian-barrier-map',
+    name: 'Accessible Pedestrian Route & Barrier Map',
+    shortDescription: 'Plan accessible pedestrian routes avoiding broken footpaths, missing curb ramps, steep gradients, and temporary obstructions with community reporting and official municipal audits.',
+    category: 'Infrastructure',
+    department: 'Municipal Corporation / Directorate of Urban Land Transport (DULT)',
+    type: 'Online Tool / Civic Audit',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 94,
+    jurisdiction: {
+      level: 'municipal',
+      states: ['Karnataka', 'All States'],
+      districts: ['Bengaluru Urban'],
+      localBody: 'Bruhat Bengaluru Mahanagara Palike (BBMP)'
+    },
+    eligibility: [
+      'Open to all residents, wheelchair users, senior citizens, parents with strollers, and pedestrians.',
+      'Community obstacle reporting is open to all citizens without requiring personal medical or health disclosure.',
+      'Ground verification and resolution updates are performed by authorized municipal engineers and ward reviewers.'
+    ],
+    documents: [
+      'No documents required for route planning or obstacle reporting.',
+      'Optional photographic evidence of physical barriers or missing curb ramps.'
+    ],
+    documentRequirements: {
+      'No documents required for route planning or obstacle reporting.': {
+        type: 'none'
+      },
+      'Optional photographic evidence of physical barriers or missing curb ramps.': {
+        type: 'optional'
+      }
+    },
+    steps: [
+      {
+        title: 'Select Origin and Destination Nodes',
+        description: 'Choose your start and destination points on the pedestrian network map or directory dropdown.'
+      },
+      {
+        title: 'Configure Functional Mobility Constraints',
+        description: 'Toggle constraints such as avoiding stairs/steps, requiring dropped curb ramps, or setting maximum gradient thresholds without disclosing personal diagnoses.'
+      },
+      {
+        title: 'Inspect Scoring Provenance & Alternative Route Tables',
+        description: 'Review the calculated route, audit freshness indicators, active obstacles, or switch to the screen-reader accessible table view.'
+      },
+      {
+        title: 'Report New Obstacles for Municipal Scrutiny',
+        description: 'Submit geo-tagged descriptions of missing curb cuts, broken pavers, or temporary roadwork to update the routing graph for all citizens.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Harmonised Guidelines and Standards for Universal Accessibility in India (MoHUA)',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Rights of Persons with Disabilities Act (Section 40 & 44 — Public Infrastructure Accessibility)',
+        url: 'https://disabilityaffairs.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      }
+    ],
+    warnings: [
+      'No route is described as fully accessible unless all traversed segments have undergone verified municipal ground inspection within the last 30 days.',
+      'Personal contact details (Aadhaar, phone, email) must never be submitted in public barrier descriptions.',
+      'Route preferences remain local to your browser and are not linked to citizen profiles.'
+    ],
+    contacts: [
+      { label: 'Pedestrian Infrastructure Helpline', phone: '1533', url: 'https://bbmp.gov.in' },
+      { label: 'Universal Accessibility Cell', phone: '080-22660000', url: 'https://dult.karnataka.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
   },
   {
     id: 'open-contracting-red-flags',
