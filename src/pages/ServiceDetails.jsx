@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf } from 'lucide-react';
+import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, Navigation } from 'lucide-react';
 import { getServiceById } from '../services/serviceCatalog';
 import RetiredServiceNotice from '../components/common/RetiredServiceNotice';
 import ServiceQrHandout from '../components/services/ServiceQrHandout';
@@ -1035,6 +1035,41 @@ const ServiceDetails = ({ previewService = null }) => {
                     style={{ fontSize: '0.85rem', textDecoration: 'none' }}
                   >
                     Launch Survey Workspace
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {service.id === 'pedestrian-barrier-map' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <Navigation size={18} color="#3b82f6" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Accessible Pedestrian Route &amp; Barrier Map
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Calculate accessible walking routes, configure mobility constraints without medical diagnosis, report street obstacles, and view official inspection records.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/pedestrian-barrier-map"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Open Route &amp; Barrier Map
                   </Link>
                 </div>
               </div>

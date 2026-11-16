@@ -136,6 +136,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+      if (normalizedTarget === '/pedestrian-barrier-map') {
+        return (
+          normalizedPath === '/pedestrian-barrier-map' ||
+          normalizedPath === '/accessible-routes' ||
+          normalizedPath.startsWith('/pedestrian-barrier-map/')
+        );
+      }
+
       if (normalizedTarget === '/admin') {
         return (
           normalizedPath === '/admin' ||
@@ -867,6 +875,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/road-safety',
                 label: t('nav.roadSafety', 'Road Safety Blackspots'),
                 icon: AlertTriangle
+              })}
+
+              {renderNavLink({
+                to: '/pedestrian-barrier-map',
+                label: t('nav.pedestrianBarriers', 'Pedestrian Barrier Map'),
+                icon: Navigation
               })}
 
               {renderNavLink({

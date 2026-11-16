@@ -40,6 +40,7 @@ import CommunityFacilityCorrectionQueue from '../components/admin/CommunityFacil
 import LibraryCorrectionQueue from '../components/admin/LibraryCorrectionQueue';
 import RentalCorrectionQueue from '../components/admin/RentalCorrectionQueue';
 import RoadHazardReviewQueue from '../components/admin/RoadHazardReviewQueue';
+import PedestrianBarrierReviewQueue from '../components/admin/PedestrianBarrierReviewQueue';
 import AddressChangeCorrectionQueue from '../components/admin/AddressChangeCorrectionQueue';
 import SurveyAuditQueue from '../components/admin/SurveyAuditQueue';
 import AuditLogViewer from '../components/admin/AuditLogViewer';
@@ -735,6 +736,7 @@ const Admin = () => {
               { id: 'duplicates', label: 'Duplicate Detection', badge: null },
               { id: 'conflicts', label: 'Requirement Conflicts', badge: null },
               { id: 'civic-works', label: 'Ward Public Works', badge: null },
+              { id: 'pedestrian-barriers', label: 'Pedestrian Route Barriers', badge: null },
               { id: 'audit', label: 'Audit Trail Logs', badge: null },
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -1166,6 +1168,9 @@ const Admin = () => {
                 <div style={{ marginTop: '2rem' }}>
                   <SurveyAuditQueue />
                   <RoadHazardReviewQueue />
+                  <div style={{ marginTop: '2rem' }}>
+                    <PedestrianBarrierReviewQueue />
+                  </div>
                 </div>
               </div>
             )}
@@ -1768,6 +1773,13 @@ const Admin = () => {
             {activeTab === 'civic-works' && (
               <div>
                 <CivicWorksModeratorPanel />
+              </div>
+            )}
+
+            {/* Pedestrian Route Barrier Moderation Tab */}
+            {activeTab === 'pedestrian-barriers' && (
+              <div>
+                <PedestrianBarrierReviewQueue />
               </div>
             )}
 

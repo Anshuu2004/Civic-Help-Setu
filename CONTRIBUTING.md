@@ -36,9 +36,14 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/pedestrianBarrierService.test.js       # pedestrian barrier graph & service tests (#757)
+npx vitest run src/services/pedestrianBarrierMigrations.test.js    # pedestrian schema migration/rollback tests (#757)
+npx vitest run tests/pedestrian-barriers.test.js                   # pedestrian barrier API validation tests (#757)
+npx vitest run tests/pedestrian-barriers-security.test.js          # pedestrian security, injection & replay tests (#757)
+npx vitest run src/pages/AccessibleRouteBarrierWorkspace.test.jsx  # accessible barrier workspace UI tests (#757)
 ```
 
-Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Architecture, data model, state machine, graph routing rules, and verification integrity for the accessible pedestrian route barrier map are documented in [docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md](docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:
