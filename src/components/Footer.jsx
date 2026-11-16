@@ -164,11 +164,13 @@ const Footer = () => {
               </li>
               <li>
                 <Link
+                  to="/stray-animal-workspace"
                   to="/noise-pollution-workspace"
                   style={linkBaseStyle}
                   onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
                   onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
                 >
+                  Stray Animals &amp; Rabies PEP
                   Noise Pollution &amp; Curfew
                 </Link>
                 <Link
