@@ -13,59 +13,59 @@ const getStatusBadge = (evaluation) => {
   if (!evaluation) {
     return {
       label: 'Verified',
-      badgeClass: 'badge-success',
-      icon: <CheckCircle2 className="w-4 h-4 text-emerald-600 inline mr-1" aria-hidden="true" />,
+      badgeClass: 'wq-badge wq-badge-success',
+      icon: <CheckCircle2 size={14} />,
     };
   }
 
   if (evaluation.level === 'hazardous_exceeded') {
     return {
       label: evaluation.isMicrobialRisk ? 'Hazardous (Pathogen)' : 'Statutory Limit Exceeded',
-      badgeClass: 'badge-danger',
-      icon: <AlertOctagon className="w-4 h-4 text-rose-600 inline mr-1" aria-hidden="true" />,
+      badgeClass: 'wq-badge wq-badge-danger',
+      icon: <AlertOctagon size={14} />,
     };
   }
 
   if (evaluation.level === 'permissible_warning') {
     return {
       label: 'Permissible Warning',
-      badgeClass: 'badge-warning',
-      icon: <AlertTriangle className="w-4 h-4 text-amber-600 inline mr-1" aria-hidden="true" />,
+      badgeClass: 'wq-badge wq-badge-warning',
+      icon: <AlertTriangle size={14} />,
     };
   }
 
   return {
     label: 'Desirable Limit Compliant',
-    badgeClass: 'badge-success',
-    icon: <CheckCircle2 className="w-4 h-4 text-emerald-600 inline mr-1" aria-hidden="true" />,
+    badgeClass: 'wq-badge wq-badge-success',
+    icon: <CheckCircle2 size={14} />,
   };
 };
 
 export default function ParameterResultsTable({ results = [], isSuperseded = false }) {
   if (!results || results.length === 0) {
     return (
-      <div className="p-4 text-center text-sm text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-lg border border-[var(--border-light)]">
+      <div style={{ padding: '1rem', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', background: 'var(--bg-card)', borderRadius: '0.5rem', border: '1px solid var(--border-light)' }}>
         No laboratory parameter results recorded for this sampling event.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto my-3">
+    <div className="wq-table-wrapper" style={{ margin: '0.75rem 0', opacity: isSuperseded ? 0.65 : 1 }}>
       <table
-        className={`w-full text-left text-xs md:text-sm border-collapse ${isSuperseded ? 'opacity-60 bg-gray-50 dark:bg-gray-900/40' : ''}`}
+        className="wq-table"
         aria-label="Water Quality Parameter Results vs IS 10500 Standards"
       >
         <caption className="sr-only">
           Laboratory parameter results comparison against IS 10500:2012 Drinking Water Specification
         </caption>
         <thead>
-          <tr className="border-b border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
-            <th scope="col" className="p-2.5 font-semibold">Parameter</th>
-            <th scope="col" className="p-2.5 font-semibold">Tested Value</th>
-            <th scope="col" className="p-2.5 font-semibold">Acceptable Limit (Desirable)</th>
-            <th scope="col" className="p-2.5 font-semibold">Permissible Limit (No Alternate)</th>
-            <th scope="col" className="p-2.5 font-semibold">Compliance Status</th>
+          <tr>
+            <th scope="col">Parameter</th>
+            <th scope="col">Tested Value</th>
+            <th scope="col">Acceptable Limit (Desirable)</th>
+            <th scope="col">Permissible Limit (No Alternate)</th>
+            <th scope="col">Compliance Status</th>
           </tr>
         </thead>
         <tbody>
@@ -76,24 +76,21 @@ export default function ParameterResultsTable({ results = [], isSuperseded = fal
             const status = getStatusBadge(result.evaluation);
 
             return (
-              <tr
-                key={result.id}
-                className="border-b border-[var(--border-light)] hover:bg-[var(--glass-bg)] transition-colors"
-              >
-                <td className="p-2.5 font-medium text-[var(--text-primary)]">
-                  <div>{paramName}</div>
+              <tr key={result.id}>
+                <td>
+                  <strong>{paramName}</strong>
                   {paramDef.testMethod && (
-                    <span className="text-[10px] text-[var(--text-secondary)] block">
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block' }}>
                       Ref: {paramDef.testMethod}
                     </span>
                   )}
                 </td>
-                <td className="p-2.5 font-bold text-[var(--text-primary)]">
-                  <span className={isSuperseded ? 'line-through text-gray-500' : ''}>
+                <td>
+                  <strong style={{ textDecoration: isSuperseded ? 'line-through' : 'none' }}>
                     {result.testedValue} {unit}
-                  </span>
+                  </strong>
                 </td>
-                <td className="p-2.5 text-[var(--text-secondary)]">
+                <td style={{ color: 'var(--text-secondary)' }}>
                   {paramDef.acceptableMin !== undefined && paramDef.acceptableMax !== undefined ? (
                     paramDef.acceptableMin === 0 && paramDef.acceptableMax === 0 ? (
                       'Absent (0)'
@@ -106,17 +103,15 @@ export default function ParameterResultsTable({ results = [], isSuperseded = fal
                     'N/A'
                   )}
                 </td>
-                <td className="p-2.5 text-[var(--text-secondary)]">
+                <td style={{ color: 'var(--text-secondary)' }}>
                   {paramDef.relaxationAllowed ? (
                     `Max ${paramDef.permissibleMax} ${unit}`
                   ) : (
-                    <span className="italic text-xs">No relaxation</span>
+                    <span style={{ fontStyle: 'italic', fontSize: '0.8rem' }}>No relaxation</span>
                   )}
                 </td>
-                <td className="p-2.5">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${status.badgeClass}`}
-                  >
+                <td>
+                  <span className={status.badgeClass}>
                     {status.icon}
                     <span>{isSuperseded ? 'Superseded' : status.label}</span>
                   </span>

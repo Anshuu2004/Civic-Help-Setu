@@ -52,114 +52,110 @@ export default function CorrectiveActionModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="wq-modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="corrective-modal-title"
     >
-      <div className="relative w-full max-w-lg bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-2xl shadow-2xl p-6">
-        <div className="flex items-center justify-between pb-3 border-b border-[var(--border-light)] mb-4">
+      <div className="wq-modal-dialog" style={{ maxWidth: '540px' }}>
+        <div className="wq-modal-header">
           <div>
-            <h3 id="corrective-modal-title" className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <Wrench className="w-5 h-5 text-amber-600" />
+            <h3 id="corrective-modal-title" style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Wrench size={18} style={{ color: '#f59e0b' }} />
               <span>Sanction Remedial Corrective Action</span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">
-              Water Point: <span className="font-semibold text-[var(--text-primary)]">{waterPoint.name}</span> ({waterPoint.id})
+            <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              Water Point: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{waterPoint.name}</span> ({waterPoint.id})
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[var(--glass-bg)] text-[var(--text-secondary)]"
+            className="wq-modal-close"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X size={18} />
           </button>
         </div>
 
-        {error && (
-          <div className="p-3 mb-4 rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
+        <div className="wq-modal-body">
+          {error && (
+            <div className="wq-alert-danger">
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              Remediation Action Type *
-            </label>
-            <select
-              value={actionType}
-              onChange={(e) => setActionType(e.target.value)}
-              className="w-full text-xs p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)]"
-            >
-              {Object.entries(CORRECTIVE_ACTION_TYPES).map(([key, def]) => (
-                <option key={key} value={key}>
-                  {def.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <form onSubmit={handleSubmit} className="wq-form-stack">
+            <div className="wq-field-group">
+              <label className="wq-field-label">Remediation Action Type *</label>
+              <select
+                value={actionType}
+                onChange={(e) => setActionType(e.target.value)}
+                className="wq-select"
+              >
+                {Object.entries(CORRECTIVE_ACTION_TYPES).map(([key, def]) => (
+                  <option key={key} value={key}>
+                    {def.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              Target Completion Date *
-            </label>
-            <input
-              type="date"
-              value={targetCompletionDate}
-              min={new Date().toISOString().split('T')[0]}
-              onChange={(e) => setTargetCompletionDate(e.target.value)}
-              required
-              className="w-full text-xs p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)]"
-            />
-          </div>
+            <div className="wq-field-group">
+              <label className="wq-field-label">Target Completion Date *</label>
+              <input
+                type="date"
+                value={targetCompletionDate}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={(e) => setTargetCompletionDate(e.target.value)}
+                required
+                className="wq-input"
+              />
+            </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              Assigned Municipal Department *
-            </label>
-            <input
-              type="text"
-              value={assignedDepartment}
-              onChange={(e) => setAssignedDepartment(e.target.value)}
-              required
-              className="w-full text-xs p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)]"
-            />
-          </div>
+            <div className="wq-field-group">
+              <label className="wq-field-label">Assigned Municipal Department *</label>
+              <input
+                type="text"
+                value={assignedDepartment}
+                onChange={(e) => setAssignedDepartment(e.target.value)}
+                required
+                className="wq-input"
+              />
+            </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              Action Description & Scope of Work *
-            </label>
-            <textarea
-              rows={3}
-              placeholder="e.g. Flush distribution line with 50 mg/L chlorine solution. Verify zero coliform count before reopening."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="w-full text-xs p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)]"
-            />
-          </div>
+            <div className="wq-field-group">
+              <label className="wq-field-label">Action Description &amp; Scope of Work *</label>
+              <textarea
+                rows={3}
+                placeholder="e.g. Flush distribution line with 50 mg/L chlorine solution. Verify zero coliform count before reopening."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="wq-textarea"
+              />
+            </div>
 
-          <div className="pt-3 border-t border-[var(--border-light)] flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn btn-secondary text-xs px-4 py-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary text-xs px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white"
-            >
-              Sanction Action
-            </button>
-          </div>
-        </form>
+            <div className="wq-modal-footer" style={{ padding: '0.75rem 0 0 0', background: 'transparent' }}>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn btn-secondary text-xs"
+                style={{ padding: '0.45rem 1rem' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary text-xs"
+                style={{ padding: '0.45rem 1rem', background: '#d97706', borderColor: '#d97706' }}
+              >
+                Sanction Action
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

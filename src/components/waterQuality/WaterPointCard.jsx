@@ -21,26 +21,26 @@ export default function WaterPointCard({
       case 'compliant':
         return {
           label: 'IS 10500 Compliant',
-          badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700',
-          icon: <ShieldCheck className="w-4 h-4 text-emerald-600 inline mr-1" aria-hidden="true" />,
+          badgeClass: 'wq-badge-success',
+          icon: <ShieldCheck size={14} />,
         };
       case 'critical_hazard':
         return {
           label: 'Critical Hazard (Action Required)',
-          badgeClass: 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-700',
-          icon: <AlertOctagon className="w-4 h-4 text-rose-600 inline mr-1" aria-hidden="true" />,
+          badgeClass: 'wq-badge-danger',
+          icon: <AlertOctagon size={14} />,
         };
       case 'exceeded':
         return {
           label: 'Parameter Exceeded (Under Review)',
-          badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700',
-          icon: <AlertTriangle className="w-4 h-4 text-amber-600 inline mr-1" aria-hidden="true" />,
+          badgeClass: 'wq-badge-warning',
+          icon: <AlertTriangle size={14} />,
         };
       default:
         return {
           label: 'Pending Initial Lab Analysis',
-          badgeClass: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-700',
-          icon: <Clock className="w-4 h-4 text-gray-500 inline mr-1" aria-hidden="true" />,
+          badgeClass: 'wq-badge-neutral',
+          icon: <Clock size={14} />,
         };
     }
   };
@@ -50,24 +50,20 @@ export default function WaterPointCard({
 
   return (
     <article
-      className="p-5 rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+      className="wq-card"
       aria-labelledby={`wp-title-${waterPoint.id}`}
     >
       <div>
         {/* Top Badges */}
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-light)]">
+        <div className="wq-card-header">
+          <span className="wq-card-id">
             {waterPoint.id}
           </span>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span
-              className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${opStatus.badgeClass}`}
-            >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+            <span className={`wq-badge ${opStatus.badgeClass || 'wq-badge-neutral'}`}>
               {opStatus.label}
             </span>
-            <span
-              className={`text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center ${complianceBadge.badgeClass}`}
-            >
+            <span className={`wq-badge ${complianceBadge.badgeClass}`}>
               {complianceBadge.icon}
               {complianceBadge.label}
             </span>
@@ -77,41 +73,41 @@ export default function WaterPointCard({
         {/* Title & Type */}
         <h3
           id={`wp-title-${waterPoint.id}`}
-          className="text-lg font-bold text-[var(--text-primary)] mb-1 leading-snug"
+          className="wq-card-title"
         >
           {waterPoint.name}
         </h3>
-        <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400 mb-3 flex items-center gap-1">
-          <Droplet className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+        <p className="wq-card-source">
+          <Droplet size={14} style={{ flexShrink: 0 }} />
           <span>{typeDef.label}</span>
-          <span className="text-[var(--text-tertiary)]">•</span>
+          <span style={{ opacity: 0.5 }}>•</span>
           <span>{waterPoint.sourceType}</span>
         </p>
 
         {/* Location & Landmark */}
-        <div className="space-y-1.5 text-xs text-[var(--text-secondary)] mb-4">
-          <div className="flex items-start gap-1.5">
-            <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="wq-card-meta">
+          <div className="wq-card-meta-row" style={{ alignItems: 'flex-start' }}>
+            <MapPin size={14} style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <span className="font-semibold text-[var(--text-primary)]">{waterPoint.ward}</span>, {waterPoint.city}
+              <strong>{waterPoint.ward}</strong>, {waterPoint.city}
               {waterPoint.landmark && (
-                <div className="text-[11px] text-[var(--text-secondary)] italic mt-0.5">
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontStyle: 'italic', marginTop: '2px' }}>
                   Landmark: {waterPoint.landmark}
                 </div>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5 text-indigo-500 shrink-0" aria-hidden="true" />
+          <div className="wq-card-meta-row">
+            <Activity size={14} style={{ color: '#818cf8', flexShrink: 0 }} />
             <span>
               {waterPoint.testedCount > 0
-                ? `${waterPoint.testedCount} official surveillance tests completed`
+                ? `${waterPoint.testedCount} surveillance tests completed`
                 : 'No historical test records'}
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-amber-500 shrink-0" aria-hidden="true" />
-            <span className={sampleAge.isStale ? 'font-semibold text-rose-600 dark:text-rose-400' : ''}>
+          <div className="wq-card-meta-row">
+            <Calendar size={14} style={{ color: '#f59e0b', flexShrink: 0 }} />
+            <span style={{ color: sampleAge.isStale ? '#ef4444' : 'inherit', fontWeight: sampleAge.isStale ? 700 : 400 }}>
               {sampleAge.text}
             </span>
           </div>
@@ -119,22 +115,24 @@ export default function WaterPointCard({
       </div>
 
       {/* Action Footer */}
-      <div className="pt-3 border-t border-[var(--border-light)] flex flex-wrap items-center justify-between gap-2 mt-2">
+      <div className="wq-card-footer">
         <button
           type="button"
           onClick={() => onViewDetails(waterPoint.id)}
-          className="btn btn-secondary text-xs px-3 py-1.5 flex items-center gap-1"
+          className="btn btn-secondary text-xs"
+          style={{ padding: '0.45rem 0.8rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
           aria-label={`View laboratory test history and parameters for ${waterPoint.name}`}
         >
-          <span>Laboratory Results & History</span>
+          <span>Laboratory Results &amp; History</span>
         </button>
 
         {['sampler', 'official_reviewer', 'admin'].includes(userRole) && (
-          <div className="flex items-center gap-1.5">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <button
               type="button"
               onClick={() => onRecordSample(waterPoint.id)}
-              className="btn btn-primary text-xs px-2.5 py-1.5"
+              className="btn btn-primary text-xs"
+              style={{ padding: '0.45rem 0.75rem' }}
               aria-label={`Log new sampling event for ${waterPoint.name}`}
             >
               + Log Sample
@@ -143,7 +141,8 @@ export default function WaterPointCard({
               <button
                 type="button"
                 onClick={() => onAddCorrectiveAction(waterPoint.id)}
-                className="btn btn-secondary text-xs px-2 py-1.5 text-amber-700 dark:text-amber-300"
+                className="btn btn-secondary text-xs"
+                style={{ padding: '0.45rem 0.75rem', color: '#f59e0b' }}
                 aria-label={`Sanction remedial action for ${waterPoint.name}`}
               >
                 Remedial Action

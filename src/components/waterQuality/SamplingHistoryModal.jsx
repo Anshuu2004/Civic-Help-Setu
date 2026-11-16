@@ -26,115 +26,138 @@ export default function SamplingHistoryModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm overflow-y-auto"
+      className="wq-modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-wp-title"
     >
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="wq-modal-dialog" style={{ maxWidth: '850px' }}>
         {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-[var(--border-light)] bg-[var(--bg-card)] flex items-start justify-between gap-4">
+        <div className="wq-modal-header">
           <div>
-            <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[var(--bg-secondary)] border border-[var(--border-light)]">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+              <span className="wq-card-id">
                 {waterPoint.id}
               </span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+              <span className="wq-badge wq-badge-neutral">
                 {waterPoint.ward}
               </span>
             </div>
-            <h2 id="modal-wp-title" className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+            <h2 id="modal-wp-title" style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0.2rem 0', color: 'var(--text-primary)' }}>
               {waterPoint.name}
             </h2>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
-              {waterPoint.city} • Source: <span className="font-medium text-[var(--text-primary)]">{waterPoint.sourceType}</span>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
+              {waterPoint.city} • Source: <strong style={{ color: 'var(--text-primary)' }}>{waterPoint.sourceType}</strong>
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-[var(--glass-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            className="btn btn-secondary text-xs"
+            style={{ padding: '0.35rem 0.65rem' }}
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X size={16} />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-[var(--border-light)] px-6 bg-[var(--bg-secondary)] text-sm font-semibold">
+        <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-light)', padding: '0 1.5rem', background: 'var(--bg-secondary)', fontSize: '0.85rem', fontWeight: 600 }}>
           <button
             type="button"
             onClick={() => setActiveTab('samples')}
-            className={`py-3 px-4 border-b-2 flex items-center gap-2 transition-colors ${
-              activeTab === 'samples'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-            }`}
+            style={{
+              padding: '0.75rem 1rem',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'samples' ? '2px solid #10b981' : '2px solid transparent',
+              color: activeTab === 'samples' ? '#10b981' : 'var(--text-secondary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}
           >
-            <Calendar className="w-4 h-4" />
-            <span>Sampling Events & Results ({samplingHistory.length})</span>
+            <Calendar size={16} />
+            <span>Sampling Events &amp; Results ({samplingHistory.length})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('corrective')}
-            className={`py-3 px-4 border-b-2 flex items-center gap-2 transition-colors ${
-              activeTab === 'corrective'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-            }`}
+            style={{
+              padding: '0.75rem 1rem',
+              background: 'none',
+              border: 'none',
+              borderBottom: activeTab === 'corrective' ? '2px solid #10b981' : '2px solid transparent',
+              color: activeTab === 'corrective' ? '#10b981' : 'var(--text-secondary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}
           >
-            <Wrench className="w-4 h-4" />
+            <Wrench size={16} />
             <span>Remedial Interventions ({correctiveActions.length})</span>
           </button>
         </div>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="wq-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {activeTab === 'samples' && (
             <>
               {samplingHistory.length === 0 ? (
-                <div className="p-8 text-center text-sm text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-xl border border-[var(--border-light)]">
+                <div className="wq-empty-state">
                   No sampling history recorded for this water point yet.
                 </div>
               ) : (
                 samplingHistory.map((event) => {
-                  const statusDef = RESULT_STATUSES[event.status] || { label: event.status, badgeClass: 'badge-neutral' };
+                  const statusDef = RESULT_STATUSES[event.status] || { label: event.status, badgeClass: 'wq-badge-neutral' };
                   const activeResults = (event.results || []).filter((r) => r.status !== 'superseded');
                   const supersededResults = (event.results || []).filter((r) => r.status === 'superseded');
 
                   return (
                     <div
                       key={event.id}
-                      className="p-4 sm:p-5 rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] shadow-sm space-y-3"
+                      style={{
+                        padding: '1.25rem',
+                        borderRadius: '0.75rem',
+                        border: '1px solid var(--border-light)',
+                        background: 'var(--bg-secondary)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.75rem',
+                      }}
                     >
                       {/* Event Header */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-light)] pb-2.5">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-mono text-xs font-bold text-[var(--text-primary)]">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.65rem' }}>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
+                            <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '0.8rem' }}>
                               {event.id}
                             </span>
-                            <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200">
+                            <span className="wq-badge wq-badge-neutral">
                               {event.sampleType.replace(/_/g, ' ')}
                             </span>
-                            <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${statusDef.badgeClass}`}>
+                            <span className={`wq-badge ${
+                              event.status === 'verified_compliant' ? 'wq-badge-success' : event.status === 'flagged_out_of_range' ? 'wq-badge-danger' : 'wq-badge-neutral'
+                            }`}>
                               {statusDef.label}
                             </span>
                           </div>
-                          <p className="text-xs text-[var(--text-secondary)]">
-                            Collected on <span className="font-semibold text-[var(--text-primary)]">{new Date(event.collectionDate).toLocaleDateString()}</span> • Container ID: <span className="font-mono">{event.sealedContainerCode}</span>
+                          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+                            Collected: <strong>{new Date(event.collectionDate).toLocaleDateString()}</strong> • Container ID: <span style={{ fontFamily: 'monospace' }}>{event.sealedContainerCode}</span>
                           </p>
                         </div>
 
                         {/* Cryptographic Seal */}
                         {event.cryptographicSeal && (
-                          <div className="text-right">
-                            <span className="text-[11px] font-mono px-2 py-1 rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 inline-flex items-center gap-1">
-                              <Shield className="w-3.5 h-3.5 text-emerald-600" />
+                          <div style={{ textAlign: 'right' }}>
+                            <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', padding: '0.25rem 0.5rem', borderRadius: '0.35rem', background: 'rgba(16, 185, 129, 0.12)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                              <Shield size={14} />
                               {event.cryptographicSeal}
                             </span>
-                            <span className="block text-[10px] text-[var(--text-tertiary)] mt-0.5">
-                              Cryptographic Lab Seal
+                            <span style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>
+                              Cryptographic Seal
                             </span>
                           </div>
                         )}
@@ -142,20 +165,20 @@ export default function SamplingHistoryModal({
 
                       {/* Lab Info */}
                       {event.lab && (
-                        <div className="text-xs bg-[var(--bg-secondary)] p-2.5 rounded-lg border border-[var(--border-light)] flex items-center justify-between flex-wrap gap-2">
+                        <div style={{ fontSize: '0.8rem', background: 'var(--bg-card)', padding: '0.6rem 0.85rem', borderRadius: '0.5rem', border: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                           <div>
-                            <span className="font-semibold text-[var(--text-primary)]">Testing Lab: </span>
+                            <strong>Testing Lab: </strong>
                             <span>{event.lab.name}</span>
                           </div>
-                          <div className="font-mono text-emerald-700 dark:text-emerald-400">
-                            NABL Accr: {event.lab.nablAccreditationNo}
+                          <div style={{ fontFamily: 'monospace', color: '#10b981' }}>
+                            NABL: {event.lab.nablAccreditationNo}
                           </div>
                         </div>
                       )}
 
                       {/* Active Results Table */}
                       <div>
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+                        <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)', margin: '0 0 0.4rem 0' }}>
                           Verified Parameters (IS 10500:2012)
                         </h4>
                         <ParameterResultsTable results={activeResults} />
@@ -163,9 +186,9 @@ export default function SamplingHistoryModal({
 
                       {/* Superseded Results Accordion/Section if exists */}
                       {supersededResults.length > 0 && (
-                        <div className="mt-3 p-3 rounded-lg border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
-                          <h5 className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">
-                            <RefreshCw className="w-3.5 h-3.5" />
+                        <div style={{ padding: '0.75rem', borderRadius: '0.5rem', border: '1px dashed var(--border-light)', background: 'rgba(0,0,0,0.15)' }}>
+                          <h5 style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.35rem', margin: '0 0 0.4rem 0' }}>
+                            <RefreshCw size={14} />
                             <span>Superseded Prior Readings (Audit History)</span>
                           </h5>
                           <ParameterResultsTable results={supersededResults} isSuperseded={true} />
@@ -174,21 +197,22 @@ export default function SamplingHistoryModal({
 
                       {/* Notes / Reason */}
                       {event.notes && (
-                        <p className="text-xs text-[var(--text-secondary)] italic pt-1">
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0 }}>
                           Notes: {event.notes}
                         </p>
                       )}
 
                       {/* Reviewer / Operator Action Buttons */}
                       {['lab_analyst', 'official_reviewer', 'admin'].includes(userRole) && (
-                        <div className="pt-2 border-t border-[var(--border-light)] flex flex-wrap items-center justify-end gap-2">
+                        <div style={{ paddingTop: '0.5rem', borderTop: '1px solid var(--border-light)', display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'wrap' }}>
                           {event.status === 'pending' && (
                             <button
                               type="button"
                               onClick={() => onAddResults(event.id)}
-                              className="btn btn-primary text-xs px-3 py-1 flex items-center gap-1"
+                              className="btn btn-primary text-xs"
+                              style={{ padding: '0.35rem 0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                             >
-                              <PlusCircle className="w-3.5 h-3.5" />
+                              <PlusCircle size={14} />
                               <span>Record Lab Measurements</span>
                             </button>
                           )}
@@ -196,9 +220,10 @@ export default function SamplingHistoryModal({
                             <button
                               type="button"
                               onClick={() => onPublishCorrection(event.id)}
-                              className="btn btn-secondary text-xs px-3 py-1 text-amber-700 dark:text-amber-400 flex items-center gap-1"
+                              className="btn btn-secondary text-xs"
+                              style={{ padding: '0.35rem 0.65rem', color: '#f59e0b', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
                             >
-                              <RefreshCw className="w-3.5 h-3.5" />
+                              <RefreshCw size={14} />
                               <span>Publish Official Correction</span>
                             </button>
                           )}
@@ -212,9 +237,9 @@ export default function SamplingHistoryModal({
           )}
 
           {activeTab === 'corrective' && (
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {correctiveActions.length === 0 ? (
-                <div className="p-8 text-center text-sm text-[var(--text-secondary)] bg-[var(--bg-card)] rounded-xl border border-[var(--border-light)]">
+                <div className="wq-empty-state">
                   No remedial interventions logged for this water point.
                 </div>
               ) : (
@@ -223,23 +248,31 @@ export default function SamplingHistoryModal({
                   return (
                     <div
                       key={action.id}
-                      className="p-4 sm:p-5 rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)] shadow-sm space-y-2"
+                      style={{
+                        padding: '1.25rem',
+                        borderRadius: '0.75rem',
+                        border: '1px solid var(--border-light)',
+                        background: 'var(--bg-secondary)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.5rem',
+                      }}
                     >
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[var(--bg-secondary)] border border-[var(--border-light)]">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                        <span className="wq-card-id">
                           {action.id}
                         </span>
-                        <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        <span className="wq-badge wq-badge-warning">
                           Status: {action.status.replace(/_/g, ' ')}
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-[var(--text-primary)]">
+                      <h4 style={{ fontSize: '0.95rem', fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                         {typeDef.label}
                       </h4>
-                      <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
                         {action.description}
                       </p>
-                      <div className="text-xs text-[var(--text-tertiary)] flex items-center justify-between flex-wrap pt-2 border-t border-[var(--border-light)]">
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-light)' }}>
                         <span>Assigned: {action.assignedDepartment}</span>
                         <span>Target: {action.targetCompletionDate}</span>
                       </div>
@@ -249,13 +282,14 @@ export default function SamplingHistoryModal({
               )}
 
               {['official_reviewer', 'admin'].includes(userRole) && (
-                <div className="pt-2">
+                <div>
                   <button
                     type="button"
                     onClick={() => onAddCorrectiveAction(waterPoint.id)}
-                    className="btn btn-secondary text-xs px-4 py-2 flex items-center gap-1.5"
+                    className="btn btn-secondary text-xs"
+                    style={{ padding: '0.5rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
                   >
-                    <Wrench className="w-4 h-4 text-amber-600" />
+                    <Wrench size={16} style={{ color: '#f59e0b' }} />
                     <span>Sanction New Remedial Intervention</span>
                   </button>
                 </div>
@@ -265,9 +299,9 @@ export default function SamplingHistoryModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[var(--border-light)] bg-[var(--bg-card)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
-          <span>Standard: Bureau of Indian Standards IS 10500:2012</span>
-          <button type="button" onClick={onClose} className="btn btn-secondary text-xs px-4 py-1.5">
+        <div className="wq-modal-footer" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Standard: Bureau of Indian Standards IS 10500:2012</span>
+          <button type="button" onClick={onClose} className="btn btn-secondary text-xs" style={{ padding: '0.4rem 0.85rem' }}>
             Close
           </button>
         </div>

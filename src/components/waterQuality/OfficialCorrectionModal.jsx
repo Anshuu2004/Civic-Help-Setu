@@ -73,101 +73,105 @@ export default function OfficialCorrectionModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto"
+      className="wq-modal-backdrop"
       role="dialog"
       aria-modal="true"
       aria-labelledby="correction-modal-title"
     >
-      <div className="relative w-full max-w-xl max-h-[90vh] bg-[var(--bg-primary)] border border-[var(--border-light)] rounded-2xl shadow-2xl p-6 flex flex-col overflow-hidden">
-        <div className="flex items-center justify-between pb-3 border-b border-[var(--border-light)] mb-4">
+      <div className="wq-modal-dialog" style={{ maxWidth: '580px' }}>
+        <div className="wq-modal-header">
           <div>
-            <h3 id="correction-modal-title" className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <RefreshCw className="w-5 h-5 text-amber-600" />
+            <h3 id="correction-modal-title" style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <RefreshCw size={18} style={{ color: '#f59e0b' }} />
               <span>Publish Official Result Correction</span>
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">
-              Target Event: <span className="font-mono font-semibold text-[var(--text-primary)]">{sampleEventId}</span>
+            <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+              Target Event: <span style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-primary)' }}>{sampleEventId}</span>
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[var(--glass-bg)] text-[var(--text-secondary)]"
+            className="wq-modal-close"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X size={18} />
           </button>
         </div>
 
-        {error && (
-          <div className="p-3 mb-4 rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-1">
-          <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200">
-            <strong>Statutory Audit Requirement:</strong> Publishing a correction supersedes previously published lab readings, marks them as superseded in public records, and stamps an immutable audit entry with your rationale.
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              Official Reason for Correction & Audit Rationale *
-            </label>
-            <textarea
-              rows={3}
-              placeholder="e.g. Recalibration of laboratory nephelometer conducted. Confirmatory re-test performed by Chief Analyst."
-              value={correctionReason}
-              onChange={(e) => setCorrectionReason(e.target.value)}
-              required
-              className="w-full text-xs p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)]"
-            />
-          </div>
-
-          <div className="border border-[var(--border-light)] rounded-xl p-3 bg-[var(--bg-card)]">
-            <h4 className="text-xs font-bold text-[var(--text-primary)] mb-2">
-              Corrected Parameter Values (IS 10500:2012)
-            </h4>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              {Object.keys(correctedValues).map((code) => {
-                const param = IS_10500_STANDARDS.parameters[code];
-                return (
-                  <div key={code} className="space-y-1">
-                    <label className="block font-medium text-[var(--text-primary)]">
-                      {param.name} ({param.unit})
-                    </label>
-                    <input
-                      type="number"
-                      step="any"
-                      min="0"
-                      value={correctedValues[code]}
-                      onChange={(e) => handleValueChange(code, e.target.value)}
-                      className="w-full p-2 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-light)] text-[var(--text-primary)]"
-                    />
-                  </div>
-                );
-              })}
+        <div className="wq-modal-body">
+          {error && (
+            <div className="wq-alert-danger">
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
             </div>
-          </div>
+          )}
 
-          <div className="pt-3 border-t border-[var(--border-light)] flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn btn-secondary text-xs px-4 py-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary text-xs px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white"
-            >
-              Supersede & Publish Correction
-            </button>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit} className="wq-form-stack">
+            <div className="wq-alert-warning">
+              <div>
+                <strong>Statutory Audit Requirement:</strong> Publishing a correction supersedes previously published lab readings, marks them as superseded in public records, and stamps an immutable audit entry with your rationale.
+              </div>
+            </div>
+
+            <div className="wq-field-group">
+              <label className="wq-field-label">Official Reason for Correction &amp; Audit Rationale *</label>
+              <textarea
+                rows={3}
+                placeholder="e.g. Recalibration of laboratory nephelometer conducted. Confirmatory re-test performed by Chief Analyst."
+                value={correctionReason}
+                onChange={(e) => setCorrectionReason(e.target.value)}
+                required
+                className="wq-textarea"
+              />
+            </div>
+
+            <div className="wq-sub-card">
+              <h4 className="wq-sub-card-title">
+                Corrected Parameter Values (IS 10500:2012)
+              </h4>
+
+              <div className="wq-grid-2">
+                {Object.keys(correctedValues).map((code) => {
+                  const param = IS_10500_STANDARDS.parameters[code];
+                  return (
+                    <div key={code} className="wq-field-group">
+                      <label className="wq-field-label" style={{ color: 'var(--text-primary)' }}>
+                        {param.name} ({param.unit})
+                      </label>
+                      <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        value={correctedValues[code]}
+                        onChange={(e) => handleValueChange(code, e.target.value)}
+                        className="wq-input"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="wq-modal-footer" style={{ padding: '0.75rem 0 0 0', background: 'transparent' }}>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn btn-secondary text-xs"
+                style={{ padding: '0.45rem 1rem' }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary text-xs"
+                style={{ padding: '0.45rem 1rem', background: '#d97706', borderColor: '#d97706' }}
+              >
+                Publish Correction
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
