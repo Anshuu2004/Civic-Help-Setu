@@ -82,4 +82,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Launch Survey Workspace');
     expect(html).toContain('/surveys');
   });
+
+  it('renders the dedicated Public Toilet Directory entry card when viewing the public-toilet-directory service (#758)', () => {
+    const html = render('/services/public-toilet-directory');
+    expect(html).toContain('Public Toilet Availability, Accessibility &amp; Maintenance Status');
+    expect(html).toContain('Dedicated Public Toilet Availability &amp; Maintenance Directory');
+    expect(html).toContain('Launch Sanitation Directory');
+    expect(html).toContain('/public-toilets');
+  });
 });

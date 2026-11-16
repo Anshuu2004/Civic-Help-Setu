@@ -20,6 +20,7 @@ import tenderCorrections from "./_lib/handlers/tender-corrections.js";
 import wardBudgetProposals from "./_lib/handlers/ward-budget-proposals.js";
 import waterTankerReports from "./_lib/handlers/water-tanker-reports.js";
 import civicSurveys from "./_lib/handlers/civic-surveys.js";
+import publicToilets from "./_lib/handlers/public-toilets.js";
 
 const handlers = {
   "address-change-corrections": addressChange,
@@ -33,6 +34,7 @@ const handlers = {
   "library-corrections": libraryCorrections,
   "pds-observations": pdsObservations,
   "privacy-exports": privacyExports,
+  "public-toilets": publicToilets,
   "rental-checklist-corrections": rentalChecklist,
   "send-email": sendEmail,
   "share-by-email": shareByEmail,

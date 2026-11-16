@@ -1041,6 +1041,41 @@ const ServiceDetails = ({ previewService = null }) => {
             </div>
           )}
 
+          {service.id === 'public-toilet-directory' && (
+            <div
+              style={{
+                padding: '1.25rem',
+                marginBottom: '1.25rem',
+                border: '1px solid var(--accent-main, #3b82f6)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldCheck size={18} color="var(--accent-main, #3b82f6)" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Dedicated Public Toilet Availability &amp; Maintenance Directory
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Search verified sanitation facilities with real-time open/closed calculations, wheelchair accessibility fixtures, supervisor cleaning logs, and issue reporting.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/public-toilets"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Launch Sanitation Directory
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {service.id === 'business-licence-checklist' && showDedicatedBusinessLicenceCentre ? (
             <SmallBusinessLicenceCentre />
           ) : service.id === 'aadhaar-card' && showDedicatedAadhaarGuide ? (
