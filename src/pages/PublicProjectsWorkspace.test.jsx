@@ -89,4 +89,12 @@ describe('PublicProjectsWorkspace UI (#752)', () => {
     expect(html).toContain('Redacted');
     expect(html).toContain('Hash:');
   });
+
+  it('auto-seeds and renders projects when storage starts completely empty or uninitialized', () => {
+    vi.stubGlobal('localStorage', createMemoryStorage());
+    const html = renderComponent();
+    expect(html).toContain('Total Projects');
+    expect(html).toContain('>4<');
+    expect(html).toContain('Hebbal to Bellary Road Underpass Corridor Paving');
+  });
 });

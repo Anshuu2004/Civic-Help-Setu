@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Layers,
   Table as TableIcon,
@@ -54,8 +54,12 @@ const PublicProjectsWorkspace = () => {
   const [jurisdictionFilter, setJurisdictionFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Synchronously seed data on initialization
   const [selectedProjectId, setSelectedProjectId] = useState('proj-road-101');
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(() => {
+    ensurePublicProjectsSeedData();
+    return 0;
+  });
 
   // Modals state
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -73,30 +77,25 @@ const PublicProjectsWorkspace = () => {
   const [newProjectBudget, setNewProjectBudget] = useState('15000000');
   const [createError, setCreateError] = useState('');
 
-  // Initialize seed data on mount
-  useEffect(() => {
-    ensurePublicProjectsSeedData();
-  }, []);
-
   const projects = useMemo(() => {
+    void refreshKey;
     return listPublicProjects({
       category: categoryFilter || null,
       status: statusFilter || null,
       jurisdiction: jurisdictionFilter || null,
       search: searchQuery || '',
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryFilter, statusFilter, jurisdictionFilter, searchQuery, refreshKey]);
 
   const summary = useMemo(() => {
+    void refreshKey;
     return getPublicProjectsSummaryMetrics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshKey]);
 
   const selectedProject = useMemo(() => {
+    void refreshKey;
     if (!selectedProjectId) return null;
     return getPublicProjectDetail(selectedProjectId, undefined, canVerify);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedProjectId, canVerify, refreshKey]);
 
   // Handlers

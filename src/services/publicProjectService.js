@@ -88,30 +88,52 @@ export class DomainStateError extends Error {
   }
 }
 
+// In-memory fallback cache to ensure instant availability across all browsing and test environments
+const inMemoryStore = new Map();
+
 // Memory / LocalStorage Safe Reader & Writer
 const getSafeStorage = (storage) => {
   if (storage && typeof storage.getItem === 'function') return storage;
-  return typeof globalThis.localStorage !== 'undefined' ? globalThis.localStorage : null;
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) return window.localStorage;
+    if (typeof globalThis !== 'undefined' && globalThis.localStorage) return globalThis.localStorage;
+  } catch {
+    return null;
+  }
+  return null;
 };
 
 const readStorageJson = (key, fallback, storage) => {
   const s = getSafeStorage(storage);
-  if (!s) return fallback;
-  try {
-    const raw = s.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
+  if (s) {
+    try {
+      const raw = s.getItem(key);
+      if (raw !== null && raw !== undefined) {
+        return JSON.parse(raw);
+      }
+    } catch (err) {
+      console.warn(`[publicProjectService] Error reading ${key} from storage:`, err);
+    }
   }
+  if (inMemoryStore.has(key)) {
+    return inMemoryStore.get(key);
+  }
+  return fallback;
 };
 
 const writeStorageJson = (key, value, storage) => {
   const s = getSafeStorage(storage);
-  if (!s) return;
+  if (s) {
+    try {
+      s.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.warn(`[publicProjectService] Failed to persist key: ${key}`, err);
+    }
+  }
   try {
-    s.setItem(key, JSON.stringify(value));
-  } catch (err) {
-    console.error(`Failed to persist key: ${key}`, err);
+    inMemoryStore.set(key, JSON.parse(JSON.stringify(value)));
+  } catch {
+    inMemoryStore.set(key, value);
   }
 };
 
@@ -522,6 +544,60 @@ export function ensurePublicProjectsSeedData(storage) {
 }
 
 /**
+ * Accessors that guarantee non-empty seed fallbacks even in private browsing,
+ * quota-exhausted storage, or restricted environments.
+ */
+export function getStoredProjects(storage) {
+  ensurePublicProjectsSeedData(storage);
+  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, null, storage);
+  if (!projects || !Array.isArray(projects) || projects.length === 0) {
+    writeStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, SEED_PROJECTS, storage);
+    return SEED_PROJECTS;
+  }
+  return projects;
+}
+
+export function getStoredMilestones(storage) {
+  ensurePublicProjectsSeedData(storage);
+  const milestones = readStorageJson(PROJECT_MILESTONES_STORAGE_KEY, null, storage);
+  if (!milestones || !Array.isArray(milestones) || milestones.length === 0) {
+    writeStorageJson(PROJECT_MILESTONES_STORAGE_KEY, SEED_MILESTONES, storage);
+    return SEED_MILESTONES;
+  }
+  return milestones;
+}
+
+export function getStoredSubmissions(storage) {
+  ensurePublicProjectsSeedData(storage);
+  const submissions = readStorageJson(PROGRESS_SUBMISSIONS_STORAGE_KEY, null, storage);
+  if (!submissions || !Array.isArray(submissions)) {
+    writeStorageJson(PROGRESS_SUBMISSIONS_STORAGE_KEY, SEED_SUBMISSIONS, storage);
+    return SEED_SUBMISSIONS;
+  }
+  return submissions;
+}
+
+export function getStoredEvidenceAssets(storage) {
+  ensurePublicProjectsSeedData(storage);
+  const assets = readStorageJson(EVIDENCE_ASSETS_STORAGE_KEY, null, storage);
+  if (!assets || !Array.isArray(assets)) {
+    writeStorageJson(EVIDENCE_ASSETS_STORAGE_KEY, SEED_EVIDENCE_ASSETS, storage);
+    return SEED_EVIDENCE_ASSETS;
+  }
+  return assets;
+}
+
+export function getStoredAuditLogs(storage) {
+  ensurePublicProjectsSeedData(storage);
+  const logs = readStorageJson(PROJECT_AUDIT_LOGS_STORAGE_KEY, null, storage);
+  if (!logs || !Array.isArray(logs)) {
+    writeStorageJson(PROJECT_AUDIT_LOGS_STORAGE_KEY, SEED_AUDIT_LOGS, storage);
+    return SEED_AUDIT_LOGS;
+  }
+  return logs;
+}
+
+/**
  * Clears and resets seed data.
  */
 export function resetPublicProjectsData(storage) {
@@ -607,8 +683,7 @@ export function listPublicProjects({
   status = null,
   search = '',
 } = {}, storage) {
-  ensurePublicProjectsSeedData(storage);
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
 
   return projects.filter((project) => {
     if (category && project.category !== category) return false;
@@ -635,20 +710,19 @@ export function listPublicProjects({
  * unless requested with isPrivileged = true.
  */
 export function getPublicProjectDetail(projectId, storage, isPrivileged = false) {
-  ensurePublicProjectsSeedData(storage);
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
   const project = projects.find((p) => p.id === projectId);
   if (!project) return null;
 
-  const allMilestones = readStorageJson(PROJECT_MILESTONES_STORAGE_KEY, [], storage);
+  const allMilestones = getStoredMilestones(storage);
   const milestones = allMilestones
     .filter((m) => m.projectId === projectId)
     .sort((a, b) => a.sequenceOrder - b.sequenceOrder);
 
-  const allSubmissions = readStorageJson(PROGRESS_SUBMISSIONS_STORAGE_KEY, [], storage);
+  const allSubmissions = getStoredSubmissions(storage);
   const submissions = allSubmissions.filter((s) => s.projectId === projectId);
 
-  const allAssets = readStorageJson(EVIDENCE_ASSETS_STORAGE_KEY, [], storage);
+  const allAssets = getStoredEvidenceAssets(storage);
   const assets = allAssets.filter((a) => a.projectId === projectId);
 
   const allReviews = readStorageJson(VERIFICATION_REVIEWS_STORAGE_KEY, [], storage);
@@ -720,7 +794,7 @@ export function createPublicProject(payload, storage) {
     throw new DomainStateError('Jurisdiction with wardNumber is required', 'VALIDATION_ERROR');
   }
 
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
   const projectId = `proj-${category}-${Date.now()}`;
   const now = new Date().toISOString();
   const actor = getCurrentActor();
@@ -789,7 +863,7 @@ export function updateProjectStatus(projectId, newStatus, reason = '', storage) 
     throw new DomainStateError(`Invalid project status: ${newStatus}`, 'VALIDATION_ERROR');
   }
 
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
   const idx = projects.findIndex((p) => p.id === projectId);
   if (idx === -1) {
     throw new DomainStateError(`Project not found: ${projectId}`, 'NOT_FOUND');
@@ -851,12 +925,12 @@ export function submitMilestoneProgress(payload, storage) {
     throw new DomainStateError('At least one evidence asset is required for progress submission', 'VALIDATION_ERROR');
   }
 
-  const submissions = readStorageJson(PROGRESS_SUBMISSIONS_STORAGE_KEY, [], storage);
+  const submissions = getStoredSubmissions(storage);
   if (idempotencyKey && submissions.some((s) => s.idempotencyKey === idempotencyKey)) {
     return submissions.find((s) => s.idempotencyKey === idempotencyKey);
   }
 
-  const milestones = readStorageJson(PROJECT_MILESTONES_STORAGE_KEY, [], storage);
+  const milestones = getStoredMilestones(storage);
   const msIndex = milestones.findIndex((m) => m.id === milestoneId && m.projectId === projectId);
   if (msIndex === -1) {
     throw new DomainStateError(`Milestone not found: ${milestoneId}`, 'NOT_FOUND');
@@ -875,7 +949,7 @@ export function submitMilestoneProgress(payload, storage) {
   writeStorageJson(PROJECT_MILESTONES_STORAGE_KEY, milestones, storage);
 
   // Store evidence assets with tamper-detection hashes
-  const allAssets = readStorageJson(EVIDENCE_ASSETS_STORAGE_KEY, [], storage);
+  const allAssets = getStoredEvidenceAssets(storage);
   const savedAssetIds = [];
   const submissionId = `sub-${milestoneId}-${Date.now()}`;
   const now = new Date().toISOString();
@@ -974,13 +1048,13 @@ export function recordVerificationReview(payload, storage) {
     throw new DomainStateError('Verification findings must be at least 15 characters', 'VALIDATION_ERROR');
   }
 
-  const milestones = readStorageJson(PROJECT_MILESTONES_STORAGE_KEY, [], storage);
+  const milestones = getStoredMilestones(storage);
   const msIdx = milestones.findIndex((m) => m.id === milestoneId && m.projectId === projectId);
   if (msIdx === -1) {
     throw new DomainStateError(`Milestone not found: ${milestoneId}`, 'NOT_FOUND');
   }
 
-  const submissions = readStorageJson(PROGRESS_SUBMISSIONS_STORAGE_KEY, [], storage);
+  const submissions = getStoredSubmissions(storage);
   const subIdx = submissions.findIndex((s) => s.id === submissionId);
   if (subIdx === -1) {
     throw new DomainStateError(`Submission not found: ${submissionId}`, 'NOT_FOUND');
@@ -1028,7 +1102,7 @@ export function recordVerificationReview(payload, storage) {
   const projectMilestones = milestones.filter((m) => m.projectId === projectId);
   const newProgress = calculateProjectProgress(projectMilestones);
 
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
   const pIdx = projects.findIndex((p) => p.id === projectId);
   if (pIdx !== -1) {
     const isNowComplete = newProgress === 100;
@@ -1076,9 +1150,8 @@ export function recordVerificationReview(payload, storage) {
  */
 export function getProjectAuditTrail(projectId, storage) {
   requirePermission('publicProjects.audit');
-  ensurePublicProjectsSeedData(storage);
 
-  const allLogs = readStorageJson(PROJECT_AUDIT_LOGS_STORAGE_KEY, [], storage);
+  const allLogs = getStoredAuditLogs(storage);
   if (!projectId) return allLogs;
   return allLogs.filter((log) => log.projectId === projectId);
 }
@@ -1087,8 +1160,7 @@ export function getProjectAuditTrail(projectId, storage) {
  * Summary metrics for dashboards and reports.
  */
 export function getPublicProjectsSummaryMetrics(storage) {
-  ensurePublicProjectsSeedData(storage);
-  const projects = readStorageJson(PUBLIC_PROJECTS_STORAGE_KEY, [], storage);
+  const projects = getStoredProjects(storage);
 
   const total = projects.length;
   const completed = projects.filter((p) => p.status === PROJECT_STATUSES.COMPLETED).length;
