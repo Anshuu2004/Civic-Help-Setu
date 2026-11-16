@@ -64,8 +64,19 @@ export default function StreetlightHeader({
           <button
             type="button"
             onClick={onOpenTrackModal}
-            className="btn btn-outline"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              padding: '0.45rem 0.85rem',
+              borderRadius: '0.5rem',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              cursor: 'pointer',
+            }}
           >
             <Search size={15} aria-hidden="true" />
             Track Status
@@ -73,14 +84,19 @@ export default function StreetlightHeader({
           <button
             type="button"
             onClick={onOpenReportModal}
-            className="btn btn-primary"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
               fontSize: '0.85rem',
-              background: '#2563eb',
-              borderColor: '#2563eb',
+              fontWeight: 700,
+              padding: '0.45rem 1rem',
+              borderRadius: '0.5rem',
+              background: 'var(--accent-main)',
+              border: '1px solid var(--accent-main)',
+              color: '#050505',
+              cursor: 'pointer',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
             }}
           >
             <PlusCircle size={15} aria-hidden="true" />
@@ -98,15 +114,15 @@ export default function StreetlightHeader({
           justifyContent: 'space-between',
           gap: '0.75rem',
           padding: '0.75rem 1rem',
-          background: 'var(--bg-secondary, #f8fafc)',
-          border: '1px solid var(--border-main, #e2e8f0)',
+          background: 'var(--bg-secondary)',
+          border: '1px solid var(--border-main)',
           borderRadius: '0.75rem',
           marginBottom: '1.25rem',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <MapPin size={16} style={{ color: 'var(--text-secondary, #64748b)' }} aria-hidden="true" />
-          <label htmlFor="ward-scope-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary, #1e293b)' }}>
+          <MapPin size={16} style={{ color: 'var(--text-secondary)' }} aria-hidden="true" />
+          <label htmlFor="ward-scope-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>
             Ward Scope:
           </label>
           <select
@@ -116,16 +132,16 @@ export default function StreetlightHeader({
             style={{
               padding: '0.35rem 0.65rem',
               borderRadius: '0.375rem',
-              border: '1px solid var(--border-main, #cbd5e1)',
-              background: 'var(--bg-primary, #ffffff)',
-              color: 'var(--text-primary, #0f172a)',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              color: 'var(--text-primary)',
               fontSize: '0.85rem',
               fontWeight: 500,
             }}
           >
-            <option value="all">All Municipal Wards</option>
+            <option value="all" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>All Municipal Wards</option>
             {STREETLIGHT_JURISDICTIONS.map((j) => (
-              <option key={j.id} value={j.id}>
+              <option key={j.id} value={j.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                 {j.name} ({j.totalPoles} poles)
               </option>
             ))}
@@ -134,11 +150,11 @@ export default function StreetlightHeader({
 
         {/* Role Perspective Switcher for Testing/Demonstrating Least Privilege */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Shield size={16} style={{ color: 'var(--text-secondary, #64748b)' }} aria-hidden="true" />
-          <span style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--text-secondary, #64748b)' }}>
+          <Shield size={16} style={{ color: 'var(--text-secondary)' }} aria-hidden="true" />
+          <span style={{ fontSize: '0.825rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
             Perspective:
           </span>
-          <div style={{ display: 'inline-flex', background: 'var(--border-main, #e2e8f0)', borderRadius: '6px', padding: '2px' }}>
+          <div style={{ display: 'inline-flex', background: 'var(--bg-surface)', border: '1px solid var(--border-main)', borderRadius: '6px', padding: '2px' }}>
             {[
               { id: STREETLIGHT_ROLES.CITIZEN, label: 'Citizen' },
               { id: STREETLIGHT_ROLES.OPERATOR, label: 'Operator' },
@@ -156,9 +172,9 @@ export default function StreetlightHeader({
                   fontWeight: activeRole === r.id ? 700 : 500,
                   borderRadius: '4px',
                   cursor: 'pointer',
-                  background: activeRole === r.id ? 'var(--bg-primary, #ffffff)' : 'transparent',
-                  color: activeRole === r.id ? 'var(--text-primary, #0f172a)' : 'var(--text-secondary, #64748b)',
-                  boxShadow: activeRole === r.id ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                  background: activeRole === r.id ? 'var(--accent-main)' : 'transparent',
+                  color: activeRole === r.id ? '#050505' : 'var(--text-secondary)',
+                  boxShadow: activeRole === r.id ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
                 }}
               >
                 {r.label}

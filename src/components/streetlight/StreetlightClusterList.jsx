@@ -71,15 +71,16 @@ export default function StreetlightClusterList({
                     fontSize: '0.75rem',
                     fontFamily: 'monospace',
                     fontWeight: 700,
-                    color: 'var(--text-tertiary, #64748b)',
-                    background: 'var(--bg-secondary, #f1f5f9)',
+                    color: 'var(--text-secondary)',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-main)',
                     padding: '0.15rem 0.45rem',
                     borderRadius: '4px',
                   }}
                 >
                   {cluster.id}
                 </span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary, #64748b)', fontWeight: 600 }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
                   {cluster.jurisdictionId}
                 </span>
               </div>
@@ -97,7 +98,7 @@ export default function StreetlightClusterList({
                   fontSize: '1.05rem',
                   fontWeight: 700,
                   margin: '0 0 0.35rem',
-                  color: 'var(--text-primary, #0f172a)',
+                  color: 'var(--text-primary)',
                 }}
               >
                 {cluster.corridorName}
@@ -110,7 +111,7 @@ export default function StreetlightClusterList({
                   alignItems: 'center',
                   gap: '1.25rem',
                   fontSize: '0.825rem',
-                  color: 'var(--text-secondary, #475569)',
+                  color: 'var(--text-secondary)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
@@ -145,15 +146,15 @@ export default function StreetlightClusterList({
                   gap: '0.5rem',
                   padding: '0.5rem 0.75rem',
                   borderRadius: '0.5rem',
-                  background: 'var(--bg-secondary, #f8fafc)',
-                  border: '1px solid var(--border-main, #e2e8f0)',
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border-main)',
                   fontSize: '0.8rem',
-                  color: 'var(--text-secondary, #475569)',
+                  color: 'var(--text-secondary)',
                 }}
               >
-                <Info size={14} style={{ color: '#2563eb', flexShrink: 0 }} aria-hidden="true" />
+                <Info size={14} style={{ color: 'var(--accent-main)', flexShrink: 0 }} aria-hidden="true" />
                 <span>
-                  <strong>Prioritization Factor:</strong> {topFactor.impact} (+{topFactor.points} pts)
+                  <strong style={{ color: 'var(--text-primary)' }}>Prioritization Factor:</strong> {topFactor.impact} (+{topFactor.points} pts)
                 </span>
               </div>
             )}
@@ -166,15 +167,26 @@ export default function StreetlightClusterList({
                 alignItems: 'center',
                 justifyContent: 'flex-end',
                 gap: '0.6rem',
-                borderTop: '1px solid var(--border-main, #e2e8f0)',
+                borderTop: '1px solid var(--border-main)',
                 paddingTop: '0.75rem',
               }}
             >
               <button
                 type="button"
                 onClick={() => onSelectCluster(cluster.id)}
-                className="btn btn-outline btn-sm"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  padding: '0.4rem 0.75rem',
+                  borderRadius: '0.375rem',
+                  border: '1px solid var(--border-main)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  cursor: 'pointer',
+                }}
               >
                 View Triage & Explainability
                 <ChevronRight size={14} aria-hidden="true" />
@@ -184,14 +196,18 @@ export default function StreetlightClusterList({
                 <button
                   type="button"
                   onClick={() => onDispatchWorkOrder(cluster)}
-                  className="btn btn-primary btn-sm"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.3rem',
+                    gap: '0.35rem',
                     fontSize: '0.8rem',
+                    fontWeight: 700,
+                    padding: '0.4rem 0.85rem',
+                    borderRadius: '0.375rem',
                     background: '#2563eb',
-                    borderColor: '#2563eb',
+                    border: '1px solid #3b82f6',
+                    color: '#ffffff',
+                    cursor: 'pointer',
                   }}
                 >
                   <Wrench size={14} aria-hidden="true" />

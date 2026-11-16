@@ -27,8 +27,8 @@ export default function StreetlightFilters({
         justifyContent: 'space-between',
         gap: '0.85rem',
         padding: '0.85rem 1rem',
-        background: 'var(--bg-secondary, #f8fafc)',
-        border: '1px solid var(--border-main, #e2e8f0)',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-main)',
         borderRadius: '0.75rem',
         marginBottom: '1.25rem',
       }}
@@ -43,7 +43,7 @@ export default function StreetlightFilters({
               left: '0.75rem',
               top: '50%',
               transform: 'translateY(-50%)',
-              color: 'var(--text-tertiary, #94a3b8)',
+              color: 'var(--text-tertiary)',
             }}
             aria-hidden="true"
           />
@@ -56,9 +56,9 @@ export default function StreetlightFilters({
               width: '100%',
               padding: '0.45rem 0.75rem 0.45rem 2.25rem',
               borderRadius: '0.5rem',
-              border: '1px solid var(--border-main, #cbd5e1)',
-              background: 'var(--bg-primary, #ffffff)',
-              color: 'var(--text-primary, #0f172a)',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              color: 'var(--text-primary)',
               fontSize: '0.85rem',
             }}
             aria-label="Search streetlight outages"
@@ -67,23 +67,23 @@ export default function StreetlightFilters({
 
         {/* Status Dropdown */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-          <Filter size={15} style={{ color: 'var(--text-tertiary, #94a3b8)' }} aria-hidden="true" />
+          <Filter size={15} style={{ color: 'var(--text-tertiary)' }} aria-hidden="true" />
           <select
             value={filters.status || 'all'}
             onChange={(e) => handleFilterChange('status', e.target.value)}
             style={{
               padding: '0.45rem 0.65rem',
               borderRadius: '0.5rem',
-              border: '1px solid var(--border-main, #cbd5e1)',
-              background: 'var(--bg-primary, #ffffff)',
-              color: 'var(--text-primary, #0f172a)',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              color: 'var(--text-primary)',
               fontSize: '0.85rem',
             }}
             aria-label="Filter by cluster status"
           >
-            <option value="all">All Statuses</option>
+            <option value="all" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>All Statuses</option>
             {Object.entries(CLUSTER_STATUS).map(([key, val]) => (
-              <option key={key} value={val}>
+              <option key={key} value={val} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                 {CLUSTER_STATUS_LABELS[val]}
               </option>
             ))}
@@ -98,16 +98,16 @@ export default function StreetlightFilters({
             style={{
               padding: '0.45rem 0.65rem',
               borderRadius: '0.5rem',
-              border: '1px solid var(--border-main, #cbd5e1)',
-              background: 'var(--bg-primary, #ffffff)',
-              color: 'var(--text-primary, #0f172a)',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              color: 'var(--text-primary)',
               fontSize: '0.85rem',
             }}
             aria-label="Filter by priority tier"
           >
-            <option value="all">All Priorities</option>
+            <option value="all" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>All Priorities</option>
             {Object.entries(PRIORITY_TIERS).map(([key, val]) => (
-              <option key={key} value={val}>
+              <option key={key} value={val} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                 {PRIORITY_TIER_LABELS[val]}
               </option>
             ))}
@@ -118,8 +118,18 @@ export default function StreetlightFilters({
         <button
           type="button"
           onClick={onReset}
-          className="btn btn-outline btn-sm"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem', padding: '0.4rem 0.65rem' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.3rem',
+            fontSize: '0.8rem',
+            padding: '0.45rem 0.75rem',
+            borderRadius: '0.5rem',
+            border: '1px solid var(--border-main)',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+          }}
           title="Reset filters"
         >
           <RotateCcw size={13} aria-hidden="true" />
@@ -128,12 +138,32 @@ export default function StreetlightFilters({
       </div>
 
       {/* View Mode Toggle (Accessible Map / List Alternative) */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+      <div
+        style={{
+          display: 'inline-flex',
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border-main)',
+          borderRadius: '0.5rem',
+          padding: '2px',
+          gap: '2px',
+        }}
+      >
         <button
           type="button"
           onClick={() => onViewModeToggle('list')}
-          className={`btn btn-sm ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            fontSize: '0.8rem',
+            padding: '0.35rem 0.65rem',
+            borderRadius: '0.375rem',
+            border: 'none',
+            cursor: 'pointer',
+            background: viewMode === 'list' ? 'var(--accent-main)' : 'transparent',
+            color: viewMode === 'list' ? '#050505' : 'var(--text-secondary)',
+            fontWeight: viewMode === 'list' ? 700 : 500,
+          }}
           aria-pressed={viewMode === 'list'}
         >
           <List size={14} aria-hidden="true" />
@@ -142,8 +172,19 @@ export default function StreetlightFilters({
         <button
           type="button"
           onClick={() => onViewModeToggle('map')}
-          className={`btn btn-sm ${viewMode === 'map' ? 'btn-primary' : 'btn-outline'}`}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            fontSize: '0.8rem',
+            padding: '0.35rem 0.65rem',
+            borderRadius: '0.375rem',
+            border: 'none',
+            cursor: 'pointer',
+            background: viewMode === 'map' ? 'var(--accent-main)' : 'transparent',
+            color: viewMode === 'map' ? '#050505' : 'var(--text-secondary)',
+            fontWeight: viewMode === 'map' ? 700 : 500,
+          }}
           aria-pressed={viewMode === 'map'}
         >
           <Map size={14} aria-hidden="true" />

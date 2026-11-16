@@ -19,16 +19,16 @@ export function StreetlightSkeleton({ count = 3 }) {
         <div
           key={idx}
           style={{
-            background: 'var(--bg-secondary, #f8fafc)',
-            border: '1px solid var(--border-main, #e2e8f0)',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-main)',
             borderRadius: '0.75rem',
             padding: '1.25rem',
             animation: 'pulse 1.5s infinite',
           }}
         >
-          <div style={{ height: '1.25rem', width: '40%', background: 'var(--border-main, #cbd5e1)', borderRadius: '4px', marginBottom: '0.75rem' }} />
-          <div style={{ height: '0.9rem', width: '70%', background: 'var(--border-main, #e2e8f0)', borderRadius: '4px', marginBottom: '0.5rem' }} />
-          <div style={{ height: '0.9rem', width: '50%', background: 'var(--border-main, #e2e8f0)', borderRadius: '4px' }} />
+          <div style={{ height: '1.25rem', width: '40%', background: 'var(--border-main)', borderRadius: '4px', marginBottom: '0.75rem' }} />
+          <div style={{ height: '0.9rem', width: '70%', background: 'var(--border-light)', borderRadius: '4px', marginBottom: '0.5rem' }} />
+          <div style={{ height: '0.9rem', width: '50%', background: 'var(--border-light)', borderRadius: '4px' }} />
         </div>
       ))}
     </div>
@@ -44,9 +44,9 @@ export function StreetlightOfflineBanner() {
         alignItems: 'center',
         gap: '0.75rem',
         padding: '0.75rem 1rem',
-        background: '#fffbeb',
-        border: '1px solid #fde68a',
-        color: '#92400e',
+        background: 'rgba(245, 158, 11, 0.1)',
+        border: '1px solid rgba(245, 158, 11, 0.3)',
+        color: '#f59e0b',
         borderRadius: '0.5rem',
         marginBottom: '1rem',
         fontSize: '0.875rem',
@@ -70,9 +70,9 @@ export function StreetlightStaleNotice({ lastRefreshed, onRefresh }) {
         justifyContent: 'space-between',
         gap: '0.75rem',
         padding: '0.6rem 0.9rem',
-        background: 'var(--bg-secondary, #f1f5f9)',
-        border: '1px solid var(--border-main, #cbd5e1)',
-        color: 'var(--text-secondary, #475569)',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border-main)',
+        color: 'var(--text-secondary)',
         borderRadius: '0.5rem',
         marginBottom: '1rem',
         fontSize: '0.825rem',
@@ -81,15 +81,26 @@ export function StreetlightStaleNotice({ lastRefreshed, onRefresh }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Clock size={16} aria-hidden="true" />
         <span>
-          Data last verified at: <strong>{lastRefreshed ? new Date(lastRefreshed).toLocaleTimeString() : 'Recently'}</strong>
+          Data last verified at: <strong style={{ color: 'var(--text-primary)' }}>{lastRefreshed ? new Date(lastRefreshed).toLocaleTimeString() : 'Recently'}</strong>
         </span>
       </div>
       {onRefresh && (
         <button
           type="button"
           onClick={onRefresh}
-          className="btn btn-outline btn-sm"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            padding: '0.3rem 0.65rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            borderRadius: '0.375rem',
+            border: '1px solid var(--border-main)',
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+          }}
         >
           <RefreshCw size={12} aria-hidden="true" />
           Refresh
@@ -105,16 +116,29 @@ export function StreetlightEmptyState({ title = 'No outage clusters found', mess
       style={{
         textAlign: 'center',
         padding: '3rem 1.5rem',
-        background: 'var(--bg-secondary, #f8fafc)',
+        background: 'var(--bg-surface)',
         borderRadius: '0.75rem',
-        border: '1px dashed var(--border-main, #cbd5e1)',
+        border: '1px dashed var(--border-main)',
       }}
     >
-      <Inbox size={40} style={{ color: 'var(--text-tertiary, #94a3b8)', marginBottom: '0.75rem' }} aria-hidden="true" />
-      <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary, #0f172a)', margin: '0 0 0.4rem' }}>{title}</h3>
-      <p style={{ color: 'var(--text-secondary, #64748b)', fontSize: '0.875rem', margin: '0 0 1rem' }}>{message}</p>
+      <Inbox size={40} style={{ color: 'var(--text-tertiary)', marginBottom: '0.75rem' }} aria-hidden="true" />
+      <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 0.4rem' }}>{title}</h3>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', margin: '0 0 1rem' }}>{message}</p>
       {onReset && (
-        <button type="button" onClick={onReset} className="btn btn-outline btn-sm">
+        <button
+          type="button"
+          onClick={onReset}
+          style={{
+            padding: '0.4rem 0.85rem',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            borderRadius: '0.375rem',
+            border: '1px solid var(--border-main)',
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+          }}
+        >
           Reset Filters
         </button>
       )}
@@ -158,14 +182,14 @@ export function StreetlightPermissionDenied({ requiredCapability }) {
       style={{
         padding: '2rem 1.5rem',
         textAlign: 'center',
-        background: '#f8fafc',
-        border: '1px solid #e2e8f0',
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border-main)',
         borderRadius: '0.75rem',
-        color: '#475569',
+        color: 'var(--text-secondary)',
       }}
     >
-      <ShieldAlert size={36} style={{ color: '#e11d48', marginBottom: '0.75rem' }} aria-hidden="true" />
-      <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 0.5rem' }}>Access Restricted</h3>
+      <ShieldAlert size={36} style={{ color: '#ef4444', marginBottom: '0.75rem' }} aria-hidden="true" />
+      <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>Access Restricted</h3>
       <p style={{ fontSize: '0.875rem', maxWidth: '480px', margin: '0 auto' }}>
         You do not have the required permissions ({requiredCapability || 'Operator / Staff'}) to modify streetlight clusters or dispatch work orders.
       </p>

@@ -90,10 +90,12 @@ export default function StreetlightReportModal({
         style={{
           width: '100%',
           maxWidth: '560px',
-          background: 'var(--bg-primary, #ffffff)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary)',
           borderRadius: '0.85rem',
+          border: '1px solid var(--border-main)',
           padding: '1.5rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--shadow-lg)',
         }}
       >
         {/* Header */}
@@ -102,22 +104,31 @@ export default function StreetlightReportModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid var(--border-main, #e2e8f0)',
+            borderBottom: '1px solid var(--border-main)',
             paddingBottom: '0.85rem',
             marginBottom: '1rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Lightbulb size={20} style={{ color: '#d97706' }} aria-hidden="true" />
-            <h2 id="report-modal-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>
+            <h2 id="report-modal-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               Report Streetlight Fault
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-outline btn-sm"
-            style={{ padding: '0.35rem', borderRadius: '50%' }}
+            style={{
+              padding: '0.35rem',
+              borderRadius: '50%',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-main)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Close form"
           >
             <X size={16} aria-hidden="true" />
@@ -128,34 +139,44 @@ export default function StreetlightReportModal({
           /* Confirmation View */
           <div style={{ textAlign: 'center', padding: '1rem 0' }}>
             <CheckCircle size={48} style={{ color: '#16a34a', margin: '0 auto 0.75rem' }} aria-hidden="true" />
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '0 0 0.4rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '0 0 0.4rem', color: 'var(--text-primary)' }}>
               Fault Report Recorded
             </h3>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary, #475569)', margin: '0 0 1.25rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0 0 1.25rem' }}>
               Your report has been received and evaluated by the municipal spatial clustering engine.
             </p>
 
             <div
               style={{
-                background: 'var(--bg-secondary, #f8fafc)',
-                border: '1px dashed var(--border-main, #cbd5e1)',
+                background: 'var(--bg-surface)',
+                border: '1px dashed var(--border-main)',
                 padding: '1rem',
                 borderRadius: '0.5rem',
                 marginBottom: '1.25rem',
               }}
             >
-              <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.25rem', textTransform: 'uppercase', fontWeight: 600 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginBottom: '0.25rem', textTransform: 'uppercase', fontWeight: 600 }}>
                 Anonymous Tracking Token
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                <span style={{ fontSize: '1.25rem', fontFamily: 'monospace', fontWeight: 800, color: '#2563eb' }}>
+                <span style={{ fontSize: '1.25rem', fontFamily: 'monospace', fontWeight: 800, color: 'var(--accent-main)' }}>
                   {submissionSuccess.trackingToken}
                 </span>
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="btn btn-outline btn-sm"
-                  style={{ padding: '0.3rem 0.5rem', fontSize: '0.75rem' }}
+                  style={{
+                    padding: '0.3rem 0.6rem',
+                    fontSize: '0.75rem',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.3rem',
+                  }}
                   title="Copy Token"
                 >
                   <Copy size={13} aria-hidden="true" />
@@ -164,11 +185,24 @@ export default function StreetlightReportModal({
               </div>
             </div>
 
-            <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 1.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: '0 0 1.5rem' }}>
               Keep this token to track repair progress anonymously at any time.
             </p>
 
-            <button type="button" onClick={onClose} className="btn btn-primary" style={{ width: '100%', background: '#2563eb' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                width: '100%',
+                background: 'var(--accent-main)',
+                border: '1px solid var(--accent-main)',
+                color: '#050505',
+                padding: '0.6rem 1rem',
+                borderRadius: '0.5rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
               Done
             </button>
           </div>
@@ -178,9 +212,9 @@ export default function StreetlightReportModal({
             {error && (
               <div
                 style={{
-                  background: '#fef2f2',
-                  border: '1px solid #fecaca',
-                  color: '#991b1b',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#ef4444',
                   padding: '0.6rem 0.8rem',
                   borderRadius: '0.4rem',
                   fontSize: '0.825rem',
@@ -194,7 +228,7 @@ export default function StreetlightReportModal({
             <div style={{ display: 'grid', gap: '0.85rem', marginBottom: '1rem' }}>
               {/* Ward Jurisdiction */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Ward Jurisdiction *
                 </label>
                 <select
@@ -203,10 +237,18 @@ export default function StreetlightReportModal({
                     setJurisdictionId(e.target.value);
                     setAssetId('');
                   }}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 >
                   {STREETLIGHT_JURISDICTIONS.map((j) => (
-                    <option key={j.id} value={j.id}>
+                    <option key={j.id} value={j.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                       {j.name}
                     </option>
                   ))}
@@ -215,17 +257,25 @@ export default function StreetlightReportModal({
 
               {/* Pole Selection (Optional if approximate landmark provided) */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Streetlight Pole Asset (Optional if landmark provided)
                 </label>
                 <select
                   value={assetId}
                   onChange={(e) => setAssetId(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 >
-                  <option value="">-- Select from mapped poles in this ward --</option>
+                  <option value="" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>-- Select from mapped poles in this ward --</option>
                   {wardAssets.map((a) => (
-                    <option key={a.id} value={a.id}>
+                    <option key={a.id} value={a.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                       {a.id} ({a.street} - {a.landmark})
                     </option>
                   ))}
@@ -234,16 +284,24 @@ export default function StreetlightReportModal({
 
               {/* Fault Category */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Fault Category *
                 </label>
                 <select
                   value={faultCategory}
                   onChange={(e) => setFaultCategory(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 >
                   {Object.entries(FAULT_CATEGORIES).map(([key, val]) => (
-                    <option key={key} value={val}>
+                    <option key={key} value={val} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                       {FAULT_CATEGORY_LABELS[val]}
                     </option>
                   ))}
@@ -252,7 +310,7 @@ export default function StreetlightReportModal({
 
               {/* Landmark / Location description */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Street / Landmark Description *
                 </label>
                 <input
@@ -260,13 +318,21 @@ export default function StreetlightReportModal({
                   placeholder="e.g. 100ft Road opposite Metro Exit B, or near cross junction"
                   value={landmark}
                   onChange={(e) => setLandmark(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Additional Notes (Optional)
                 </label>
                 <textarea
@@ -274,13 +340,22 @@ export default function StreetlightReportModal({
                   placeholder="Details like flickering interval, dark stretch length, or sparks noticed..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem', resize: 'vertical' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                    resize: 'vertical',
+                  }}
                 />
               </div>
 
               {/* SMS Notification (Optional) with Privacy Callout */}
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Contact Mobile for SMS Updates (Optional)
                 </label>
                 <input
@@ -288,24 +363,52 @@ export default function StreetlightReportModal({
                   placeholder="e.g. 9876543210"
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.35rem', fontSize: '0.75rem', color: '#64748b' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.35rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
                   <Shield size={12} style={{ color: '#16a34a' }} aria-hidden="true" />
                   <span>Privacy guarantee: Your contact is cryptographically hashed and never made public.</span>
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.85rem' }}>
-              <button type="button" onClick={onClose} className="btn btn-outline btn-sm">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', borderTop: '1px solid var(--border-main)', paddingTop: '0.85rem' }}>
+              <button
+                type="button"
+                onClick={onClose}
+                style={{
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '0.375rem',
+                  border: '1px solid var(--border-main)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                }}
+              >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn btn-primary btn-sm"
-                style={{ background: '#2563eb', borderColor: '#2563eb' }}
+                style={{
+                  background: 'var(--accent-main)',
+                  border: '1px solid var(--accent-main)',
+                  color: '#050505',
+                  padding: '0.45rem 1rem',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Report'}
               </button>

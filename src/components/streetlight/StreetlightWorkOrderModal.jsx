@@ -78,10 +78,12 @@ export default function StreetlightWorkOrderModal({
         style={{
           width: '100%',
           maxWidth: '520px',
-          background: 'var(--bg-primary, #ffffff)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary)',
           borderRadius: '0.85rem',
+          border: '1px solid var(--border-main)',
           padding: '1.5rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--shadow-lg)',
         }}
       >
         <div
@@ -89,22 +91,31 @@ export default function StreetlightWorkOrderModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid var(--border-main, #e2e8f0)',
+            borderBottom: '1px solid var(--border-main)',
             paddingBottom: '0.75rem',
             marginBottom: '1rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Wrench size={20} style={{ color: '#2563eb' }} aria-hidden="true" />
-            <h2 id="work-order-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>
+            <Wrench size={20} style={{ color: 'var(--accent-main)' }} aria-hidden="true" />
+            <h2 id="work-order-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               Dispatch Field Repair Work Order
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-outline btn-sm"
-            style={{ padding: '0.35rem', borderRadius: '50%' }}
+            style={{
+              padding: '0.35rem',
+              borderRadius: '50%',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-main)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Close"
           >
             <X size={16} aria-hidden="true" />
@@ -115,17 +126,17 @@ export default function StreetlightWorkOrderModal({
         <div
           style={{
             padding: '0.75rem',
-            background: 'var(--bg-secondary, #f8fafc)',
-            border: '1px solid var(--border-main, #e2e8f0)',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-main)',
             borderRadius: '0.5rem',
             marginBottom: '1rem',
             fontSize: '0.85rem',
           }}
         >
-          <div style={{ fontWeight: 700, color: 'var(--text-primary, #0f172a)' }}>
+          <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
             {cluster.corridorName}
           </div>
-          <div style={{ color: '#64748b', fontSize: '0.775rem' }}>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.775rem' }}>
             {cluster.jurisdictionId} • {cluster.poleCount || 1} Streetlights Affected • Priority: {cluster.priorityTier?.toUpperCase()}
           </div>
         </div>
@@ -134,9 +145,9 @@ export default function StreetlightWorkOrderModal({
           <div
             style={{
               padding: '0.6rem 0.8rem',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              color: '#991b1b',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#ef4444',
               borderRadius: '0.4rem',
               fontSize: '0.825rem',
               marginBottom: '1rem',
@@ -150,16 +161,24 @@ export default function StreetlightWorkOrderModal({
           <div style={{ display: 'grid', gap: '0.85rem', marginBottom: '1.25rem' }}>
             {/* Field Crew / Technician */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                 Assigned Repair Crew / Technician *
               </label>
               <select
                 value={assignedTechnicianId}
                 onChange={(e) => setAssignedTechnicianId(e.target.value)}
-                style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem 0.65rem',
+                  borderRadius: '0.4rem',
+                  border: '1px solid var(--border-main)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                }}
               >
                 {TECHNICIAN_OPTIONS.map((t) => (
-                  <option key={t.id} value={t.id}>
+                  <option key={t.id} value={t.id} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                     {t.name}
                   </option>
                 ))}
@@ -169,7 +188,7 @@ export default function StreetlightWorkOrderModal({
             {/* Priority & SLA */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Work Order Priority *
                 </label>
                 <select
@@ -179,10 +198,18 @@ export default function StreetlightWorkOrderModal({
                     setPriority(newP);
                     setTargetSlaHours(newP === 'critical' ? 24 : newP === 'high' ? 48 : 72);
                   }}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 >
                   {Object.entries(PRIORITY_TIERS).map(([key, val]) => (
-                    <option key={key} value={val}>
+                    <option key={key} value={val} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>
                       {PRIORITY_TIER_LABELS[val]}
                     </option>
                   ))}
@@ -190,7 +217,7 @@ export default function StreetlightWorkOrderModal({
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                   Target SLA (Hours) *
                 </label>
                 <input
@@ -199,27 +226,43 @@ export default function StreetlightWorkOrderModal({
                   max="168"
                   value={targetSlaHours}
                   onChange={(e) => setTargetSlaHours(e.target.value)}
-                  style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.5rem 0.65rem',
+                    borderRadius: '0.4rem',
+                    border: '1px solid var(--border-main)',
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                  }}
                 />
               </div>
             </div>
 
             {/* Scheduled Date */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                 Scheduled Field Date
               </label>
               <input
                 type="date"
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
-                style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem 0.65rem',
+                  borderRadius: '0.4rem',
+                  border: '1px solid var(--border-main)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                }}
               />
             </div>
 
             {/* Notes */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                 Instructions / Material Needs for Crew
               </label>
               <textarea
@@ -227,20 +270,49 @@ export default function StreetlightWorkOrderModal({
                 placeholder="e.g. Inspect underground feeder junction box and carry 70W LED modules..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                style={{ width: '100%', padding: '0.45rem', borderRadius: '0.4rem', border: '1px solid #cbd5e1', fontSize: '0.85rem', resize: 'vertical' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem 0.65rem',
+                  borderRadius: '0.4rem',
+                  border: '1px solid var(--border-main)',
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  resize: 'vertical',
+                }}
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.85rem' }}>
-            <button type="button" onClick={onClose} className="btn btn-outline btn-sm">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', borderTop: '1px solid var(--border-main)', paddingTop: '0.85rem' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                padding: '0.45rem 0.85rem',
+                borderRadius: '0.375rem',
+                border: '1px solid var(--border-main)',
+                background: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+              }}
+            >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn btn-primary btn-sm"
-              style={{ background: '#2563eb', borderColor: '#2563eb' }}
+              style={{
+                background: '#2563eb',
+                border: '1px solid #3b82f6',
+                color: '#ffffff',
+                padding: '0.45rem 1rem',
+                borderRadius: '0.375rem',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
             >
               {isSubmitting ? 'Dispatching...' : 'Confirm Dispatch'}
             </button>

@@ -60,10 +60,12 @@ export default function StreetlightTrackModal({ onClose }) {
         style={{
           width: '100%',
           maxWidth: '500px',
-          background: 'var(--bg-primary, #ffffff)',
+          background: 'var(--bg-card, #121212)',
+          color: 'var(--text-primary)',
           borderRadius: '0.85rem',
+          border: '1px solid var(--border-main)',
           padding: '1.5rem',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          boxShadow: 'var(--shadow-lg)',
         }}
       >
         <div
@@ -71,22 +73,31 @@ export default function StreetlightTrackModal({ onClose }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid var(--border-main, #e2e8f0)',
+            borderBottom: '1px solid var(--border-main)',
             paddingBottom: '0.75rem',
             marginBottom: '1rem',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Search size={18} style={{ color: '#2563eb' }} aria-hidden="true" />
-            <h2 id="track-modal-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>
+            <Search size={18} style={{ color: 'var(--accent-main)' }} aria-hidden="true" />
+            <h2 id="track-modal-title" style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               Track Streetlight Repair Status
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-outline btn-sm"
-            style={{ padding: '0.35rem', borderRadius: '50%' }}
+            style={{
+              padding: '0.35rem',
+              borderRadius: '50%',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-main)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Close modal"
           >
             <X size={16} aria-hidden="true" />
@@ -102,9 +113,11 @@ export default function StreetlightTrackModal({ onClose }) {
               onChange={(e) => setTokenInput(e.target.value)}
               style={{
                 flex: 1,
-                padding: '0.45rem 0.75rem',
+                padding: '0.5rem 0.75rem',
                 borderRadius: '0.4rem',
-                border: '1px solid #cbd5e1',
+                border: '1px solid var(--border-main)',
+                background: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
                 fontSize: '0.9rem',
                 fontFamily: 'monospace',
               }}
@@ -113,8 +126,16 @@ export default function StreetlightTrackModal({ onClose }) {
             <button
               type="submit"
               disabled={isSearching}
-              className="btn btn-primary btn-sm"
-              style={{ background: '#2563eb', padding: '0 1rem' }}
+              style={{
+                background: 'var(--accent-main)',
+                border: '1px solid var(--accent-main)',
+                color: '#050505',
+                padding: '0.5rem 1.1rem',
+                borderRadius: '0.4rem',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+              }}
             >
               {isSearching ? 'Checking...' : 'Lookup'}
             </button>
@@ -125,9 +146,9 @@ export default function StreetlightTrackModal({ onClose }) {
           <div
             style={{
               padding: '0.75rem',
-              background: '#fef2f2',
-              border: '1px solid #fecaca',
-              color: '#991b1b',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#ef4444',
               borderRadius: '0.4rem',
               fontSize: '0.85rem',
               display: 'flex',
@@ -143,15 +164,15 @@ export default function StreetlightTrackModal({ onClose }) {
         {report && (
           <div
             style={{
-              background: 'var(--bg-secondary, #f8fafc)',
-              border: '1px solid var(--border-main, #e2e8f0)',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-main)',
               borderRadius: '0.5rem',
               padding: '1rem',
               fontSize: '0.85rem',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#2563eb' }}>
+              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-main)' }}>
                 {report.trackingToken}
               </span>
               <span
@@ -169,21 +190,21 @@ export default function StreetlightTrackModal({ onClose }) {
               </span>
             </div>
 
-            <div style={{ display: 'grid', gap: '0.5rem', color: '#334155' }}>
+            <div style={{ display: 'grid', gap: '0.5rem', color: 'var(--text-secondary)' }}>
               <div>
-                <strong>Fault Type:</strong> {FAULT_CATEGORY_LABELS[report.faultCategory] || report.faultCategory}
+                <strong style={{ color: 'var(--text-primary)' }}>Fault Type:</strong> {FAULT_CATEGORY_LABELS[report.faultCategory] || report.faultCategory}
               </div>
               {report.assetId && (
                 <div>
-                  <strong>Pole ID:</strong> {report.assetId}
+                  <strong style={{ color: 'var(--text-primary)' }}>Pole ID:</strong> {report.assetId}
                 </div>
               )}
               {report.location?.landmark && (
                 <div>
-                  <strong>Location:</strong> {report.location.landmark}
+                  <strong style={{ color: 'var(--text-primary)' }}>Location:</strong> {report.location.landmark}
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#64748b', fontSize: '0.775rem', marginTop: '0.35rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--text-tertiary)', fontSize: '0.775rem', marginTop: '0.35rem' }}>
                 <Clock size={13} aria-hidden="true" />
                 Reported on: {new Date(report.reportedAt).toLocaleString()}
               </div>
@@ -192,7 +213,19 @@ export default function StreetlightTrackModal({ onClose }) {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem' }}>
-          <button type="button" onClick={onClose} className="btn btn-outline btn-sm">
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: '0.45rem 0.85rem',
+              borderRadius: '0.375rem',
+              border: '1px solid var(--border-main)',
+              background: 'var(--bg-surface)',
+              color: 'var(--text-primary)',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+            }}
+          >
             Close
           </button>
         </div>

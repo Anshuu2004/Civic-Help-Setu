@@ -61,16 +61,16 @@ export default function StreetlightInteractiveMap({
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: '0.75rem',
-          borderBottom: '1px solid var(--border-main, #e2e8f0)',
+          borderBottom: '1px solid var(--border-main)',
           paddingBottom: '0.75rem',
           marginBottom: '1rem',
         }}
       >
         <div>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0 }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
             Geospatial Outage Corridors & Streetlight Clusters
           </h2>
-          <p style={{ margin: '0.2rem 0 0', fontSize: '0.825rem', color: 'var(--text-secondary, #64748b)' }}>
+          <p style={{ margin: '0.2rem 0 0', fontSize: '0.825rem', color: 'var(--text-secondary)' }}>
             Clusters are mapped with proximity radius and safety anchor associations.
           </p>
         </div>
@@ -79,8 +79,19 @@ export default function StreetlightInteractiveMap({
         <button
           type="button"
           onClick={() => setShowTableAlternative(!showTableAlternative)}
-          className="btn btn-outline btn-sm"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            padding: '0.4rem 0.75rem',
+            borderRadius: '0.375rem',
+            border: '1px solid var(--border-main)',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-primary)',
+            cursor: 'pointer',
+          }}
           aria-pressed={showTableAlternative}
         >
           {showTableAlternative ? (
@@ -101,11 +112,11 @@ export default function StreetlightInteractiveMap({
         /* Accessible Table Alternative for Screen Readers & Keyboard Users */
         <div style={{ overflowX: 'auto' }}>
           <table
-            style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}
+            style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left', color: 'var(--text-primary)' }}
             aria-label="Accessible Streetlight Outage Clusters Table"
           >
             <thead>
-              <tr style={{ background: 'var(--bg-secondary, #f8fafc)', borderBottom: '2px solid var(--border-main, #cbd5e1)' }}>
+              <tr style={{ background: 'var(--bg-surface)', borderBottom: '2px solid var(--border-main)', color: 'var(--text-primary)' }}>
                 <th style={{ padding: '0.6rem 0.75rem', fontWeight: 700 }}>Cluster ID</th>
                 <th style={{ padding: '0.6rem 0.75rem', fontWeight: 700 }}>Corridor Name</th>
                 <th style={{ padding: '0.6rem 0.75rem', fontWeight: 700 }}>Ward</th>
@@ -117,10 +128,10 @@ export default function StreetlightInteractiveMap({
             </thead>
             <tbody>
               {clusters.map((c) => (
-                <tr key={c.id} style={{ borderBottom: '1px solid var(--border-main, #e2e8f0)' }}>
+                <tr key={c.id} style={{ borderBottom: '1px solid var(--border-main)' }}>
                   <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'monospace', fontWeight: 600 }}>{c.id}</td>
                   <td style={{ padding: '0.6rem 0.75rem', fontWeight: 600 }}>{c.corridorName}</td>
-                  <td style={{ padding: '0.6rem 0.75rem' }}>{c.jurisdictionId}</td>
+                  <td style={{ padding: '0.6rem 0.75rem', color: 'var(--text-secondary)' }}>{c.jurisdictionId}</td>
                   <td style={{ padding: '0.6rem 0.75rem' }}>{c.poleCount || 1}</td>
                   <td style={{ padding: '0.6rem 0.75rem' }}>
                     <StreetlightPriorityBadge tier={c.priorityTier} score={c.priorityScore} />
@@ -132,8 +143,16 @@ export default function StreetlightInteractiveMap({
                     <button
                       type="button"
                       onClick={() => onSelectCluster(c.id)}
-                      className="btn btn-outline btn-sm"
-                      style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                      style={{
+                        padding: '0.3rem 0.65rem',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        borderRadius: '4px',
+                        border: '1px solid var(--border-main)',
+                        background: 'var(--bg-surface)',
+                        color: 'var(--text-primary)',
+                        cursor: 'pointer',
+                      }}
                     >
                       Details
                     </button>

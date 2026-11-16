@@ -240,7 +240,7 @@ export default function StreetlightOutageWorkspace() {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            borderBottom: '2px solid var(--border-main, #e2e8f0)',
+            borderBottom: '2px solid var(--border-main)',
             marginBottom: '1.25rem',
           }}
         >
@@ -251,10 +251,10 @@ export default function StreetlightOutageWorkspace() {
               padding: '0.6rem 1rem',
               fontSize: '0.9rem',
               fontWeight: activeTab === 'clusters' ? 700 : 500,
-              color: activeTab === 'clusters' ? '#2563eb' : 'var(--text-secondary, #64748b)',
+              color: activeTab === 'clusters' ? 'var(--accent-main)' : 'var(--text-secondary)',
               background: 'none',
               border: 'none',
-              borderBottom: activeTab === 'clusters' ? '2px solid #2563eb' : '2px solid transparent',
+              borderBottom: activeTab === 'clusters' ? '2px solid var(--accent-main)' : '2px solid transparent',
               marginBottom: '-2px',
               cursor: 'pointer',
             }}
@@ -272,10 +272,10 @@ export default function StreetlightOutageWorkspace() {
                 padding: '0.6rem 1rem',
                 fontSize: '0.9rem',
                 fontWeight: activeTab === 'technician' ? 700 : 500,
-                color: activeTab === 'technician' ? '#2563eb' : 'var(--text-secondary, #64748b)',
+                color: activeTab === 'technician' ? 'var(--accent-main)' : 'var(--text-secondary)',
                 background: 'none',
                 border: 'none',
-                borderBottom: activeTab === 'technician' ? '2px solid #2563eb' : '2px solid transparent',
+                borderBottom: activeTab === 'technician' ? '2px solid var(--accent-main)' : '2px solid transparent',
                 marginBottom: '-2px',
                 cursor: 'pointer',
               }}
