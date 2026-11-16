@@ -1199,7 +1199,6 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
-{
     id: 'open-contracting-red-flags',
     jurisdiction: {
       level: 'national',
