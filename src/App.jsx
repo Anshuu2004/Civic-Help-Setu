@@ -63,8 +63,11 @@ import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import WaterQualityRegister from './pages/WaterQualityRegister';
+import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
+import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
+import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -111,6 +114,9 @@ function AppRoot() {
                       <Route path="/fire-noc-guide" element={<FireSafetyGuidePage />} />
                       <Route path="/services/tree-permission-guide" element={<TreePermissionGuidePage />} />
                       <Route path="/tree-permission-guide" element={<TreePermissionGuidePage />} />
+                      <Route path="/services/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/civic-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
                       <Route path="/services/ward-budget-proposal" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget/:id" element={<WardBudgetWorkspace />} />
@@ -125,6 +131,9 @@ function AppRoot() {
                       <Route path="/fair-price-shops" element={<FairPriceShopBoard />} />
                       <Route path="/tenders" element={<TenderReadinessWorkspace />} />
                       <Route path="/tender-readiness" element={<TenderReadinessWorkspace />} />
+                      <Route path="/open-contracting" element={<OpenContractingWorkspace />} />
+                      <Route path="/procurement-analytics" element={<OpenContractingWorkspace />} />
+                      <Route path="/open-contracting/:id" element={<OpenContractingWorkspace />} />
                       <Route path="/community-facilities" element={<CommunityFacilityDirectory />} />
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
                       <Route path="/water-tanker" element={<WaterTankerTracker />} />
@@ -158,6 +167,9 @@ function AppRoot() {
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
+                      <Route path="/public-projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/projects" element={<PublicProjectsWorkspace />} />
+                      <Route path="/public-projects/:id" element={<PublicProjectsWorkspace />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/tree-health" element={<TreeHealthInventory />} />
