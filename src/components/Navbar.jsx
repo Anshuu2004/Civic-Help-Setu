@@ -26,7 +26,8 @@ import {
   Droplets,
   KeyRound,
   Store,
-  Trees
+  Trees,
+  ShieldAlert
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -125,6 +126,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/ward-budget' ||
           normalizedPath === '/services/ward-budget-proposal' ||
           normalizedPath.startsWith('/ward-budget/')
+        );
+      }
+
+      if (normalizedTarget === '/open-contracting') {
+        return (
+          normalizedPath === '/open-contracting' ||
+          normalizedPath === '/procurement-analytics' ||
+          normalizedPath.startsWith('/open-contracting/')
         );
       }
 
@@ -861,6 +870,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/ward-budget',
                 label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/open-contracting',
+                label: t('nav.openContracting', 'Procurement Red Flags'),
+                icon: ShieldAlert
               })}
 
               {renderNavLink({
