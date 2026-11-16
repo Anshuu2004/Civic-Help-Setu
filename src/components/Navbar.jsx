@@ -21,10 +21,17 @@ import {
   Bookmark,
   UserCircle,
   Settings,
+  AlertTriangle,
+  Navigation,
   Droplets,
   KeyRound,
   Store,
-  Building2
+  Building2,
+  ShieldAlert,
+  GitFork,
+  Trees,
+  Scale,
+  BarChart2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -107,6 +114,62 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/rental-checklist' ||
           normalizedPath === '/rental-transition' ||
           normalizedPath === '/rental-records'
+        );
+      }
+
+      if (normalizedTarget === '/address-change-planner') {
+        return (
+          normalizedPath === '/address-change-planner' ||
+          normalizedPath === '/address-change' ||
+          normalizedPath === '/move-planner'
+        );
+      }
+
+if (normalizedTarget === '/continuity-planner') {
+        return (
+          normalizedPath === '/continuity-planner' ||
+          normalizedPath.startsWith('/continuity-planner/') ||
+          normalizedPath === '/incident-drills'
+        );
+      }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
+        );
+      }
+
+      if (normalizedTarget === '/ward-budget') {
+        return (
+          normalizedPath === '/ward-budget' ||
+          normalizedPath === '/services/ward-budget-proposal' ||
+          normalizedPath.startsWith('/ward-budget/')
+        );
+      }
+
+      if (normalizedTarget === '/open-contracting') {
+        return (
+          normalizedPath === '/open-contracting' ||
+          normalizedPath === '/procurement-analytics' ||
+          normalizedPath.startsWith('/open-contracting/')
+        );
+      }
+
+      if (normalizedTarget === '/road-safety') {
+        return (
+          normalizedPath === '/road-safety' ||
+          normalizedPath === '/blackspots' ||
+          normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/provenance') {
+        return (
+          normalizedPath === '/provenance' ||
+          normalizedPath.startsWith('/provenance/') ||
+          normalizedPath === '/lineage-explorer'
         );
       }
 
@@ -784,6 +847,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/library-directory',
+                label: 'Public Libraries',
+                icon: BookOpen
+              })}
+
+              {renderNavLink({
                 to: '/tenders',
                 label: t('nav.tenders', 'Tender Readiness'),
                 icon: FileText
@@ -796,11 +865,47 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/address-change-planner',
+                label: t('nav.addressChange', 'Address Change Planner'),
+                icon: Navigation
+              })}
+
+              {renderNavLink({
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
               })}
 
+             {renderNavLink({
+                to: '/provenance',
+                label: 'Data Lineage',
+                icon: GitFork
+              })}
+
+              {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
+              })}
+
+              {renderNavLink({
+                to: '/surveys',
+                label: 'Civic Surveys',
+                icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/continuity-planner',
+                activeTarget: '/continuity-planner',
+                label: t('nav.continuityPlanner', 'Continuity & Drills'),
+                icon: ShieldAlert
+              })}
+
+              {renderNavLink({
+                to: '/senior-citizen-tribunal',
+                label: 'Senior Citizen Tribunal',
+                icon: Scale
+              })}
               {renderNavLink({
                 to: '/tenants',
                 label: 'Authority Workspaces',
@@ -817,6 +922,38 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/civic-works',
                 label: t('nav.civicWorks', 'Ward Public Works'),
                 icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/public-projects',
+                activeTarget: '/public-projects',
+                label: 'Public Project Timeline',
+                icon: Building2
+              })}
+
+              {renderNavLink({
+                to: '/ward-budget',
+                label: t('nav.wardBudget', 'Ward Budget & Deliberation'),
+                icon: Users
+              })}
+
+              {renderNavLink({
+                to: '/open-contracting',
+                label: t('nav.openContracting', 'Procurement Red Flags'),
+                icon: ShieldAlert
+              })}
+
+              {renderNavLink({
+                to: '/road-safety',
+                label: t('nav.roadSafety', 'Road Safety Blackspots'),
+                icon: AlertTriangle
+              })}
+
+              {renderNavLink({
+                to: '/tree-health',
+                activeTarget: '/tree-health',
+                label: t('nav.treeHealth', 'Tree Health Inventory'),
+                icon: Trees
               })}
 
               {renderNavLink({

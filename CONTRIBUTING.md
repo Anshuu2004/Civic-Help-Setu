@@ -26,12 +26,43 @@ Public service information changes frequently. If you notice outdated or incorre
 Run unit and integration tests locally with Vitest:
 ```bash
 npm test                                                      # run all tests
+npm test -- --run src/services/roadSafetyBlackspotService.test.js # road-safety blackspot engine tests (#769)
+npm test -- --run src/pages/RoadSafetyDashboard.test.jsx          # road-safety dashboard workspace UI tests (#769)
+npm test -- --run src/components/admin/RoadHazardReviewQueue.test.jsx # road-safety hazard review queue tests (#769)
+npm test -- --run tests/road-hazards.test.js                     # road-safety hazard API validation & abuse tests (#769)
+npm test -- --run src/data/openContractingContract.test.js    # open-contracting schema & contract tests (#751)
+npm test -- --run src/services/openContractingAnalyticsService.test.js # procurement red-flag analytics engine tests (#751)
+npm test -- --run src/services/openContractingService.test.js # open-contracting service & storage tests (#751)
+npm test -- --run tests/open-contracting-analytics.test.js    # open-contracting API validation & abuse tests (#751)
+npm test -- --run src/pages/OpenContractingWorkspace.test.jsx # procurement analytics workspace UI tests (#751)
+npm test -- --run src/services/provenanceService.test.js       # lineage DAG & cycle prevention tests (#777)
+npm test -- --run src/pages/LineageExplorerWorkspace.test.jsx  # provenance explorer UI tests (#777)
+npm test -- --run tests/knowledge-provenance.test.js          # provenance serverless API tests (#777)
+npm test -- --run tests/knowledge-provenance-security.test.js # provenance security & PII tests (#777)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
 npm test -- --run src/services/tenantIsolationService.test.js # tenant isolation service tests (#779)
 npm test -- --run src/pages/TenantAdministrationWorkspace.test.jsx # tenant administration workspace tests (#779)
 npm test -- --run tests/tenant-administration.test.js          # tenant administration API tests (#779)
+npm test -- --run src/services/continuityPlannerService.test.js # continuity planner service & state machine tests (#780)
+npm test -- --run src/services/dependencyGraphEngine.test.js  # graph analysis, cycle detection & SPOF tests (#780)
+npm test -- --run src/pages/ContinuityPlannerWorkspace.test.jsx # incident response drill workspace & runbook tests (#780)
+npm test -- --run src/services/counterDemandForecastingService.test.js # counter demand forecasting tests (#764)
+npm test -- --run src/pages/CounterDemandForecastingWorkspace.test.jsx # counter demand workspace UI tests (#764)
+npx vitest run src/services/treeInventoryService.test.js       # tree inventory domain/security tests (#749)
+npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
+npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
+npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/publicProjectService.test.js       # public project domain & state transition tests (#752)
+npx vitest run src/services/evidenceVerificationService.test.js # evidence integrity & CV advisory tests (#752)
+npx vitest run tests/public-projects.test.js                 # public project serverless API & abuse tests (#752)
+npx vitest run src/pages/PublicProjectsWorkspace.test.jsx      # public project workspace UI & a11y tests (#752)
 ```
+
+Architecture, data model, state machines, CV discrepancy policy, and rollback strategy for public projects are documented in [docs/geospatial-public-projects.md](docs/geospatial-public-projects.md).
+
+Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Architecture, data model, k-anonymity privacy safeguards, explainable recommendations, and test suites for the Anonymized Ward-Level Civic Issue Heatmap are documented in [docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md](docs/ANONYMIZED_WARD_ISSUE_HEATMAP.md) (#763).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

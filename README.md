@@ -112,7 +112,11 @@ A responsive design with theme support, built to provide a consistent experience
 
 Clear navigation, readable content, consistent interaction patterns, and a user-centered approach to public-service information.
 
-### 🏛️ 14. Multi-Authority Tenant Workspaces
+### 🚨 14. Civic Incident Response Drill & Public Service Continuity Planner
+
+A dedicated preparedness workspace for municipal authorities and disaster response teams. Model critical service dependencies, detect single points of failure (SPOF) and dependency cycles with graph analysis, run tabletop exercises with timed inject simulations, record tactical decisions, calculate recovery time objective (RTO) gaps, generate printable offline continuity runbooks, and track corrective action items to closure. See [architecture and operational documentation](docs/civic-incident-response-drill-planner.md).
+
+### 🏛️ 15. Multi-Authority Tenant Workspaces
 
 Isolated administration workspaces for distinct municipal and district civic authorities, supporting sovereign staff memberships, anti-IDOR scoped datasets, tamper-evident SHA-256 audit logs, bounded local AI guidance, and controlled cross-tenant public catalogue sharing.
 
