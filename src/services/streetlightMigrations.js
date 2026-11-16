@@ -8,6 +8,7 @@ import {
   STREETLIGHT_SCHEMA_VERSION,
   STREETLIGHT_STORAGE_KEYS,
 } from './streetlightConstants';
+import { logDiagnostic } from '../utils/diagnostics';
 import {
   SEED_STREETLIGHT_ASSETS,
   SEED_OUTAGE_REPORTS,
@@ -147,7 +148,7 @@ export const ensureStreetlightData = () => {
         indexes: buildStreetlightIndexes({ assets, reports, clusters, workOrders }),
       };
     } catch (err) {
-      console.warn('Corrupt streetlight storage, re-seeding...', err);
+      logDiagnostic('Corrupt streetlight storage, re-seeding...', err);
     }
   }
 

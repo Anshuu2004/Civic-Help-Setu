@@ -162,6 +162,16 @@ const Footer = () => {
                   RERA Homebuyer Rights
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/solid-waste-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Solid Waste &amp; NGT
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link
