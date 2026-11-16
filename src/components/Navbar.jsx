@@ -27,7 +27,11 @@ import {
   KeyRound,
   Store,
   Trees,
-  Lightbulb
+  Lightbulb,
+  ShieldAlert,
+  GitFork,
+  Scale,
+  BarChart2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -121,6 +125,22 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+if (normalizedTarget === '/continuity-planner') {
+        return (
+          normalizedPath === '/continuity-planner' ||
+          normalizedPath.startsWith('/continuity-planner/') ||
+          normalizedPath === '/incident-drills'
+        );
+      }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
+        );
+      }
+
       if (normalizedTarget === '/ward-budget') {
         return (
           normalizedPath === '/ward-budget' ||
@@ -134,6 +154,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/road-safety' ||
           normalizedPath === '/blackspots' ||
           normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/provenance') {
+        return (
+          normalizedPath === '/provenance' ||
+          normalizedPath.startsWith('/provenance/') ||
+          normalizedPath === '/lineage-explorer'
         );
       }
 
@@ -840,12 +868,36 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 icon: FileText
               })}
 
+             {renderNavLink({
+                to: '/provenance',
+                label: 'Data Lineage',
+                icon: GitFork
+              })}
+
+              {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
+              })}
+
               {renderNavLink({
                 to: '/surveys',
                 label: 'Civic Surveys',
                 icon: FileText
               })}
 
+              {renderNavLink({
+                to: '/continuity-planner',
+                activeTarget: '/continuity-planner',
+                label: t('nav.continuityPlanner', 'Continuity & Drills'),
+                icon: ShieldAlert
+              })}
+
+              {renderNavLink({
+                to: '/senior-citizen-tribunal',
+                label: 'Senior Citizen Tribunal',
+                icon: Scale
+              })}
               {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
