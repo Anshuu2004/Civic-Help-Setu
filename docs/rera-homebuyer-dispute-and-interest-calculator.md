@@ -12,8 +12,11 @@ This workspace (`/rera-dispute-workspace` and `/rera-homebuyer-rights`) introduc
    - **Option A (Withdrawal & Refund - Section 18(1) 1st Proviso):** Full return of principal amount paid + statutory interest + compensation.
    - **Option B (Stay in Project - Section 18(1) 2nd Proviso):** Monthly delay compensation until actual physical possession with valid Occupancy Certificate (OC).
 3. **Section 14(3) 5-Year Structural Defect & 30-Day Rectification SLA Tracker:** Enforces promoter obligation to rectify structural flaws, workmanship defects, and service breakdowns without charge within 30 days of written notice.
-4. **Form 'M' & Form 'N' Legal Petition Drafter:** Auto-generates standard statutory complaint memorandums with verified calculations, interim prayer clauses, and verification statements ready for portal filing.
-5. **Client-Side Privacy Vault (`civicbridge_rera_complaints`):** Client-side offline-first persistence with DPDP-compliant PII minimization and canonical SHA-256 digital seals.
+4. **Section 4(2)(l)(D) 70% Dedicated Escrow Account Audit Engine:** Evaluates statutory escrow deposits against physical milestone completion to detect unauthorized fund diversion and Section 60/61 penal liability.
+5. **Form 'M' & Form 'N' Legal Petition Drafter:** Auto-generates standard statutory complaint memorandums with verified calculations, interim prayer clauses, and verification statements ready for portal filing.
+6. **Section 40 Execution Petition & Revenue Recovery Certificate (RRC) Drafter:** Tracks post-order 60-day compliance deadlines, computes running statutory interest on unpaid decrees, and drafts execution petitions to the District Collector and Enforcement Bench.
+7. **Section 43(5) & Section 44 REAT Appellate Workspace:** Validates mandatory 100% promoter pre-deposit thresholds (*Newtech Promoters*, 2021), drafts summary dismissal objection petitions, and prepares Section 44 appeal memorandums.
+8. **Client-Side Privacy Vault (`civicbridge_rera_complaints`):** Client-side offline-first persistence with DPDP-compliant PII minimization and canonical SHA-256 digital seals.
 
 ---
 
@@ -75,7 +78,7 @@ All complaint dossiers created in the workspace:
 
 Run unit and component tests:
 ```bash
-npx vitest run src/services/reraDisputeService.test.js src/services/reraDisputeStorage.test.js src/components/rera/ReraInterestCalculator.test.jsx src/pages/ReraDisputeWorkspace.test.jsx
+npx vitest run src/services/reraDisputeService.test.js src/services/reraDisputeStorage.test.js src/components/rera/ReraInterestCalculator.test.jsx src/components/rera/ReraExecutionWarrantCard.test.jsx src/components/rera/ReraAppellateMemoCard.test.jsx src/components/rera/ReraEscrowAuditCard.test.jsx src/pages/ReraDisputeWorkspace.test.jsx
 ```
 
 Run ESLint verification:
