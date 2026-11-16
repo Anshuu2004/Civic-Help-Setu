@@ -36,7 +36,13 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/streetlightService.test.js        # streetlight clustering & repair service tests (#756)
+npx vitest run src/services/streetlightAccessControl.test.js  # streetlight RBAC & privacy scoping tests (#756)
+npx vitest run src/services/streetlightMigrations.test.js     # streetlight schema migration & rollback tests (#756)
+npx vitest run src/pages/StreetlightOutageWorkspace.test.jsx   # streetlight workspace & accessible UI tests (#756)
 ```
+
+Architecture, data model, spatial clustering algorithms, explainability ruleset, and technician workflows for streetlight outages are documented in [docs/streetlight-outage-clustering.md](docs/streetlight-outage-clustering.md).
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
 

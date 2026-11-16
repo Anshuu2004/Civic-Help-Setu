@@ -60,6 +60,7 @@ import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import StreetlightOutageWorkspace from './pages/StreetlightOutageWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -143,6 +144,9 @@ function AppRoot() {
                       <Route path="/blackspots" element={<RoadSafetyDashboard />} />
                       <Route path="/tree-health" element={<TreeHealthInventory />} />
                       <Route path="/tree-inventory" element={<TreeHealthInventory />} />
+                      <Route path="/streetlights" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/streetlight-outages" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/services/streetlight-outages" element={<StreetlightOutageWorkspace />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />

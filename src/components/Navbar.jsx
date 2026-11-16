@@ -26,7 +26,8 @@ import {
   Droplets,
   KeyRound,
   Store,
-  Trees
+  Trees,
+  Lightbulb
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -874,6 +875,13 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 activeTarget: '/tree-health',
                 label: t('nav.treeHealth', 'Tree Health Inventory'),
                 icon: Trees
+              })}
+
+              {renderNavLink({
+                to: '/streetlights',
+                activeTarget: '/streetlights',
+                label: t('nav.streetlights', 'Streetlight Outages'),
+                icon: Lightbulb
               })}
 
               {renderNavLink({
