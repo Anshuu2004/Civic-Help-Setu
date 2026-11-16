@@ -275,9 +275,6 @@ export default function WardIssueHeatmapWorkspace() {
               >
                 Municipal Aggregate Analytics
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
-                Issue #763
-              </span>
             </div>
 
             <h1

@@ -1140,7 +1140,7 @@ export const MOCK_SERVICES = [
       localBody: 'Municipal Corporations / Urban Local Bodies'
     },
     name: 'Anonymized Ward-Level Civic Issue Heatmap & Trend Explorer',
-    shortDescription: 'Aggregate analytics view for understanding recurring civic issues across municipal wards without exposing individual complainants or exact private locations (#763).',
+    shortDescription: 'Aggregate analytics view for understanding recurring civic issues across municipal wards without exposing individual complainants or exact private locations.',
     category: 'Governance & Analytics',
     department: 'Directorate of Municipal Administration & Urban Data Governance Cell',
     type: 'Online Analytics & Public Dashboard',
