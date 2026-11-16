@@ -50,6 +50,7 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | Key | Written by | What it holds | Category |
 |---|---|---|---|
 | `civicbridge_senior_tribunal_petitions` | `seniorCitizenTribunalStorage.js` | Saved senior citizen maintenance and Section 23 property revocation tribunal petitions | Drafts and in-progress work |
+| `civicbridge_rera_complaints` | `reraDisputeStorage.js` | Saved RERA delayed possession, defect liability and Form M/N dispute complaints | Drafts and in-progress work |
 | `civicbridge_checklists` | `checklistStorage.js` | Which checklist items are ticked, per checklist or application id | Drafts and in-progress work |
 | `civicbridge_preparation_plans_v1` | `applicationPreparationPlanService.js` | Saved application preparation plan and customized checklist progress | Drafts and in-progress work |
 | `civic_journey_progress_<journeyId>` (one per journey) | `journeyDependencyEngine.js` | Completed tasks of a journey plan | Drafts and in-progress work |

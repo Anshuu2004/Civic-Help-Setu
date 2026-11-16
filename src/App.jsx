@@ -64,6 +64,7 @@ import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
+import ReraDisputeWorkspace from './pages/ReraDisputeWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -152,6 +153,8 @@ function AppRoot() {
                       <Route path="/incident-drills" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/senior-citizen-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
+                      <Route path="/rera-dispute-workspace" element={<ReraDisputeWorkspace />} />
+                      <Route path="/rera-homebuyer-rights" element={<ReraDisputeWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/road-safety" element={<RoadSafetyDashboard />} />

@@ -31,6 +31,7 @@ import {
   Trees,
   Scale,
   BarChart2,
+  Building2,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -896,6 +897,12 @@ if (normalizedTarget === '/continuity-planner') {
                 to: '/senior-citizen-tribunal',
                 label: 'Senior Citizen Tribunal',
                 icon: Scale
+              })}
+
+              {renderNavLink({
+                to: '/rera-dispute-workspace',
+                label: 'RERA Homebuyer Rights',
+                icon: Building2
               })}
               {renderNavLink({
                 to: '/track',
