@@ -82,4 +82,12 @@ describe('ServiceDetails', () => {
     expect(html).toContain('Launch Survey Workspace');
     expect(html).toContain('/surveys');
   });
+
+  it('renders the dedicated Ward Issue Heatmap entry card when viewing the ward-issue-heatmap service (#763)', () => {
+    const html = render('/services/ward-issue-heatmap');
+    expect(html).toContain('Anonymized Ward-Level Civic Issue Heatmap &amp; Trend Explorer');
+    expect(html).toContain('Open Heatmap &amp; Explorer');
+    expect(html).toContain('/ward-issue-heatmap');
+    expect(html).toContain('/services/ward-issue-heatmap');
+  });
 });

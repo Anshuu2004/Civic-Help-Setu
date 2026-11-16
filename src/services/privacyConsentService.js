@@ -226,6 +226,16 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_tree_rate_limit_v1',
   'civicbridge_tree_migration_backup_v1',
   'civicbridge_trees_v1',
+  // Anonymized ward-level civic issue heatmap, aggregation runs, and privacy rules (#763)
+  'civicbridge_ward_issue_events_v1',
+  'civicbridge_ward_geometries_v1',
+  'civicbridge_ward_metrics_v1',
+  'civicbridge_aggregation_runs_v1',
+  'civicbridge_privacy_rules_v1',
+  'civicbridge_ward_recommendations_v1',
+  'civicbridge_ward_issue_audit_logs_v1',
+  'civicbridge_ward_issue_rate_limit_v1',
+  'civicbridge_ward_heatmap_migration_backup_v1',
   // Handled by purge itself: consents are reset, the audit log keeps the deletion receipt
   CONSENT_STORAGE_KEY,
   AUDIT_STORAGE_KEY,
