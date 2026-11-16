@@ -295,25 +295,3 @@ export const logDiagnostic = (label, error, { dev = isDev(), log = console.error
   }
   log(label, buildErrorEvent(error));
 };
-import { minimizeForExternal } from './dataMinimization';
-
-/**
- * The one place that decides what a diagnostic event may contain.
- *
- * Today nothing leaves the browser (docs/INTEGRATIONS.md): there is no error tracker, and the
- * events built here only go to a "sink" if someone registers one with setDiagnosticsSink. Whatever
- * sink is added later receives only what this file lets through, so it cannot capture form
- * contents, contact or identity details, reference IDs, tokens, query strings or request bodies.
- *
- *   buildErrorEvent   an error as { name, code, status, message, route }
- *   describeRequest   a request as { method, target, hasBody }: never the body or the headers
- *   routeOf           the route *pattern* for a URL ("/services/:id"), never the real path
- *   redactValue       any object, keeping only allow-listed keys
- *   logDiagnostic     replacement for console.error(label, error) in app code
- *
- * Rules: deny by default (unknown object keys are removed, not scanned for bad values), URLs are cut
- * to route names, and text goes through the same patterns as everything else we hand to a third
- * party (dataMinimization.js).
- */
-
-/** Route patterns of the app. Anything else is reported as "/[other]" so odd paths are not echoed. */
