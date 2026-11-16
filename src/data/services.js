@@ -1282,6 +1282,83 @@ export const MOCK_SERVICES = [
     lastVerified: '2026-11-15'
   },
   {
+    id: 'pedestrian-barrier-map',
+    name: 'Accessible Pedestrian Route & Barrier Map',
+    shortDescription: 'Plan accessible pedestrian routes avoiding broken footpaths, missing curb ramps, steep gradients, and temporary obstructions with community reporting and official municipal audits.',
+    category: 'Infrastructure',
+    department: 'Municipal Corporation / Directorate of Urban Land Transport (DULT)',
+    type: 'Online Tool / Civic Audit',
+    difficulty: 'Easy',
+    feeType: 'free',
+    speedDays: 1,
+    popularityScore: 94,
+    jurisdiction: {
+      level: 'municipal',
+      states: ['Karnataka', 'All States'],
+      districts: ['Bengaluru Urban'],
+      localBody: 'Bruhat Bengaluru Mahanagara Palike (BBMP)'
+    },
+    eligibility: [
+      'Open to all residents, wheelchair users, senior citizens, parents with strollers, and pedestrians.',
+      'Community obstacle reporting is open to all citizens without requiring personal medical or health disclosure.',
+      'Ground verification and resolution updates are performed by authorized municipal engineers and ward reviewers.'
+    ],
+    documents: [
+      'No documents required for route planning or obstacle reporting.',
+      'Optional photographic evidence of physical barriers or missing curb ramps.'
+    ],
+    documentRequirements: {
+      'No documents required for route planning or obstacle reporting.': {
+        type: 'none'
+      },
+      'Optional photographic evidence of physical barriers or missing curb ramps.': {
+        type: 'optional'
+      }
+    },
+    steps: [
+      {
+        title: 'Select Origin and Destination Nodes',
+        description: 'Choose your start and destination points on the pedestrian network map or directory dropdown.'
+      },
+      {
+        title: 'Configure Functional Mobility Constraints',
+        description: 'Toggle constraints such as avoiding stairs/steps, requiring dropped curb ramps, or setting maximum gradient thresholds without disclosing personal diagnoses.'
+      },
+      {
+        title: 'Inspect Scoring Provenance & Alternative Route Tables',
+        description: 'Review the calculated route, audit freshness indicators, active obstacles, or switch to the screen-reader accessible table view.'
+      },
+      {
+        title: 'Report New Obstacles for Municipal Scrutiny',
+        description: 'Submit geo-tagged descriptions of missing curb cuts, broken pavers, or temporary roadwork to update the routing graph for all citizens.'
+      }
+    ],
+    officialSources: [
+      {
+        name: 'Harmonised Guidelines and Standards for Universal Accessibility in India (MoHUA)',
+        url: 'https://mohua.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      },
+      {
+        name: 'Rights of Persons with Disabilities Act (Section 40 & 44 — Public Infrastructure Accessibility)',
+        url: 'https://disabilityaffairs.gov.in',
+        verified: true,
+        lastVerified: '2026-11-16'
+      }
+    ],
+    warnings: [
+      'No route is described as fully accessible unless all traversed segments have undergone verified municipal ground inspection within the last 30 days.',
+      'Personal contact details (Aadhaar, phone, email) must never be submitted in public barrier descriptions.',
+      'Route preferences remain local to your browser and are not linked to citizen profiles.'
+    ],
+    contacts: [
+      { label: 'Pedestrian Infrastructure Helpline', phone: '1533', url: 'https://bbmp.gov.in' },
+      { label: 'Universal Accessibility Cell', phone: '080-22660000', url: 'https://dult.karnataka.gov.in' }
+    ],
+    lastVerified: '2026-11-16'
+  },
+  {
     id: 'open-contracting-red-flags',
     jurisdiction: {
       level: 'national',

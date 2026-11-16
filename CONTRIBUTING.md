@@ -50,6 +50,14 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/pedestrianBarrierService.test.js       # pedestrian barrier graph & service tests (#757)
+npx vitest run src/services/pedestrianBarrierMigrations.test.js    # pedestrian schema migration/rollback tests (#757)
+npx vitest run tests/pedestrian-barriers.test.js                   # pedestrian barrier API validation tests (#757)
+npx vitest run tests/pedestrian-barriers-security.test.js          # pedestrian security, injection & replay tests (#757)
+npx vitest run src/pages/AccessibleRouteBarrierWorkspace.test.jsx  # accessible barrier workspace UI tests (#757)
+```
+
+Architecture, data model, state machine, graph routing rules, and verification integrity for the accessible pedestrian route barrier map are documented in [docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md](docs/ACCESSIBLE_PEDESTRIAN_ROUTE_BARRIERS.md).
 npx vitest run src/services/streetlightService.test.js        # streetlight clustering & repair service tests (#756)
 npx vitest run src/services/streetlightAccessControl.test.js  # streetlight RBAC & privacy scoping tests (#756)
 npx vitest run src/services/streetlightMigrations.test.js     # streetlight schema migration & rollback tests (#756)
