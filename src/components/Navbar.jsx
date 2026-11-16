@@ -949,6 +949,9 @@ if (normalizedTarget === '/water-quality') {
                 to: '/noise-pollution-workspace',
                 label: 'Noise Pollution & Curfew',
                 icon: Volume2
+              })}
+
+              {renderNavLink({
                 to: '/solid-waste-workspace',
                 label: 'Solid Waste & NGT',
                 icon: Recycle
