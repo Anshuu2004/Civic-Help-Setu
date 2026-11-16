@@ -83,7 +83,7 @@ export default function PublicToiletReviewQueue() {
               Public Toilet Moderation &amp; Maintenance Review Queue
             </h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Moderation of citizen sanitation tickets, hygiene feedback, and cryptographic receipts (#758)
+              Moderation of citizen sanitation tickets, hygiene feedback, and cryptographic receipts
             </span>
           </div>
         </div>

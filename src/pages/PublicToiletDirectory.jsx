@@ -105,7 +105,7 @@ export default function PublicToiletDirectory() {
 
         {/* Page Header */}
         <StandardPageHeader
-          eyebrow="Municipal Public Sanitation Service (#758)"
+          eyebrow="Municipal Public Sanitation Service"
           eyebrowIcon={<Building2 size={16} style={{ color: 'var(--accent-main)' }} />}
           title="Public Toilet Availability & Maintenance Directory"
           subtitle="Real-time verified public sanitation directory: operating hours, accessibility features, sanitary amenities, cleaning logs, and audited maintenance status."
