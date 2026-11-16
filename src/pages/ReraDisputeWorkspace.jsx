@@ -16,6 +16,9 @@ import ReraInterestCalculator from '../components/rera/ReraInterestCalculator.js
 import ReraDefectLiabilityCard from '../components/rera/ReraDefectLiabilityCard.jsx';
 import ReraPetitionDrafter from '../components/rera/ReraPetitionDrafter.jsx';
 import ReraEvidenceChecklist from '../components/rera/ReraEvidenceChecklist.jsx';
+import ReraExecutionWarrantCard from '../components/rera/ReraExecutionWarrantCard.jsx';
+import ReraAppellateMemoCard from '../components/rera/ReraAppellateMemoCard.jsx';
+import ReraEscrowAuditCard from '../components/rera/ReraEscrowAuditCard.jsx';
 import {
   Building2,
   Calculator,
@@ -27,6 +30,9 @@ import {
   Trash2,
   CheckCircle,
   AlertTriangle,
+  Gavel,
+  Scale,
+  DollarSign,
 } from 'lucide-react';
 
 export default function ReraDisputeWorkspace() {
@@ -108,6 +114,36 @@ export default function ReraDisputeWorkspace() {
       showNotification(`Complaint dossier successfully sealed and saved (${saved.id.slice(0, 10)}...)`);
     } catch (err) {
       showNotification(`Failed to save complaint: ${err.message}`, 'error');
+    }
+  };
+
+  const handleSaveExecution = (executionPayload) => {
+    try {
+      const saved = saveReraComplaint(executionPayload);
+      setSavedComplaints(listReraComplaints());
+      showNotification(`Execution petition saved in vault (${saved.id.slice(0, 10)}...)`);
+    } catch (err) {
+      showNotification(`Failed to save execution petition: ${err.message}`, 'error');
+    }
+  };
+
+  const handleSaveAppeal = (appealPayload) => {
+    try {
+      const saved = saveReraComplaint(appealPayload);
+      setSavedComplaints(listReraComplaints());
+      showNotification(`REAT appellate record saved in vault (${saved.id.slice(0, 10)}...)`);
+    } catch (err) {
+      showNotification(`Failed to save appellate record: ${err.message}`, 'error');
+    }
+  };
+
+  const handleSaveAudit = (auditPayload) => {
+    try {
+      const saved = saveReraComplaint(auditPayload);
+      setSavedComplaints(listReraComplaints());
+      showNotification(`Escrow audit report saved in vault (${saved.id.slice(0, 10)}...)`);
+    } catch (err) {
+      showNotification(`Failed to save escrow audit: ${err.message}`, 'error');
     }
   };
 
@@ -320,6 +356,27 @@ export default function ReraDisputeWorkspace() {
 
         <button
           role="tab"
+          aria-selected={activeTab === 'escrow'}
+          onClick={() => setActiveTab('escrow')}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.6rem 1rem',
+            borderRadius: '0.5rem',
+            border: 'none',
+            background: activeTab === 'escrow' ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
+            color: activeTab === 'escrow' ? '#10b981' : 'var(--text-secondary, #94a3b8)',
+            fontWeight: activeTab === 'escrow' ? 700 : 500,
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+          }}
+        >
+          <DollarSign size={16} /> 70% Escrow Audit
+        </button>
+
+        <button
+          role="tab"
           aria-selected={activeTab === 'drafter'}
           onClick={() => setActiveTab('drafter')}
           style={{
@@ -337,6 +394,48 @@ export default function ReraDisputeWorkspace() {
           }}
         >
           <FileText size={16} /> Form M / Form N Drafter
+        </button>
+
+        <button
+          role="tab"
+          aria-selected={activeTab === 'execution'}
+          onClick={() => setActiveTab('execution')}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.6rem 1rem',
+            borderRadius: '0.5rem',
+            border: 'none',
+            background: activeTab === 'execution' ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+            color: activeTab === 'execution' ? '#6366f1' : 'var(--text-secondary, #94a3b8)',
+            fontWeight: activeTab === 'execution' ? 700 : 500,
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+          }}
+        >
+          <Gavel size={16} /> Sec. 40 Execution & RRC
+        </button>
+
+        <button
+          role="tab"
+          aria-selected={activeTab === 'reat'}
+          onClick={() => setActiveTab('reat')}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.6rem 1rem',
+            borderRadius: '0.5rem',
+            border: 'none',
+            background: activeTab === 'reat' ? 'rgba(234, 88, 12, 0.15)' : 'transparent',
+            color: activeTab === 'reat' ? '#ea580c' : 'var(--text-secondary, #94a3b8)',
+            fontWeight: activeTab === 'reat' ? 700 : 500,
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+          }}
+        >
+          <Scale size={16} /> REAT Appellate (Sec. 43/44)
         </button>
 
         <button
@@ -402,12 +501,22 @@ export default function ReraDisputeWorkspace() {
 
       {activeTab === 'defects' && <ReraDefectLiabilityCard />}
 
+      {activeTab === 'escrow' && <ReraEscrowAuditCard onSaveAudit={handleSaveAudit} />}
+
       {activeTab === 'drafter' && (
         <ReraPetitionDrafter
           petitionState={petitionState}
           onPetitionFieldChange={handlePetitionFieldChange}
           onSaveComplaint={handleSaveComplaint}
         />
+      )}
+
+      {activeTab === 'execution' && (
+        <ReraExecutionWarrantCard onSavePetition={handleSaveExecution} />
+      )}
+
+      {activeTab === 'reat' && (
+        <ReraAppellateMemoCard onSaveAppeal={handleSaveAppeal} />
       )}
 
       {activeTab === 'evidence' && (
@@ -480,7 +589,7 @@ export default function ReraDisputeWorkspace() {
                             color: '#3b82f6',
                           }}
                         >
-                          {item.jurisdiction} - {item.formType}
+                          {item.jurisdiction} - {item.recordType || item.formType}
                         </span>
                         <span
                           style={{

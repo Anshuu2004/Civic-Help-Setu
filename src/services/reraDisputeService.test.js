@@ -3,6 +3,7 @@ import {
   RERA_JURISDICTIONS,
   RERA_RELIEF_TYPE,
   RERA_FORM_TYPE,
+  RERA_REAT_ORDER_TYPE,
   isValidDate,
   getDaysBetween,
   getMonthsBetween,
@@ -10,6 +11,13 @@ import {
   evaluateStructuralDefectLiability,
   evaluateReraEvidenceReadiness,
   draftReraDisputePetition,
+  calculateExecutionPostOrderInterest,
+  generateSection40ExecutionPetition,
+  evaluateReatPreDepositRequirement,
+  generateReatAppealDismissalObjection,
+  generateReatMemorandumOfAppeal,
+  auditProjectEscrowCompliance,
+  generateSection35EscrowInvestigationPetition,
 } from './reraDisputeService.js';
 
 describe('RERA Dispute Service (#858 follow-up)', () => {
@@ -266,6 +274,178 @@ describe('RERA Dispute Service (#858 follow-up)', () => {
       expect(RERA_JURISDICTIONS.KARNATAKA.portalUrl).toContain('rera.karnataka.gov.in');
       expect(RERA_JURISDICTIONS.UTTAR_PRADESH.standardFeeInr).toBe(1000);
       expect(RERA_JURISDICTIONS.HARYANA_GURUGRAM.rulesCitation).toContain('Rule 18');
+      expect(RERA_JURISDICTIONS.MAHARASHTRA.executionFeeInr).toBe(1000);
+      expect(RERA_JURISDICTIONS.KARNATAKA.reatAppealFeeInr).toBe(5000);
+    });
+  });
+
+  describe('Section 40 Execution & Post-Order Running Interest', () => {
+    it('validates invalid order dates safely', () => {
+      const res = calculateExecutionPostOrderInterest({ orderDate: 'invalid' });
+      expect(res.isValid).toBe(false);
+      expect(res.isDefaulted).toBe(false);
+      expect(res.postOrderInterestInr).toBe(0);
+    });
+
+    it('identifies within-grace-period (<= 60 days) compliance window', () => {
+      const res = calculateExecutionPostOrderInterest({
+        orderDate: '2026-10-01',
+        orderAwardInr: 5000000,
+        evaluationDate: '2026-10-20',
+        statutoryComplianceGraceDays: 60,
+      });
+
+      expect(res.isValid).toBe(true);
+      expect(res.daysSinceOrder).toBe(19);
+      expect(res.isDefaulted).toBe(false);
+      expect(res.overdueDays).toBe(0);
+      expect(res.postOrderInterestInr).toBe(0);
+      expect(res.totalExecutableDebtInr).toBe(5000000);
+    });
+
+    it('computes running statutory interest when order is defaulted (> 60 days)', () => {
+      const res = calculateExecutionPostOrderInterest({
+        orderDate: '2025-01-01',
+        orderAwardInr: 4000000,
+        evaluationDate: '2025-05-01', // 120 days since order -> 60 days overdue
+        annualInterestRate: 10.75,
+        statutoryComplianceGraceDays: 60,
+      });
+
+      expect(res.isValid).toBe(true);
+      expect(res.isDefaulted).toBe(true);
+      expect(res.overdueDays).toBe(60);
+      expect(res.postOrderInterestInr).toBeGreaterThan(0);
+      expect(res.totalExecutableDebtInr).toBe(4000000 + res.postOrderInterestInr);
+      expect(res.statutoryCitation).toContain('Section 40(1)');
+    });
+
+    it('generates a court-ready Section 40 Execution Petition', () => {
+      const petition = generateSection40ExecutionPetition({
+        jurisdiction: 'MAHARASHTRA',
+        complainant: { name: 'Aditya Narain', address: 'Powai, Mumbai', contact: '9820012345' },
+        promoter: { name: 'Skyline Developers', projectName: 'Skyline Vista', reraRegNo: 'P51800012345', registeredOffice: 'Lower Parel' },
+        orderNumber: 'MahaRERA/CC/2025/9482',
+        orderDate: '2025-01-15',
+        awardedAmountInr: 5000000,
+        evaluationDate: '2025-06-15',
+      });
+
+      expect(petition).toContain('IN THE COURT OF THE ADJUDICATING OFFICER');
+      expect(petition).toContain('APPLICATION UNDER SECTION 40 OF THE REAL ESTATE');
+      expect(petition).toContain('REVENUE RECOVERY CERTIFICATE (RRC)');
+      expect(petition).toContain('Skyline Developers');
+      expect(petition).toContain('Aditya Narain');
+    });
+  });
+
+  describe('REAT Section 43(5) Pre-Deposit & Section 44 Appeal Drafter', () => {
+    it('exempts allottees/homebuyers from mandatory pre-deposit', () => {
+      const res = evaluateReatPreDepositRequirement({ appealFilerRole: 'ALLOTTEE' });
+      expect(res.isPreDepositMandatory).toBe(false);
+      expect(res.mandatoryPreDepositPercentage).toBe(0);
+      expect(res.mandatoryDepositInr).toBe(0);
+    });
+
+    it('mandates 30% pre-deposit for promoter penalty appeals', () => {
+      const res = evaluateReatPreDepositRequirement({
+        appealFilerRole: 'PROMOTER',
+        orderType: RERA_REAT_ORDER_TYPE.PENALTY,
+        penaltyAmountInr: 1000000,
+      });
+
+      expect(res.isPreDepositMandatory).toBe(true);
+      expect(res.mandatoryPreDepositPercentage).toBe(30);
+      expect(res.mandatoryDepositInr).toBe(300000);
+    });
+
+    it('mandates 100% pre-deposit for promoter refund/compensation appeals per Supreme Court ruling', () => {
+      const res = evaluateReatPreDepositRequirement({
+        appealFilerRole: 'PROMOTER',
+        orderType: RERA_REAT_ORDER_TYPE.REFUND_COMPENSATION,
+        totalRefundAwardInr: 6000000,
+      });
+
+      expect(res.isPreDepositMandatory).toBe(true);
+      expect(res.mandatoryPreDepositPercentage).toBe(100);
+      expect(res.mandatoryDepositInr).toBe(6000000);
+      expect(res.rulingPrecedent).toContain('Newtech Promoters');
+    });
+
+    it('generates Section 43(5) objection petition against promoter appeal', () => {
+      const objection = generateReatAppealDismissalObjection({
+        jurisdiction: 'MAHARASHTRA',
+        complainant: { name: 'Sunita Deshmukh' },
+        promoter: { name: 'Prime Realcon' },
+        appealNumber: 'AT/2026/0491',
+        totalAwardedInr: 5400000,
+      });
+
+      expect(objection).toContain('BEFORE THE REAL ESTATE APPELLATE TRIBUNAL (REAT)');
+      expect(objection).toContain('SECTION 43(5) PROVISO');
+      expect(objection).toContain('Newtech Promoters and Developers Pvt. Ltd.');
+      expect(objection).toContain('54,00,000');
+    });
+
+    it('generates Section 44 Memorandum of Appeal for aggrieved allottee', () => {
+      const appeal = generateReatMemorandumOfAppeal({
+        jurisdiction: 'KARNATAKA',
+        complainant: { name: 'Rohan Rao', address: 'Whitefield, Bengaluru' },
+        promoter: { name: 'Prestige Estates' },
+        originalOrderNumber: 'K-RERA/CMP/2025/1122',
+        orderDate: '2025-11-01',
+      });
+
+      expect(appeal).toContain('MEMORANDUM OF APPEAL UNDER SECTION 44 OF RERA, 2016');
+      expect(appeal).toContain('REAL ESTATE APPELLATE TRIBUNAL (REAT) AT KARNATAKA');
+      expect(appeal).toContain('Sixty (60) Days Statutory Limitation');
+    });
+  });
+
+  describe('Section 4(2)(l)(D) Escrow Account 70% Audit Engine', () => {
+    it('verifies compliant escrow operations when withdrawals match milestone progress', () => {
+      const res = auditProjectEscrowCompliance({
+        totalEstimatedProjectCostInr: 100000000,
+        totalAllotteeCollectionsInr: 50000000, // 70% is 35,000,000
+        certifiedCompletionPercentage: 50,     // 50% of 35,000,000 is 17,500,000
+        totalFundsWithdrawnInr: 15000000,       // Withdrawn 15,000,000 <= 17,500,000
+      });
+
+      expect(res.isCompliant).toBe(true);
+      expect(res.unauthorizedEscrowDiversionInr).toBe(0);
+      expect(res.riskCategory).toBe('COMPLIANT');
+      expect(res.section60PenaltyMaxInr).toBe(5000000);
+    });
+
+    it('flags unauthorized diversion when promoter withdraws in excess of certified progress', () => {
+      const res = auditProjectEscrowCompliance({
+        totalEstimatedProjectCostInr: 100000000,
+        totalAllotteeCollectionsInr: 80000000, // 70% is 56,000,000
+        certifiedCompletionPercentage: 25,     // 25% of 56,000,000 is 14,000,000
+        totalFundsWithdrawnInr: 45000000,       // Withdrawn 45,000,000 > 14,000,000 (31,000,000 diversion)
+      });
+
+      expect(res.isCompliant).toBe(false);
+      expect(res.unauthorizedEscrowDiversionInr).toBe(31000000);
+      expect(res.riskCategory).toBe('SEVERE_DIVERSION');
+      expect(res.recommendations.length).toBeGreaterThan(0);
+    });
+
+    it('generates Section 35 & 36 application for forensic audit and account freezing', () => {
+      const petition = generateSection35EscrowInvestigationPetition({
+        jurisdiction: 'MAHARASHTRA',
+        complainant: { name: 'Apex Homebuyers Association' },
+        promoter: { name: 'Nirvana Lifespaces', projectName: 'Nirvana Towers', reraRegNo: 'P52000045678' },
+        totalEstimatedProjectCostInr: 120000000,
+        totalAllotteeCollectionsInr: 90000000,
+        certifiedCompletionPercentage: 40,
+        totalFundsWithdrawnInr: 72000000,
+      });
+
+      expect(petition).toContain('APPLICATION UNDER SECTION 35 READ WITH SECTION 36');
+      expect(petition).toContain('ORDERING FORENSIC AUDIT OF');
+      expect(petition).toContain('70% DEDICATED ESCROW ACCOUNT');
+      expect(petition).toContain('Nirvana Lifespaces');
     });
   });
 });
