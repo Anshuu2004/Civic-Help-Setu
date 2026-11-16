@@ -128,6 +128,15 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+      if (normalizedTarget === '/water-quality') {
+        return (
+          normalizedPath === '/water-quality' ||
+          normalizedPath === '/water-quality-register' ||
+          normalizedPath === '/services/water-quality-register' ||
+          normalizedPath.startsWith('/water-quality/')
+        );
+      }
+
       if (normalizedTarget === '/road-safety') {
         return (
           normalizedPath === '/road-safety' ||
@@ -794,6 +803,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               {renderNavLink({
                 to: '/water-tanker',
                 label: 'Water Tanker Tracker',
+                icon: Droplets
+              })}
+
+              {renderNavLink({
+                to: '/water-quality',
+                label: 'Water Quality Register',
                 icon: Droplets
               })}
 

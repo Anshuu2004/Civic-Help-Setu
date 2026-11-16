@@ -36,9 +36,15 @@ npx vitest run src/services/treeInventoryService.test.js       # tree inventory 
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)
 npx vitest run src/components/trees/TreeInventoryComponents.test.jsx # tree component/accessibility tests (#749)
+npx vitest run src/services/waterQualityService.test.js        # water quality domain & supersession tests (#754)
+npx vitest run src/services/waterQualityRulesEngine.test.js    # deterministic IS 10500 compliance tests (#754)
+npx vitest run src/services/waterQualityValidation.test.js     # anti-PII & schema validation tests (#754)
+npx vitest run tests/water-quality-register.test.js            # serverless API abuse guard tests (#754)
+npx vitest run src/pages/WaterQualityRegister.test.jsx         # water register UI & accessibility tests (#754)
 ```
 
 Architecture, data model, roles, triage boundaries, CSV format, migrations and operational limits for the tree inventory are documented in [docs/tree-health-inventory.md](docs/tree-health-inventory.md).
+Water quality standards (IS 10500:2012), data models, cryptographic seals, and audit runbooks are documented in [docs/water-quality-register.md](docs/water-quality-register.md).
 
 ## Security checks
 Every PR runs a secret scan, a dependency audit and a lint for unsafe HTML/JS patterns. Locally:

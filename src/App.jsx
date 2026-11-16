@@ -60,6 +60,7 @@ import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import WaterQualityRegister from './pages/WaterQualityRegister';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -124,6 +125,9 @@ function AppRoot() {
                       <Route path="/facility-directory" element={<CommunityFacilityDirectory />} />
                       <Route path="/water-tanker" element={<WaterTankerTracker />} />
                       <Route path="/water-tankers" element={<WaterTankerTracker />} />
+                      <Route path="/services/water-quality-register" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality" element={<WaterQualityRegister />} />
+                      <Route path="/water-quality-register" element={<WaterQualityRegister />} />
                       <Route path="/rental-checklist" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-transition" element={<RentalTransitionWorkspace />} />
                       <Route path="/rental-records" element={<RentalTransitionWorkspace />} />
