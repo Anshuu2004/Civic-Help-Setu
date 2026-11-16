@@ -5,6 +5,8 @@
  * export utilities, and role-scoped read/write boundaries.
  */
 
+import { logDiagnostic } from '../utils/diagnostics';
+
 import {
   validateKnowledgeSource,
   validateSourceSnapshot,
@@ -402,7 +404,7 @@ export const recordSupersession = ({
     updateKnowledgeSourceStatus(predecessorId, PROVENANCE_STATUS.SUPERSEDED, reason, actor);
   } catch (err) {
     // If not in standard transition state, log and continue
-    console.warn(`[provenanceService] Notice on predecessor status update: ${err.message}`);
+    logDiagnostic('[provenanceService] Notice on predecessor status update', err);
   }
 
   // Add edge linking successor supersedes predecessor
