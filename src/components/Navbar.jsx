@@ -930,6 +930,12 @@ if (normalizedTarget === '/water-quality') {
                 label: 'Senior Citizen Tribunal',
                 icon: Scale
               })}
+
+              {renderNavLink({
+                to: '/rera-dispute-workspace',
+                label: 'RERA Homebuyer Rights',
+                icon: Building2
+              })}
               {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),
