@@ -6,10 +6,12 @@
 import addressChange from "./_lib/handlers/address-change-corrections.js";
 import businessLicence from "./_lib/handlers/business-licence-feedback.js";
 import communityFacility from "./_lib/handlers/community-facility-corrections.js";
+import counterDemandReports from "./_lib/handlers/counter-demand-reports.js";
 import crematorium from "./_lib/handlers/crematorium-corrections.js";
 import emailPreferences from "./_lib/handlers/email/preferences.js";
 import emailVerify from "./_lib/handlers/email/verify.js";
 import fireCompliance from "./_lib/handlers/fire-compliance-feedback.js";
+import knowledgeProvenance from "./_lib/handlers/knowledge-provenance.js";
 import libraryCorrections from "./_lib/handlers/library-corrections.js";
 import pdsObservations from "./_lib/handlers/pds-observations.js";
 import privacyExports from "./_lib/handlers/privacy-exports.js";
@@ -27,10 +29,12 @@ const handlers = {
   "business-licence-feedback": businessLicence,
   "civic-surveys": civicSurveys,
   "community-facility-corrections": communityFacility,
+  "counter-demand-reports": counterDemandReports,
   "crematorium-corrections": crematorium,
   "email/preferences": emailPreferences,
   "email/verify": emailVerify,
   "fire-compliance-feedback": fireCompliance,
+  "knowledge-provenance": knowledgeProvenance,
   "library-corrections": libraryCorrections,
   "open-contracting-analytics": openContractingAnalytics,
   "pds-observations": pdsObservations,

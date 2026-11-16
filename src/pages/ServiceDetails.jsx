@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, ShieldAlert } from 'lucide-react';
+import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, GitFork, ShieldAlert } from 'lucide-react';
 import { getServiceById } from '../services/serviceCatalog';
 import RetiredServiceNotice from '../components/common/RetiredServiceNotice';
 import ServiceQrHandout from '../components/services/ServiceQrHandout';
@@ -618,6 +618,32 @@ const ServiceDetails = ({ previewService = null }) => {
                 <span>Make checklist</span>
               </button>
 
+              <Link
+                to={`/provenance?service=${encodeURIComponent(service.id)}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/provenance?service=${encodeURIComponent(service.id)}`);
+                }}
+                className="btn btn-secondary"
+                style={{
+                  padding: '0.6rem 1rem',
+                  fontSize: '0.85rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                  borderColor: 'rgba(99, 102, 241, 0.3)',
+                  color: 'var(--accent-main)',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                }}
+                aria-label={`Trace data lineage and authoritative provenance for ${service.name}`}
+              >
+                <GitFork size={16} />
+                <span>Trace Data Lineage</span>
+              </Link>
+
               <button
                 type="button"
                 onClick={() => setShowPrepPlanModal(true)}
@@ -958,6 +984,41 @@ const ServiceDetails = ({ previewService = null }) => {
                     style={{ fontSize: '0.85rem', textDecoration: 'none' }}
                   >
                     Dedicated Page
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {service.id === 'counter-demand-forecasting' && (
+            <div
+              className="card"
+              style={{
+                marginBottom: '1.5rem',
+                border: '1.5px solid var(--accent-main, #2563eb)',
+                background: 'var(--bg-card)',
+                borderRadius: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ maxWidth: '650px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                    <ShieldCheck size={18} color="var(--accent-main, #2563eb)" />
+                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>
+                      Dedicated Counter Demand Forecasting &amp; Queue Staffing Workspace
+                    </h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Internal operational capacity planning model using Erlang-C queue theory, historical aggregate arrivals, walk-forward backtesting, and auditable shift staffing.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <Link
+                    to="/counter-demand"
+                    className="btn btn-primary"
+                    style={{ fontSize: '0.85rem', textDecoration: 'none' }}
+                  >
+                    Open Forecasting Workspace
                   </Link>
                 </div>
               </div>
