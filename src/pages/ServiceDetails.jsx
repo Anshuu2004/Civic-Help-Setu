@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf } from 'lucide-react';
+import { AlertOctagon, ArrowLeft, Bookmark, Calculator, Check, Link2, Printer, Share2, Zap, Users, Eye, CheckSquare, FileText, Sparkles, RotateCcw, Edit2, ShieldCheck, Mail, Leaf, GitFork } from 'lucide-react';
 import { getServiceById } from '../services/serviceCatalog';
 import RetiredServiceNotice from '../components/common/RetiredServiceNotice';
 import ServiceQrHandout from '../components/services/ServiceQrHandout';
@@ -617,6 +617,32 @@ const ServiceDetails = ({ previewService = null }) => {
                 <Sparkles size={16} />
                 <span>Make checklist</span>
               </button>
+
+              <Link
+                to={`/provenance?service=${encodeURIComponent(service.id)}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/provenance?service=${encodeURIComponent(service.id)}`);
+                }}
+                className="btn btn-secondary"
+                style={{
+                  padding: '0.6rem 1rem',
+                  fontSize: '0.85rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  backgroundColor: 'rgba(99, 102, 241, 0.08)',
+                  borderColor: 'rgba(99, 102, 241, 0.3)',
+                  color: 'var(--accent-main)',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                }}
+                aria-label={`Trace data lineage and authoritative provenance for ${service.name}`}
+              >
+                <GitFork size={16} />
+                <span>Trace Data Lineage</span>
+              </Link>
 
               <button
                 type="button"

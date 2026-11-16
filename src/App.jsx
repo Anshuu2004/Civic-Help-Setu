@@ -60,6 +60,7 @@ import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
 import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingWorkspace';
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
+import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 
@@ -136,6 +137,9 @@ function AppRoot() {
                       <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/provenance" element={<LineageExplorerWorkspace />} />
+                      <Route path="/provenance/:id" element={<LineageExplorerWorkspace />} />
+                      <Route path="/lineage-explorer" element={<LineageExplorerWorkspace />} />
                       <Route path="/counter-demand" element={<CounterDemandForecastingWorkspace />} />
                       <Route path="/counter-demand-forecasting" element={<CounterDemandForecastingWorkspace />} />
                       <Route path="/queue-staffing" element={<CounterDemandForecastingWorkspace />} />

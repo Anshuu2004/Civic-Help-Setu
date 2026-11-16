@@ -26,6 +26,8 @@ import {
   Droplets,
   KeyRound,
   Store,
+  GitFork,
+  Trees
   Scale,
   BarChart2,
   Trees,
@@ -143,6 +145,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/road-safety' ||
           normalizedPath === '/blackspots' ||
           normalizedPath.startsWith('/road-safety/')
+        );
+      }
+
+      if (normalizedTarget === '/provenance') {
+        return (
+          normalizedPath === '/provenance' ||
+          normalizedPath.startsWith('/provenance/') ||
+          normalizedPath === '/lineage-explorer'
         );
       }
 
@@ -847,6 +857,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/citizen-drafts',
                 label: 'Citizen Drafts & Sync',
                 icon: FileText
+              })}
+
+             {renderNavLink({
+                to: '/provenance',
+                label: 'Data Lineage',
+                icon: GitFork
               })}
 
               {renderNavLink({

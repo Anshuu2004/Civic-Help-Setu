@@ -232,6 +232,14 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_tree_rate_limit_v1',
   'civicbridge_tree_migration_backup_v1',
   'civicbridge_trees_v1',
+  // Civic knowledge records lineage and provenance explorer (#777)
+  'civicbridge_knowledge_sources_v1',
+  'civicbridge_source_snapshots_v1',
+  'civicbridge_transformation_runs_v1',
+  'civicbridge_provenance_edges_v1',
+  'civicbridge_editorial_reviews_v1',
+  'civicbridge_supersession_links_v1',
+  'civicbridge_provenance_audit_v1',
   // Handled by purge itself: consents are reset, the audit log keeps the deletion receipt
   CONSENT_STORAGE_KEY,
   AUDIT_STORAGE_KEY,
@@ -344,14 +352,16 @@ function getSessionStorage() {
 }
 
 // Reads and parses a JSON value from storage, falling back when the key is
-// absent or holds malformed data so an export never fails on one bad entry.
-function readStoredJson(storage, key, fallback = null) {
+// absent, corrupt or wrong-shaped so an export never fails on one bad entry.
+function readStoredJson(storage, key, empty = null) {
   try {
     const raw = storage?.getItem(key);
-    if (raw === null || raw === undefined) return fallback;
-    return JSON.parse(raw);
+    if (raw === null || raw === undefined || raw === '') return empty;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
+    return parsed;
   } catch {
-    return fallback;
+    return empty;
   }
 }
 
