@@ -26,8 +26,9 @@ import {
   Droplets,
   KeyRound,
   Store,
+  Scale,
   BarChart2,
-  Trees
+  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -858,6 +859,12 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 to: '/surveys',
                 label: 'Civic Surveys',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/senior-citizen-tribunal',
+                label: 'Senior Citizen Tribunal',
+                icon: Scale
               })}
 
               {renderNavLink({
