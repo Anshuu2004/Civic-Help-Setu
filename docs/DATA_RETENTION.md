@@ -49,6 +49,7 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 
 | Key | Written by | What it holds | Category |
 |---|---|---|---|
+| `civicbridge_senior_tribunal_petitions` | `seniorCitizenTribunalStorage.js` | Saved senior citizen maintenance and Section 23 property revocation tribunal petitions | Drafts and in-progress work |
 | `civicbridge_checklists` | `checklistStorage.js` | Which checklist items are ticked, per checklist or application id | Drafts and in-progress work |
 | `civicbridge_preparation_plans_v1` | `applicationPreparationPlanService.js` | Saved application preparation plan and customized checklist progress | Drafts and in-progress work |
 | `civic_journey_progress_<journeyId>` (one per journey) | `journeyDependencyEngine.js` | Completed tasks of a journey plan | Drafts and in-progress work |
@@ -153,6 +154,7 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_counter_aggregates_v1`, `civicbridge_capacity_plans_v1`, `civicbridge_forecast_runs_v1`, `civicbridge_capacity_audit_logs_v1` | Historical footfall aggregates (Zero-PII), Erlang-C capacity plans, forecast runs, and append-only staffing override audit logs (#764) | Operations and capacity management |
 | `civicbridge_tree_inventory_meta_v1`, `civicbridge_tree_assets_v1`, `civicbridge_tree_species_v1`, `civicbridge_tree_inspections_v1`, `civicbridge_tree_maintenance_orders_v1`, `civicbridge_tree_pruning_events_v1`, `civicbridge_tree_planting_sites_v1`, `civicbridge_tree_triage_suggestions_v1`, `civicbridge_tree_audit_events_v1`, `civicbridge_tree_idempotency_v1`, `civicbridge_tree_rate_limit_v1`, `civicbridge_tree_migration_backup_v1`, `civicbridge_trees_v1` | Municipal tree register, inspection history, maintenance orders, pruning history, planting sites, triage suggestions, append-only audit chain, idempotency/rate-limit state, schema metadata and rollback backup | Public-authority operating records, not a citizen profile. Kept so clearing a citizen's data cannot erase the public register or audit trail. The tree module applies its own 365-day retention to closed citizen reports |
 | `civicbridge_knowledge_sources_v1`, `civicbridge_source_snapshots_v1`, `civicbridge_transformation_runs_v1`, `civicbridge_provenance_edges_v1`, `civicbridge_editorial_reviews_v1`, `civicbridge_supersession_links_v1`, `civicbridge_provenance_audit_v1` | Public knowledge sources, snapshots, transformations, provenance DAG edges, editorial reviews, supersession links, and audit logs (#777) | Statutory provenance records, not citizen personal data |
 

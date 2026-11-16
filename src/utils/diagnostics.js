@@ -65,6 +65,8 @@ export const ROUTE_PATTERNS = [
   '/surveys',
   '/survey-builder',
   '/civic-surveys',
+  '/senior-citizen-tribunal',
+  '/senior-tribunal',
   '/track',
   '/civic-works',
   '/road-safety',

@@ -6,6 +6,7 @@
 import addressChange from "./_lib/handlers/address-change-corrections.js";
 import businessLicence from "./_lib/handlers/business-licence-feedback.js";
 import communityFacility from "./_lib/handlers/community-facility-corrections.js";
+import counterDemandReports from "./_lib/handlers/counter-demand-reports.js";
 import crematorium from "./_lib/handlers/crematorium-corrections.js";
 import emailPreferences from "./_lib/handlers/email/preferences.js";
 import emailVerify from "./_lib/handlers/email/verify.js";
@@ -27,6 +28,7 @@ const handlers = {
   "business-licence-feedback": businessLicence,
   "civic-surveys": civicSurveys,
   "community-facility-corrections": communityFacility,
+  "counter-demand-reports": counterDemandReports,
   "crematorium-corrections": crematorium,
   "email/preferences": emailPreferences,
   "email/verify": emailVerify,

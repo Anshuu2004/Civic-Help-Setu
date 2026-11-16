@@ -36,6 +36,8 @@ npm test -- --run tests/knowledge-provenance.test.js          # provenance serve
 npm test -- --run tests/knowledge-provenance-security.test.js # provenance security & PII tests (#777)
 npm test -- --run src/services/citizenDraftSyncEngine.test.js # offline-first sync engine tests (#775)
 npm test -- --run src/pages/CitizenDraftSyncWorkspace.test.jsx # sync workspace UI tests (#775)
+npm test -- --run src/services/counterDemandForecastingService.test.js # counter demand forecasting tests (#764)
+npm test -- --run src/pages/CounterDemandForecastingWorkspace.test.jsx # counter demand workspace UI tests (#764)
 npx vitest run src/services/treeInventoryService.test.js       # tree inventory domain/security tests (#749)
 npx vitest run src/services/treeInventoryMigrations.test.js    # tree schema migration/rollback tests (#749)
 npx vitest run src/pages/TreeHealthInventory.test.jsx          # tree page public-projection tests (#749)

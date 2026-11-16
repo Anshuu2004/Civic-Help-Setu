@@ -28,6 +28,9 @@ import {
   Store,
   GitFork,
   Trees
+  Scale,
+  BarChart2,
+  Trees,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -118,6 +121,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/address-change-planner' ||
           normalizedPath === '/address-change' ||
           normalizedPath === '/move-planner'
+        );
+      }
+
+      if (normalizedTarget === '/counter-demand') {
+        return (
+          normalizedPath === '/counter-demand' ||
+          normalizedPath === '/counter-demand-forecasting' ||
+          normalizedPath === '/queue-staffing'
         );
       }
 
@@ -848,16 +859,28 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
                 icon: FileText
               })}
 
-              {renderNavLink({
+             {renderNavLink({
                 to: '/provenance',
                 label: 'Data Lineage',
                 icon: GitFork
               })}
 
               {renderNavLink({
+                to: '/counter-demand',
+                label: t('nav.counterDemand', 'Counter Demand & Staffing'),
+                icon: BarChart2
+              })}
+
+              {renderNavLink({
                 to: '/surveys',
                 label: 'Civic Surveys',
                 icon: FileText
+              })}
+
+              {renderNavLink({
+                to: '/senior-citizen-tribunal',
+                label: 'Senior Citizen Tribunal',
+                icon: Scale
               })}
 
               {renderNavLink({
