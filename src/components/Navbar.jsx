@@ -26,6 +26,7 @@ import {
   Droplets,
   KeyRound,
   Store,
+  ShieldAlert,
   GitFork,
   Trees
   Scale,
@@ -124,6 +125,14 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
         );
       }
 
+if (normalizedTarget === '/continuity-planner') {
+        return (
+          normalizedPath === '/continuity-planner' ||
+          normalizedPath.startsWith('/continuity-planner/') ||
+          normalizedPath === '/incident-drills'
+        );
+      }
+
       if (normalizedTarget === '/counter-demand') {
         return (
           normalizedPath === '/counter-demand' ||
@@ -153,8 +162,6 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
           normalizedPath === '/provenance' ||
           normalizedPath.startsWith('/provenance/') ||
           normalizedPath === '/lineage-explorer'
-        );
-      }
 
       if (normalizedTarget === '/admin') {
         return (
@@ -878,11 +885,17 @@ const Navbar = ({ initialOpen = false, defaultOpen } = {}) => {
               })}
 
               {renderNavLink({
+                to: '/continuity-planner',
+                activeTarget: '/continuity-planner',
+                label: t('nav.continuityPlanner', 'Continuity & Drills'),
+                icon: ShieldAlert
+              })}
+
+              {renderNavLink({
                 to: '/senior-citizen-tribunal',
                 label: 'Senior Citizen Tribunal',
                 icon: Scale
               })}
-
               {renderNavLink({
                 to: '/track',
                 label: t('nav.track', 'Track Status'),

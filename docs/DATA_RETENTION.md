@@ -96,6 +96,13 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civicbridge_conflict_records_v1` | `citizenDraftSyncEngine.js` | Local conflict records waiting for user merge resolution | Drafts and in-progress work |
 | `civicbridge_device_cursors_v1` | `citizenDraftSyncEngine.js` | Device sync cursors and high-water revision marks | Drafts and in-progress work |
 | `civicbridge_tombstones_v1` | `citizenDraftSyncEngine.js` | Deletion tombstones to prevent resurrection of deleted drafts | Drafts and in-progress work |
+| `civicbridge_continuity_plans_v1` | `continuityPlannerService.js` | Public service continuity plans, recovery objectives and contact trees | Drafts and in-progress work |
+| `civicbridge_incident_scenarios_v1` | `continuityPlannerService.js` | Tabletop incident drill scenarios and timeline inject templates | Drafts and in-progress work |
+| `civicbridge_service_dependencies_v1` | `continuityPlannerService.js` | Municipal service dependency mappings and manual fallback procedures | Drafts and in-progress work |
+| `civicbridge_exercise_runs_v1` | `continuityPlannerService.js` | Tabletop drill exercise logs, decisions, response gaps and after-action reports | Reviews, votes and reports |
+| `civicbridge_action_items_v1` | `continuityPlannerService.js` | Corrective action items stemming from continuity drill gaps | Tracking records |
+| `civicbridge_continuity_audit_logs_v1` | `continuityAuditService.js` | Append-only audit logs of plan approvals, drill closures and override decisions | Reviews, votes and reports |
+| `civicbridge_continuity_recommendations_v1` | `continuityPlannerService.js` | Human-in-the-loop decision records on automated continuity recommendations | Drafts and in-progress work |
 | `civicbridge_tree_report_attachments_v1` | `treeInventoryService.js` | Validated citizen-report images and metadata (no raw personal identifiers) | Reviews, votes and reports |
 | `civicbridge_tree_citizen_reports_v1` | `treeInventoryService.js` | Citizen tree observations, tracking codes, triage and review state | Reviews, votes and reports |
 | `civicbridge_tree_reports_v1` | `treeInventoryMigrations.js` | Legacy citizen tree reports read once during migration | Reviews, votes and reports |
@@ -118,6 +125,31 @@ Retention for all of these: until deleted by the person (no automatic expiry).
 | `civicbridge_offline_last_sync` | `offlineCacheService.js` | Time of the last offline sync | Offline copies and location |
 | `civicbridge_cached_shelters` | `disasterReliefService.js` | Copy of the public relief shelter list (no personal data) | Offline copies and location |
 | `civicbridge_user_coords` (sessionStorage) | `locationService.js` | Last location the browser gave the app, for the nearby offices page. Gone when the tab closes | Offline copies and location |
+| `civic_fire_noc_checklist_dossier` | `fireNocService.js` | Fire safety and NOC application compliance dossiers | Drafts and in-progress work |
+| `civicbridge_civic_works_reporter_id` | `civicWorksBoardService.js` | Anonymous device-scoped reporter identifier | Tracking records |
+| `civic_admin_operations_digest_config` | `adminDigestService.js` | Administrative operations digest frequency configuration | Tracking records |
+| `civic_admin_operations_digest_logs` | `adminDigestService.js` | Operations notification and delivery log receipts | Tracking records |
+| `civic_application_lifecycle_email_logs` | `applicationLifecycleEmailService.js` | Status change transactional email history | Tracking records |
+| `civic_application_notification_preferences` | `notificationPreferenceService.js` | Citizen notification preference options | Account security |
+| `civic_service_checklist_email_logs` | `checklistEmailService.js` | Checklist export email logs | Tracking records |
+| `civic_application_deadline_reminder_configs` | `deadlineReminderService.js` | Citizen application deadline reminder schedules | Tracking records |
+| `civic_application_deadline_reminder_logs` | `deadlineReminderService.js` | Delivery receipts for statutory deadline warnings | Tracking records |
+| `civic_privacy_safe_feedback_store` | `feedbackService.js` | De-identified citizen experience feedback | Reviews, votes and reports |
+| `civic_help_setu_contributors_cache` | `contributorService.js` | Cached open source contributor metadata | Offline copies and location |
+| `civic_rental_transition_checklists_v1` | `rentalTransitionService.js` | Rental move-in and handover verification checklists | Drafts and in-progress work |
+| `civic_tender_readiness_checklists_v1` | `tenderReadinessService.js` | Public procurement eligibility checklists and bids | Drafts and in-progress work |
+| `civicbridge_transactional_delivery_logs` | `transactionalEmailService.js` | Outgoing delivery transaction IDs | Tracking records |
+| `civicbridge_watertanker_requests` | `waterTankerService.js` | Municipal emergency water tanker delivery requests | Tracking records |
+| `civic_address_change_planner_v1` | `addressChangeStorage.js` | Moving-home address change checklists and task statuses | Drafts and in-progress work |
+| `civic_library_checklists_v1` | `libraryChecklistStorage.js` | Library membership application checklists | Drafts and in-progress work |
+| `civicbridge_library_checklist_change` | `libraryChecklistStorage.js` | Local storage update event channel for library checklists | Technical anti-abuse rate limits |
+| `civic_recovery_checklists` | `lostDocumentRecoveryNavigatorService.js` | Lost government document recovery checklists | Drafts and in-progress work |
+| `civicbridge_small_business_establishments_v1` | `smallBusinessLicenceService.js` | Small business establishments registry and licence profiles | Drafts and in-progress work |
+| `civicbridge_business_checklist_progress_v1` | `smallBusinessLicenceService.js` | Small business renewal and closure checklist progress | Drafts and in-progress work |
+| `civic_surveys_v1` | `surveyStorage.js` | Public survey definitions and diagnostic schema | Drafts and in-progress work |
+| `civic_survey_responses_v1` | `surveyStorage.js` | Anonymized citizen survey responses and sample weights | Reviews, votes and reports |
+| `civic_survey_consent_events_v1` | `surveyStorage.js` | Audit records for survey participation consent | Audit and execution records |
+| `civic_survey_audit_events_v1` | `surveyStorage.js` | Append-only audit events for civic surveys | Audit and execution records |
 
 The offline copies only duplicate tracking records and saved items, so clearing either of those clears them too. The result list says so.
 

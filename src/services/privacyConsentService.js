@@ -101,6 +101,13 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_conflict_records_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_device_cursors_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
   { key: 'civicbridge_tombstones_v1', category: 'drafts', exportAs: null, empty: {} }, // citizenDraftSyncEngine.js
+  { key: 'civicbridge_continuity_plans_v1', category: 'drafts', exportAs: 'continuityPlans', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_incident_scenarios_v1', category: 'drafts', exportAs: 'incidentScenarios', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_service_dependencies_v1', category: 'drafts', exportAs: 'serviceDependencies', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_exercise_runs_v1', category: 'activity', exportAs: 'exerciseRuns', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_action_items_v1', category: 'tracking', exportAs: 'actionItems', empty: [] }, // continuityPlannerService.js
+  { key: 'civicbridge_continuity_audit_logs_v1', category: 'activity', exportAs: null, empty: [] }, // continuityAuditService.js
+  { key: 'civicbridge_continuity_recommendations_v1', category: 'drafts', exportAs: null, empty: [] }, // continuityPlannerService.js
   { key: 'civicbridge_senior_tribunal_petitions', category: 'drafts', exportAs: 'seniorCitizenTribunalPetitions', empty: [] }, // seniorCitizenTribunalStorage.js
 ];
 
@@ -921,6 +928,18 @@ export function enforceRetentionPolicies({
 }
 
 export { verifyPrivacyAuditLogIntegrity, verifyExportedDataIntegrity };
+
+function readStoredJson(storage, key, empty) {
+  const raw = storage.getItem(key);
+  if (raw === null || raw === undefined || raw === '') return empty;
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(empty) && !Array.isArray(parsed)) return empty;
+    return parsed;
+  } catch {
+    return empty;
+  }
+}
 
 /**
  * Exports all user-owned data into a documented, machine-readable JSON dossier

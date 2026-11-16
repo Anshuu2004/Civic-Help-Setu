@@ -62,6 +62,7 @@ import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingW
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
 import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
+import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
@@ -146,6 +147,9 @@ function AppRoot() {
                       <Route path="/surveys" element={<CivicSurveyWorkspace />} />
                       <Route path="/survey-builder" element={<CivicSurveyWorkspace />} />
                       <Route path="/civic-surveys" element={<CivicSurveyWorkspace />} />
+                      <Route path="/continuity-planner" element={<ContinuityPlannerWorkspace />} />
+                      <Route path="/continuity-planner/:id" element={<ContinuityPlannerWorkspace />} />
+                      <Route path="/incident-drills" element={<ContinuityPlannerWorkspace />} />
                       <Route path="/senior-citizen-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/senior-tribunal" element={<SeniorCitizenTribunalWorkspace />} />
                       <Route path="/track" element={<Track />} />
