@@ -26,6 +26,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://maharera.mahaonline.gov.in',
     standardFeeInr: 5000,
     conciliationFeeInr: 1000,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 5000,
+    postalNoticeInr: 500,
     hasConciliationForum: true,
     rulesCitation: 'MahaRERA (General) Regulations, 2017 & Rule 18',
     registrationPrefix: 'P5',
@@ -37,6 +40,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://rera.karnataka.gov.in',
     standardFeeInr: 2000,
     conciliationFeeInr: 1000,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 5000,
+    postalNoticeInr: 500,
     hasConciliationForum: true,
     rulesCitation: 'Karnataka Real Estate (Regulation and Development) Rules, 2017 - Rule 15',
     registrationPrefix: 'PRM/KA/RERA',
@@ -48,6 +54,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://www.up-rera.in',
     standardFeeInr: 1000,
     conciliationFeeInr: 500,
+    executionFeeInr: 500,
+    reatAppealFeeInr: 1000,
+    postalNoticeInr: 300,
     hasConciliationForum: true,
     rulesCitation: 'UP Real Estate (Regulation and Development) Rules, 2016 - Rule 16',
     registrationPrefix: 'UPRERAPRJ',
@@ -59,6 +68,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://haryanarera.gov.in',
     standardFeeInr: 1000,
     conciliationFeeInr: 500,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 1000,
+    postalNoticeInr: 500,
     hasConciliationForum: true,
     rulesCitation: 'Haryana Real Estate (Regulation and Development) Rules, 2017 - Rule 18',
     registrationPrefix: 'RC/REP/HARERA/GGM',
@@ -70,6 +82,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://www.rera.tn.gov.in',
     standardFeeInr: 1000,
     conciliationFeeInr: 500,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 2000,
+    postalNoticeInr: 400,
     hasConciliationForum: true,
     rulesCitation: 'Tamil Nadu Real Estate (Regulation and Development) Rules, 2017 - Rule 19',
     registrationPrefix: 'TN/RERA',
@@ -81,6 +96,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://rera.delhi.gov.in',
     standardFeeInr: 1000,
     conciliationFeeInr: 500,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 1000,
+    postalNoticeInr: 500,
     hasConciliationForum: false,
     rulesCitation: 'National Capital Territory of Delhi Real Estate Rules, 2016',
     registrationPrefix: 'DLRERA',
@@ -92,6 +110,9 @@ export const RERA_JURISDICTIONS = {
     portalUrl: 'https://gujrera.gujarat.gov.in',
     standardFeeInr: 1000,
     conciliationFeeInr: 500,
+    executionFeeInr: 1000,
+    reatAppealFeeInr: 1000,
+    postalNoticeInr: 500,
     hasConciliationForum: true,
     rulesCitation: 'Gujarat Real Estate (Regulation and Development) Rules, 2017',
     registrationPrefix: 'PR/GJ',
@@ -554,6 +575,574 @@ export function draftReraDisputePetition(petitionData = {}) {
     '',
     '______________________________',
     'Signature of Complainant',
+    '================================================================================',
+  ];
+
+  return lines.join('\n');
+}
+
+/**
+ * Standard legal grounds for Section 40 Execution and Revenue Recovery Certificate.
+ */
+export const RERA_EXECUTION_GROUNDS = {
+  NON_COMPLIANCE_60_DAYS: {
+    id: 'NON_COMPLIANCE_60_DAYS',
+    label: 'Promoter failure to deposit or refund awarded sum within statutory 60-day compliance window',
+    statutoryRef: 'Section 40(1) & State RERA Execution Rules',
+  },
+  BANK_ACCOUNT_ATTACHMENT: {
+    id: 'BANK_ACCOUNT_ATTACHMENT',
+    label: 'Prayer for garnishment and attachment of Promoter master, escrow, and operational bank accounts',
+    statutoryRef: 'Section 40(2) & Order XXI Rule 46 Code of Civil Procedure (CPC)',
+  },
+  UNSOLD_INVENTORY_ATTACHMENT: {
+    id: 'UNSOLD_INVENTORY_ATTACHMENT',
+    label: 'Prayer for attachment and public auction of unsold apartments, commercial units, and project land',
+    statutoryRef: 'Section 40(2) & Order XXI Rule 54 CPC',
+  },
+  REVENUE_RECOVERY_CERTIFICATE: {
+    id: 'REVENUE_RECOVERY_CERTIFICATE',
+    label: 'Issuance of Form P / Revenue Recovery Certificate (RRC) to District Collector for recovery as arrears of land revenue',
+    statutoryRef: 'Section 40(1) RFCTLARR / RERA 2016',
+  },
+};
+
+/**
+ * Statutory Order types before RERA Appellate Tribunal (REAT).
+ */
+export const RERA_REAT_ORDER_TYPE = {
+  REFUND_COMPENSATION: 'REFUND_COMPENSATION',
+  PENALTY: 'PENALTY',
+  DIRECTION_INTERIM: 'DIRECTION_INTERIM',
+};
+
+/**
+ * Calculates Section 40 execution post-order running statutory interest and default status.
+ *
+ * @param {Object} params
+ * @param {string} params.orderDate Date RERA order was pronounced (YYYY-MM-DD)
+ * @param {number} params.orderAwardInr Total monetary decree awarded by RERA Authority / AO (INR)
+ * @param {string} [params.evaluationDate] Evaluation date (defaults to today)
+ * @param {number} [params.annualInterestRate=DEFAULT_STATUTORY_INTEREST_RATE] Annual simple interest rate (SBI MCLR + 2%)
+ * @param {number} [params.statutoryComplianceGraceDays=60] Statutory compliance grace period (typically 60 days)
+ * @returns {Object} Execution calculations and default assessment
+ */
+export function calculateExecutionPostOrderInterest({
+  orderDate,
+  orderAwardInr = 0,
+  evaluationDate,
+  annualInterestRate = DEFAULT_STATUTORY_INTEREST_RATE,
+  statutoryComplianceGraceDays = 60,
+}) {
+  const award = Math.max(0, Number(orderAwardInr) || 0);
+  const rate = Math.max(0.1, Number(annualInterestRate) || DEFAULT_STATUTORY_INTEREST_RATE);
+  const graceDays = Math.max(0, parseInt(statutoryComplianceGraceDays, 10) || 60);
+
+  if (!isValidDate(orderDate)) {
+    return {
+      isValid: false,
+      error: 'Invalid or missing RERA order date.',
+      isDefaulted: false,
+      daysSinceOrder: 0,
+      overdueDays: 0,
+      postOrderInterestInr: 0,
+      totalExecutableDebtInr: award,
+      statutoryCitation: 'Section 40(1) Recovery as Arrears of Land Revenue',
+    };
+  }
+
+  const evalDate = isValidDate(evaluationDate)
+    ? evaluationDate
+    : new Date().toISOString().slice(0, 10);
+
+  const daysSinceOrder = getDaysBetween(orderDate, evalDate);
+  const isDefaulted = daysSinceOrder > graceDays;
+  const overdueDays = isDefaulted ? daysSinceOrder - graceDays : 0;
+
+  // Running statutory simple interest on unpaid decree debt: Principal * (Rate / 100) * (Days / 365)
+  const postOrderInterestInr = isDefaulted
+    ? Math.round((award * (rate / 100) * overdueDays) / 365)
+    : 0;
+
+  const totalExecutableDebtInr = award + postOrderInterestInr;
+
+  const orderDateObj = new Date(orderDate);
+  orderDateObj.setDate(orderDateObj.getDate() + graceDays);
+  const complianceDeadlineDate = orderDateObj.toISOString().slice(0, 10);
+
+  return {
+    isValid: true,
+    orderDate,
+    complianceDeadlineDate,
+    evaluationDate: evalDate,
+    orderAwardInr: award,
+    statutoryComplianceGraceDays: graceDays,
+    daysSinceOrder,
+    isDefaulted,
+    overdueDays,
+    annualInterestRate: rate,
+    postOrderInterestInr,
+    totalExecutableDebtInr,
+    statutoryCitation: 'Section 40(1) Recovery as Arrears of Land Revenue & Rule 25 Execution as Decree of Civil Court',
+  };
+}
+
+/**
+ * Formats a court-ready Execution Application / Form 'P' under Section 40.
+ *
+ * @param {Object} executionData
+ * @returns {string} Formatted legal execution petition text
+ */
+export function generateSection40ExecutionPetition(executionData = {}) {
+  const jurisdictionKey = executionData.jurisdiction || 'MAHARASHTRA';
+  const jurisdiction = RERA_JURISDICTIONS[jurisdictionKey] || RERA_JURISDICTIONS.MAHARASHTRA;
+
+  const complainantName = executionData.complainant?.name || '[NAME OF DECREE HOLDER / ALLOTTEE]';
+  const complainantAddress = executionData.complainant?.address || '[ADDRESS OF DECREE HOLDER]';
+  const complainantContact = executionData.complainant?.contact || '[CONTACT NUMBER]';
+
+  const promoterName = executionData.promoter?.name || '[NAME OF JUDGMENT DEBTOR / PROMOTER]';
+  const projectName = executionData.promoter?.projectName || '[PROJECT NAME]';
+  const reraRegNo = executionData.promoter?.reraRegNo || '[RERA REGISTRATION NUMBER]';
+  const registeredOffice = executionData.promoter?.registeredOffice || '[REGISTERED OFFICE ADDRESS OF BUILDER]';
+
+  const orderNumber = executionData.orderNumber || '[ORIGINAL RERA COMPLAINT NO. / ORDER NO.]';
+  const orderDate = executionData.orderDate || '[DATE OF RERA ORDER]';
+
+  const executionCalculation = calculateExecutionPostOrderInterest({
+    orderDate: executionData.orderDate,
+    orderAwardInr: executionData.awardedAmountInr,
+    evaluationDate: executionData.evaluationDate,
+    annualInterestRate: executionData.annualInterestRate,
+    statutoryComplianceGraceDays: executionData.graceDays || 60,
+  });
+
+  const lines = [
+    '================================================================================',
+    'IN THE COURT OF THE ADJUDICATING OFFICER / REAL ESTATE REGULATORY AUTHORITY',
+    `BEFORE THE ${jurisdiction.authorityName.toUpperCase()}`,
+    '================================================================================',
+    '',
+    `EXECUTION APPLICATION NO. __________ OF ${new Date().getFullYear()}`,
+    `IN THE MATTER OF ORIGINAL COMPLAINT / ORDER NO.: ${orderNumber}`,
+    '',
+    'BETWEEN:',
+    `1. ${complainantName},`,
+    `   Residing at: ${complainantAddress}`,
+    `   Contact / Email: ${complainantContact}`,
+    '   ... DECREE HOLDER / EXECUTION APPLICANT (ALLOTTEE)',
+    '',
+    'AND',
+    '',
+    `1. ${promoterName},`,
+    `   Having Registered Office at: ${registeredOffice}`,
+    `   Project: "${projectName}"`,
+    `   RERA Registration No.: ${reraRegNo}`,
+    '   ... JUDGMENT DEBTOR / RESPONDENT PROMOTER',
+    '',
+    '--------------------------------------------------------------------------------',
+    'APPLICATION UNDER SECTION 40 OF THE REAL ESTATE (REGULATION AND DEVELOPMENT) ACT,',
+    '2016 READ WITH RULE 25 AND ORDER XXI OF THE CODE OF CIVIL PROCEDURE, 1908 FOR',
+    'EXECUTION OF ORDER AND RECOVERY OF DECREETAL AMOUNT AS ARREARS OF LAND REVENUE.',
+    '--------------------------------------------------------------------------------',
+    '',
+    'MOST RESPECTFULLY SHOWETH:',
+    '',
+    '1. PARTICULARS OF THE DECREE / ORDER:',
+    `   (a) Forum: ${jurisdiction.authorityName}`,
+    `   (b) Date of Final Order / Decree: ${orderDate}`,
+    `   (c) Case Reference Number: ${orderNumber}`,
+    `   (d) Principal Award / Refund Granted: Rs. ${Number(executionData.principalAwardInr || executionData.awardedAmountInr || 0).toLocaleString('en-IN')}`,
+    `   (e) Statutory Interest & Costs Awarded: Rs. ${Number(executionData.interestAndCostsInr || 0).toLocaleString('en-IN')}`,
+    `   (f) Total Decreetal Amount Awarded: Rs. ${executionCalculation.orderAwardInr.toLocaleString('en-IN')}`,
+    `   (g) Statutory Compliance Deadline (60 Days): ${executionCalculation.complianceDeadlineDate}`,
+    '',
+    '2. GROUNDS OF WILLFUL DEFAULT & CONTEMPT:',
+    `   (a) Under Section 40 of RERA, 2016 and the applicable statutory regulations, the Judgment Debtor was under a mandatory obligation to satisfy the order within 60 days, i.e., on or before ${executionCalculation.complianceDeadlineDate}.`,
+    `   (b) As of ${executionCalculation.evaluationDate}, ${executionCalculation.daysSinceOrder} days have elapsed since the date of order, and the Judgment Debtor has deliberately failed, neglected, and refused to comply with the decree.`,
+    `   (c) The default is deliberate, contumacious, and designed to deprive the Decree Holder of their hard-earned life savings in blatant disregard of this Hon'ble Authority's mandate.`,
+    '',
+    '3. COMPUTATION OF CURRENT EXECUTABLE DEBT:',
+    `   (a) Principal Decreetal Debt: Rs. ${executionCalculation.orderAwardInr.toLocaleString('en-IN')}`,
+    `   (b) Overdue Default Period: ${executionCalculation.overdueDays} Days (beyond 60-day grace period)`,
+    `   (c) Running Post-Decree Statutory Simple Interest (${executionCalculation.annualInterestRate}% p.a.): Rs. ${executionCalculation.postOrderInterestInr.toLocaleString('en-IN')}`,
+    `   (d) TOTAL EXECUTABLE AMOUNT RECOVERABLE: Rs. ${executionCalculation.totalExecutableDebtInr.toLocaleString('en-IN')}`,
+    '',
+    '4. PRAYER:',
+    'In view of the contumacious non-compliance by the Judgment Debtor, the Decree Holder respectfully prays that this Hon\'ble Authority may be pleased to:',
+    `   (a) Issue a REVENUE RECOVERY CERTIFICATE (RRC) / Form 'P' under Section 40(1) to the District Collector / District Magistrate, directing attachment and recovery of Rs. ${executionCalculation.totalExecutableDebtInr.toLocaleString('en-IN')} as arrears of land revenue.`,
+    '   (b) Issue an order under Section 40(2) read with Order XXI Rule 46 CPC attaching all operational and project bank accounts of the Judgment Debtor including any RERA escrow accounts.',
+    `   (c) Issue a prohibitory injunction under Order XXI Rule 54 CPC restraining the Judgment Debtor from alienating, selling, or encumbering unsold apartments or project land in "${projectName}".`,
+    '   (d) Award actual costs of the present execution proceedings.',
+    '',
+    '--------------------------------------------------------------------------------',
+    'VERIFICATION',
+    '--------------------------------------------------------------------------------',
+    `I, ${complainantName}, the Decree Holder above-named, do hereby verify that the contents of paragraphs 1 to 4 are true to my knowledge and based on records of this Hon'ble Court.`,
+    '',
+    `Verified at: ${jurisdiction.stateName}`,
+    `Date: ${executionCalculation.evaluationDate}`,
+    '',
+    '___________________________________',
+    'Signature of Decree Holder / Applicant',
+    '================================================================================',
+  ];
+
+  return lines.join('\n');
+}
+
+/**
+ * Evaluates Section 43(5) statutory pre-deposit requirements for filing appeals before REAT.
+ *
+ * @param {Object} params
+ * @param {string} [params.appealFilerRole='PROMOTER'] Role of appellant ('PROMOTER' or 'ALLOTTEE')
+ * @param {string} [params.orderType=RERA_REAT_ORDER_TYPE.REFUND_COMPENSATION] Type of order being appealed
+ * @param {number} [params.penaltyAmountInr=0] Penalty imposed if orderType is PENALTY
+ * @param {number} [params.totalRefundAwardInr=0] Total refund/compensation awarded to allottee
+ * @returns {Object} Pre-deposit evaluation
+ */
+export function evaluateReatPreDepositRequirement({
+  appealFilerRole = 'PROMOTER',
+  orderType = RERA_REAT_ORDER_TYPE.REFUND_COMPENSATION,
+  penaltyAmountInr = 0,
+  totalRefundAwardInr = 0,
+}) {
+  const penalty = Math.max(0, Number(penaltyAmountInr) || 0);
+  const refund = Math.max(0, Number(totalRefundAwardInr) || 0);
+  const isPromoter = appealFilerRole === 'PROMOTER';
+
+  if (!isPromoter) {
+    return {
+      appealFilerRole: 'ALLOTTEE',
+      orderType,
+      isPreDepositMandatory: false,
+      mandatoryPreDepositPercentage: 0,
+      mandatoryDepositInr: 0,
+      isCompliant: true,
+      legalBasis: 'Section 43(5) Proviso applies exclusively to promoter appellants. Allottees/Homebuyers are fully exempt from pre-deposit requirements.',
+      rulingPrecedent: 'Techno Trexim Pvt. Ltd. vs. State of Maharashtra & Ors. (MahaREAT / Bombay HC)',
+    };
+  }
+
+  if (orderType === RERA_REAT_ORDER_TYPE.PENALTY) {
+    const mandatoryDepositInr = Math.round(penalty * 0.30);
+    return {
+      appealFilerRole: 'PROMOTER',
+      orderType,
+      isPreDepositMandatory: true,
+      mandatoryPreDepositPercentage: 30,
+      penaltyAmountInr: penalty,
+      mandatoryDepositInr,
+      isCompliant: false,
+      legalBasis: 'Section 43(5) Proviso: At least thirty percent (30%) of penalty imposed by Authority must be deposited before appeal is entertained.',
+      rulingPrecedent: 'Section 43(5) Central Act No. 16 of 2016',
+    };
+  }
+
+  // REFUND_COMPENSATION
+  const mandatoryDepositInr = refund;
+  return {
+    appealFilerRole: 'PROMOTER',
+    orderType,
+    isPreDepositMandatory: true,
+    mandatoryPreDepositPercentage: 100,
+    totalRefundAwardInr: refund,
+    mandatoryDepositInr,
+    isCompliant: false,
+    legalBasis: 'Section 43(5) Proviso: The promoter MUST deposit the total amount to be paid to the allottee (100% of principal + interest + compensation) with the Appellate Tribunal before the appeal is entertained.',
+    rulingPrecedent: 'Hon\'ble Supreme Court of India in M/s Newtech Promoters and Developers Pvt. Ltd. v. State of UP & Ors. (2021) 19 SCC 655',
+  };
+}
+
+/**
+ * Generates an Objection Petition under Section 43(5) Proviso for Allottee
+ * seeking summary dismissal of Promoter's appeal for non-compliance with mandatory pre-deposit.
+ *
+ * @param {Object} objectionData
+ * @returns {string} Formatted objection petition text
+ */
+export function generateReatAppealDismissalObjection(objectionData = {}) {
+  const jurisdictionKey = objectionData.jurisdiction || 'MAHARASHTRA';
+  const jurisdiction = RERA_JURISDICTIONS[jurisdictionKey] || RERA_JURISDICTIONS.MAHARASHTRA;
+
+  const allotteeName = objectionData.complainant?.name || '[NAME OF ALLOTTEE / RESPONDENT]';
+  const promoterName = objectionData.promoter?.name || '[NAME OF APPELLANT PROMOTER]';
+  const appealNo = objectionData.appealNumber || '[REAT APPEAL NUMBER]';
+  const originalOrderNo = objectionData.originalOrderNumber || '[ORIGINAL RERA ORDER NO.]';
+  const totalAwardedInr = Number(objectionData.totalAwardedInr || 0);
+
+  const lines = [
+    '================================================================================',
+    'BEFORE THE REAL ESTATE APPELLATE TRIBUNAL (REAT)',
+    `APPELLATE JURISDICTION FOR ${jurisdiction.stateName.toUpperCase()}`,
+    '================================================================================',
+    '',
+    `IN APPEAL NO. ${appealNo} OF ${new Date().getFullYear()}`,
+    `AGAINST ORDER DATED: ${objectionData.orderDate || '[DATE]'} IN CASE NO.: ${originalOrderNo}`,
+    '',
+    'IN THE MATTER OF:',
+    `${promoterName} ... APPELLANT / PROMOTER`,
+    'VERSUS',
+    `${allotteeName} ... RESPONDENT / ALLOTTEE`,
+    '',
+    '--------------------------------------------------------------------------------',
+    'PRELIMINARY OBJECTION UNDER SECTION 43(5) PROVISO OF RERA, 2016 SEEKING SUMMARY',
+    'DISMISSAL OF APPEAL IN LIMINE FOR NON-DEPOSIT OF MANDATORY 100% DECREETAL AMOUNT.',
+    '--------------------------------------------------------------------------------',
+    '',
+    'THE RESPONDENT ALLOTTEE MOST RESPECTFULLY SUBMITS AS UNDER:',
+    '',
+    '1. MANDATORY STATUTORY EMBARGO UNDER SECTION 43(5):',
+    '   The proviso to Section 43(5) of the Real Estate (Regulation and Development) Act, 2016 strictly mandates:',
+    '   "Provided that where a promoter files an appeal with the Appellate Tribunal, it shall not be entertained without the promoter first having deposited with the Appellate Tribunal at least thirty per cent of the penalty, or such higher percentage as may be determined by the Appellate Tribunal, or the total amount to be paid to the allottee including interest and compensation imposed on him, if any, or with both, as the case may be, before the said appeal is heard."',
+    '',
+    '2. BINDING CONSTITUTIONAL PRECEDENT OF THE SUPREME COURT:',
+    '   The Hon\'ble Supreme Court of India in the landmark judgment of "M/s Newtech Promoters and Developers Pvt. Ltd. v. State of UP & Ors." (2021) 19 SCC 655 has authoritatively settled that:',
+    '   (a) The condition of pre-deposit under Section 43(5) is an absolute condition precedent and a condition sine qua non.',
+    '   (b) The Appellate Tribunal has NO jurisdiction or discretionary power to waive, relax, or reduce the mandatory 100% deposit where refund or compensation is awarded to an allottee.',
+    '   (c) An appeal instituted without proof of complete pre-deposit is non-est in the eyes of law and must be rejected at the threshold.',
+    '',
+    '3. PARTICULARS OF DEFAULT BY APPELLANT PROMOTER:',
+    `   (a) Total Decreetal Sum Awarded to Respondent: Rs. ${totalAwardedInr.toLocaleString('en-IN')}`,
+    '   (b) Amount Deposited with this Hon\'ble Tribunal: NIL / Incomplete Proof',
+    '   (c) Deficit Mandatory Pre-Deposit: Rs. ' + totalAwardedInr.toLocaleString('en-IN'),
+    '',
+    '4. PRAYER:',
+    'In light of the statutory mandate and binding Supreme Court ruling, the Respondent prays that this Hon\'ble Tribunal be pleased to:',
+    '   (a) Dismiss the present Appeal in limine under Section 43(5) without hearing on merits;',
+    '   (b) Direct the Respondent to proceed with execution of the original decree under Section 40; and',
+    '   (c) Impose exemplary costs upon the Appellant for abusing judicial process.',
+    '',
+    'VERIFICATION:',
+    `Verified at ${jurisdiction.stateName} that the statements made above are true to my knowledge.`,
+    `Date: ${new Date().toISOString().slice(0, 10)}`,
+    '',
+    '____________________________________',
+    'Signature of Respondent Allottee',
+    '================================================================================',
+  ];
+
+  return lines.join('\n');
+}
+
+/**
+ * Formulates a Section 44 Memorandum of Appeal to the RERA Appellate Tribunal (REAT)
+ * for an aggrieved allottee.
+ *
+ * @param {Object} appealData
+ * @returns {string} Formatted Memorandum of Appeal
+ */
+export function generateReatMemorandumOfAppeal(appealData = {}) {
+  const jurisdictionKey = appealData.jurisdiction || 'MAHARASHTRA';
+  const jurisdiction = RERA_JURISDICTIONS[jurisdictionKey] || RERA_JURISDICTIONS.MAHARASHTRA;
+
+  const appellantName = appealData.complainant?.name || '[NAME OF APPELLANT ALLOTTEE]';
+  const appellantAddress = appealData.complainant?.address || '[ADDRESS OF APPELLANT]';
+  const respondentName = appealData.promoter?.name || '[NAME OF RESPONDENT PROMOTER]';
+  const originalOrderNo = appealData.originalOrderNumber || '[ORIGINAL RERA COMPLAINT NO.]';
+  const orderDate = appealData.orderDate || '[DATE OF IMPUGNED ORDER]';
+  const certifiedCopyDate = appealData.certifiedCopyDate || orderDate;
+
+  const lines = [
+    '================================================================================',
+    'MEMORANDUM OF APPEAL UNDER SECTION 44 OF RERA, 2016',
+    `BEFORE THE REAL ESTATE APPELLATE TRIBUNAL (REAT) AT ${jurisdiction.stateName.toUpperCase()}`,
+    '================================================================================',
+    '',
+    `APPEAL NO. __________ OF ${new Date().getFullYear()}`,
+    `AGAINST IMPUGNED ORDER DATED ${orderDate} IN COMPLAINT NO. ${originalOrderNo}`,
+    '',
+    'BETWEEN:',
+    `1. ${appellantName},`,
+    `   Residing at: ${appellantAddress}`,
+    '   ... APPELLANT (ALLOTTEE)',
+    '',
+    'AND',
+    '',
+    `1. ${respondentName},`,
+    '   ... RESPONDENT (PROMOTER)',
+    '',
+    '--------------------------------------------------------------------------------',
+    'I. LIMITATION UNDER SECTION 44(2):',
+    '--------------------------------------------------------------------------------',
+    `1. Date of Impugned Order: ${orderDate}`,
+    `2. Date of Receipt of Certified Copy: ${certifiedCopyDate}`,
+    `3. Sixty (60) Days Statutory Limitation Expires On: ${appealData.limitationExpiryDate || '[60 DAYS FROM RECEIPT]'}`,
+    '4. The present appeal is filed strictly within the prescribed limitation period of 60 days.',
+    '',
+    '--------------------------------------------------------------------------------',
+    'II. GROUNDS OF APPEAL:',
+    '--------------------------------------------------------------------------------',
+    '1. The learned Authority / Adjudicating Officer erred in failing to grant statutory interest at SBI MCLR + 2% strictly in accordance with Section 18.',
+    '2. The impugned order erroneously overlooked the promoter\'s gross structural defects under Section 14(3).',
+    '3. The forum erred in granting unreasoned extensions to the promoter without compensatory relief to the allottee.',
+    '',
+    '--------------------------------------------------------------------------------',
+    'III. PRAYER:',
+    '--------------------------------------------------------------------------------',
+    'The Appellant prays that this Hon\'ble Appellate Tribunal be pleased to:',
+    '   (a) Set aside / modify the impugned order dated ' + orderDate + ' passed in Case No. ' + originalOrderNo + ';',
+    '   (b) Direct full refund with statutory delay interest computed at benchmark SBI MCLR + 2% from the committed date of possession; and',
+    '   (c) Award adequate litigation costs.',
+    '',
+    'VERIFICATION:',
+    `Verified at ${jurisdiction.stateName} on ${new Date().toISOString().slice(0, 10)}.`,
+    '',
+    '______________________________',
+    'Signature of Appellant Allottee',
+    '================================================================================',
+  ];
+
+  return lines.join('\n');
+}
+
+/**
+ * Audits Section 4(2)(l)(D) project escrow account (70% dedicated account) compliance
+ * and calculates unauthorized diversion and Section 60/61 penal liability.
+ *
+ * @param {Object} params
+ * @param {number} params.totalEstimatedProjectCostInr Total estimated project cost declared in RERA registration (INR)
+ * @param {number} params.totalAllotteeCollectionsInr Total collections realized from allottees across all units (INR)
+ * @param {number} params.certifiedCompletionPercentage Architect/Engineer certified site progress percentage (0 - 100)
+ * @param {number} params.totalFundsWithdrawnInr Total funds withdrawn from project bank accounts by promoter (INR)
+ * @param {number} [params.currentEscrowBalanceInr=0] Current ledger balance in dedicated 70% escrow account (INR)
+ * @returns {Object} Comprehensive forensic escrow audit report
+ */
+export function auditProjectEscrowCompliance({
+  totalEstimatedProjectCostInr = 0,
+  totalAllotteeCollectionsInr = 0,
+  certifiedCompletionPercentage = 0,
+  totalFundsWithdrawnInr = 0,
+  currentEscrowBalanceInr = 0,
+}) {
+  const estimatedCost = Math.max(0, Number(totalEstimatedProjectCostInr) || 0);
+  const collections = Math.max(0, Number(totalAllotteeCollectionsInr) || 0);
+  const completionPct = Math.min(100, Math.max(0, Number(certifiedCompletionPercentage) || 0));
+  const withdrawn = Math.max(0, Number(totalFundsWithdrawnInr) || 0);
+  const balance = Math.max(0, Number(currentEscrowBalanceInr) || 0);
+
+  // Mandatory 70% retention under Section 4(2)(l)(D):
+  const mandatoryEscrowRetentionInr = Math.round(collections * 0.70);
+
+  // Allowable withdrawal strictly proportional to certified completion:
+  const maximumPermissibleWithdrawalInr = Math.round(
+    mandatoryEscrowRetentionInr * (completionPct / 100)
+  );
+
+  // Minimum required escrow balance that must remain in account:
+  const minimumRequiredEscrowBalanceInr = mandatoryEscrowRetentionInr - maximumPermissibleWithdrawalInr;
+
+  // Escrow diversion shortfall:
+  // If actual withdrawn exceeds maximum permissible withdrawal:
+  const unauthorizedEscrowDiversionInr = Math.max(0, withdrawn - maximumPermissibleWithdrawalInr);
+
+  // Section 60 & Section 61 Penal Exposure: up to 5% of estimated project cost
+  const section60PenaltyMaxInr = Math.round(estimatedCost * 0.05);
+  const section61PenaltyMaxInr = Math.round(estimatedCost * 0.05);
+
+  let riskCategory = 'COMPLIANT';
+  if (unauthorizedEscrowDiversionInr > 0) {
+    riskCategory = unauthorizedEscrowDiversionInr > (mandatoryEscrowRetentionInr * 0.20)
+      ? 'SEVERE_DIVERSION'
+      : 'MODERATE_DEFICIT';
+  }
+
+  const recommendations = [];
+  if (unauthorizedEscrowDiversionInr > 0) {
+    recommendations.push('File immediate petition under Section 35 demanding forensic audit of RERA dedicated escrow account.');
+    recommendations.push('Seek interim order under Section 36 freezing developer operational accounts.');
+    recommendations.push(`Demand promoter penalty under Section 60/61 up to Rs. ${(section60PenaltyMaxInr + section61PenaltyMaxInr).toLocaleString('en-IN')}.`);
+  } else {
+    recommendations.push('Project withdrawals comply with Section 4(2)(l)(D) milestone completion threshold.');
+  }
+
+  return {
+    isValid: true,
+    totalEstimatedProjectCostInr: estimatedCost,
+    totalAllotteeCollectionsInr: collections,
+    certifiedCompletionPercentage: completionPct,
+    mandatoryEscrowRetentionInr,
+    maximumPermissibleWithdrawalInr,
+    minimumRequiredEscrowBalanceInr,
+    totalFundsWithdrawnInr: withdrawn,
+    currentEscrowBalanceInr: balance,
+    unauthorizedEscrowDiversionInr,
+    section60PenaltyMaxInr,
+    section61PenaltyMaxInr,
+    riskCategory,
+    isCompliant: unauthorizedEscrowDiversionInr === 0,
+    recommendations,
+    statutoryCitation: 'Section 4(2)(l)(D) 70% Project Dedicated Escrow & Sections 35, 36, 60, 61 of RERA, 2016',
+  };
+}
+
+/**
+ * Generates Section 35 & 36 application for Investigation & Injunction on Escrow Diversion.
+ *
+ * @param {Object} auditData
+ * @returns {string} Formatted legal application text
+ */
+export function generateSection35EscrowInvestigationPetition(auditData = {}) {
+  const jurisdictionKey = auditData.jurisdiction || 'MAHARASHTRA';
+  const jurisdiction = RERA_JURISDICTIONS[jurisdictionKey] || RERA_JURISDICTIONS.MAHARASHTRA;
+
+  const applicantName = auditData.complainant?.name || '[NAME OF APPLICANT ALLOTTEE / ASSOCIATION]';
+  const promoterName = auditData.promoter?.name || '[NAME OF PROMOTER / DEVELOPER]';
+  const projectName = auditData.promoter?.projectName || '[PROJECT NAME]';
+  const reraRegNo = auditData.promoter?.reraRegNo || '[RERA REGISTRATION NO.]';
+
+  const auditReport = auditProjectEscrowCompliance({
+    totalEstimatedProjectCostInr: auditData.totalEstimatedProjectCostInr,
+    totalAllotteeCollectionsInr: auditData.totalAllotteeCollectionsInr,
+    certifiedCompletionPercentage: auditData.certifiedCompletionPercentage,
+    totalFundsWithdrawnInr: auditData.totalFundsWithdrawnInr,
+    currentEscrowBalanceInr: auditData.currentEscrowBalanceInr,
+  });
+
+  const lines = [
+    '================================================================================',
+    `BEFORE THE ${jurisdiction.authorityName.toUpperCase()}`,
+    '================================================================================',
+    '',
+    `MISCELLANEOUS APPLICATION NO. __________ OF ${new Date().getFullYear()}`,
+    `IN RE: "${projectName.toUpperCase()}" (RERA REG. NO.: ${reraRegNo})`,
+    '',
+    'IN THE MATTER OF:',
+    `${applicantName} ... APPLICANT (ALLOTTEE / AOBA)`,
+    'VERSUS',
+    `${promoterName} ... RESPONDENT (PROMOTER)`,
+    '',
+    '--------------------------------------------------------------------------------',
+    'APPLICATION UNDER SECTION 35 READ WITH SECTION 36 & SECTION 4(2)(l)(D) OF THE',
+    'REAL ESTATE (REGULATION AND DEVELOPMENT) ACT, 2016 FOR ORDERING FORENSIC AUDIT OF',
+    'THE 70% DEDICATED ESCROW ACCOUNT AND PASSING INTERIM INJUNCTION FREEZING ACCOUNTS.',
+    '--------------------------------------------------------------------------------',
+    '',
+    'THE APPLICANT HUMBLY SUBMITS:',
+    '',
+    '1. STATUTORY VIOLATION OF SECTION 4(2)(l)(D):',
+    `   (a) Total collections extracted from homebuyers: Rs. ${auditReport.totalAllotteeCollectionsInr.toLocaleString('en-IN')}`,
+    `   (b) Statutory 70% mandatory escrow deposit: Rs. ${auditReport.mandatoryEscrowRetentionInr.toLocaleString('en-IN')}`,
+    `   (c) Architect/Engineer certified physical completion: ${auditReport.certifiedCompletionPercentage}%`,
+    `   (d) Maximum legitimate withdrawal permissible: Rs. ${auditReport.maximumPermissibleWithdrawalInr.toLocaleString('en-IN')}`,
+    `   (e) Actual funds withdrawn by promoter: Rs. ${auditReport.totalFundsWithdrawnInr.toLocaleString('en-IN')}`,
+    `   (f) Siphoned / Diverted Escrow Deficit: Rs. ${auditReport.unauthorizedEscrowDiversionInr.toLocaleString('en-IN')}`,
+    '',
+    '2. GROUNDS FOR INTERIM INJUNCTION UNDER SECTION 36:',
+    '   The promoter has unlawfully siphoned funds to other projects/subsidiaries, stalling the project and creating severe insolvency risk for homebuyers.',
+    '',
+    '3. PRAYER:',
+    'The Applicant prays that this Hon\'ble Authority be pleased to:',
+    '   (a) Order a forensic audit under Section 35 by an independent empanelled Chartered Accountant of the dedicated escrow bank account;',
+    '   (b) Issue an interim injunction under Section 36 freezing all debits from the promoter\'s project and operational accounts;',
+    `   (c) Initiate penal proceedings under Section 60 and Section 61 exposing the promoter to penalties up to Rs. ${(auditReport.section60PenaltyMaxInr + auditReport.section61PenaltyMaxInr).toLocaleString('en-IN')}; and`,
+    '   (d) Pass such further orders as this Hon\'ble Authority deems fit.',
+    '',
+    'VERIFICATION:',
+    `Verified at ${jurisdiction.stateName} on ${new Date().toISOString().slice(0, 10)}.`,
+    '',
+    '______________________________',
+    'Signature of Applicant',
     '================================================================================',
   ];
 

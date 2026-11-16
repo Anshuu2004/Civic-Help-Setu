@@ -34,6 +34,8 @@ import {
   Scale,
   BarChart2,
   HeartHandshake,
+  Volume2,
+  Recycle,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -948,6 +950,12 @@ if (normalizedTarget === '/water-quality') {
                 to: '/stray-animal-workspace',
                 label: 'Stray Animal & Rabies PEP',
                 icon: HeartHandshake
+                to: '/noise-pollution-workspace',
+                label: 'Noise Pollution & Curfew',
+                icon: Volume2
+                to: '/solid-waste-workspace',
+                label: 'Solid Waste & NGT',
+                icon: Recycle
               })}
               {renderNavLink({
                 to: '/tenants',

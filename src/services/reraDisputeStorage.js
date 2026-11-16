@@ -7,7 +7,12 @@
  */
 
 import { sha256Hex, canonicalStringify } from './privacyIntegrityService.js';
-import { draftReraDisputePetition } from './reraDisputeService.js';
+import {
+  draftReraDisputePetition,
+  generateSection40ExecutionPetition,
+  generateSection35EscrowInvestigationPetition,
+  generateReatMemorandumOfAppeal,
+} from './reraDisputeService.js';
 
 export const STORAGE_KEY = 'civicbridge_rera_complaints';
 
@@ -45,6 +50,7 @@ export const computeComplaintDigest = (complaint) => {
 
   const canonicalPayload = {
     version: 1,
+    recordType: String(complaint.recordType || 'COMPLAINT'),
     formType: String(complaint.formType || ''),
     jurisdiction: String(complaint.jurisdiction || ''),
     complainant: {
@@ -70,6 +76,10 @@ export const computeComplaintDigest = (complaint) => {
     interimReliefs: Array.isArray(complaint.interimReliefs)
       ? complaint.interimReliefs.map((r) => String(r || ''))
       : [],
+    orderNumber: String(complaint.orderNumber || ''),
+    orderDate: String(complaint.orderDate || ''),
+    awardedAmountInr: Number(complaint.awardedAmountInr || 0),
+    totalAllotteeCollectionsInr: Number(complaint.totalAllotteeCollectionsInr || 0),
   };
 
   return sha256Hex(canonicalStringify(canonicalPayload));
@@ -243,5 +253,15 @@ export function exportComplaintDossierJson(complaint, { redact = false } = {}) {
  * Exports complaint as plain text legal memorandum.
  */
 export function exportComplaintTextSlip(complaint) {
+  if (!complaint) return '';
+  if (complaint.recordType === 'EXECUTION_PETITION') {
+    return generateSection40ExecutionPetition(complaint);
+  }
+  if (complaint.recordType === 'ESCROW_AUDIT') {
+    return generateSection35EscrowInvestigationPetition(complaint);
+  }
+  if (complaint.recordType === 'REAT_APPEAL') {
+    return generateReatMemorandumOfAppeal(complaint);
+  }
   return draftReraDisputePetition(complaint);
 }

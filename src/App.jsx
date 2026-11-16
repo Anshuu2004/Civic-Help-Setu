@@ -73,6 +73,8 @@ import ContinuityPlannerWorkspace from './pages/ContinuityPlannerWorkspace';
 import SeniorCitizenTribunalWorkspace from './pages/SeniorCitizenTribunalWorkspace';
 import ReraDisputeWorkspace from './pages/ReraDisputeWorkspace';
 import StrayAnimalAbcWorkspace from './pages/StrayAnimalAbcWorkspace';
+import NoisePollutionWorkspace from './pages/NoisePollutionWorkspace';
+import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
@@ -182,6 +184,12 @@ function AppRoot() {
                       <Route path="/stray-animal-workspace" element={<StrayAnimalAbcWorkspace />} />
                       <Route path="/rabies-pep-tracker" element={<StrayAnimalAbcWorkspace />} />
                       <Route path="/animal-birth-control" element={<StrayAnimalAbcWorkspace />} />
+                      <Route path="/noise-pollution-workspace" element={<NoisePollutionWorkspace />} />
+                      <Route path="/decibel-logger" element={<NoisePollutionWorkspace />} />
+                      <Route path="/noise-curfew-auditor" element={<NoisePollutionWorkspace />} />
+                      <Route path="/solid-waste-workspace" element={<SolidWasteAuditWorkspace />} />
+                      <Route path="/bulk-waste-audit" element={<SolidWasteAuditWorkspace />} />
+                      <Route path="/ngt-compensation" element={<SolidWasteAuditWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/public-projects" element={<PublicProjectsWorkspace />} />
