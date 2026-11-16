@@ -166,13 +166,19 @@ const Footer = () => {
                 <Link
                   to="/stray-animal-workspace"
                   to="/noise-pollution-workspace"
-                  to="/solid-waste-workspace"
                   style={linkBaseStyle}
                   onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
                   onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
                 >
                   Stray Animals &amp; Rabies PEP
                   Noise Pollution &amp; Curfew
+                </Link>
+                <Link
+                  to="/solid-waste-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
                   Solid Waste &amp; NGT
                 </Link>
               </li>
