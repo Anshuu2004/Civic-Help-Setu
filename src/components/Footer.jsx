@@ -162,6 +162,16 @@ const Footer = () => {
                   RERA Homebuyer Rights
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/noise-pollution-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Noise Pollution &amp; Curfew
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link

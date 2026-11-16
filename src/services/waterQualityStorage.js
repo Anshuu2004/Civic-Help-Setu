@@ -8,6 +8,7 @@
 
 import { INITIAL_WATER_QUALITY_STORE } from '../data/waterQualitySeed.js';
 import { SCHEMA_VERSION } from '../data/waterQualityContract.js';
+import { logDiagnostic } from '../utils/diagnostics.js';
 
 export const WATER_QUALITY_STORAGE_KEY = 'civicbridge_water_quality_v1';
 export const WATER_QUALITY_OFFLINE_KEY = 'civicbridge_water_quality_offline_queue_v1';
@@ -85,7 +86,7 @@ export function saveWaterQualityStore(store) {
     storage.setItem(WATER_QUALITY_STORAGE_KEY, JSON.stringify(payload));
     return true;
   } catch (err) {
-    console.error('Failed to write to localStorage:', err);
+    logDiagnostic('Failed to write to localStorage:', err);
     memoryStore = deepClone(payload);
     return false;
   }
