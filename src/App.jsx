@@ -59,6 +59,7 @@ import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import SyntheticDatasetWorkspace from './pages/SyntheticDatasetWorkspace';
 import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingWorkspace';
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
@@ -78,6 +79,9 @@ import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 import ClinicalEstablishmentWorkspace from './pages/ClinicalEstablishmentWorkspace';
 import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
+import StreetVendorWorkspace from './pages/StreetVendorWorkspace';
+import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
+import RteAdmissionWorkspace from './pages/RteAdmissionWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -161,6 +165,8 @@ function AppRoot() {
                       <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/synthetic-datasets" element={<SyntheticDatasetWorkspace />} />
+                      <Route path="/dataset-generator" element={<SyntheticDatasetWorkspace />} />
                       <Route path="/provenance" element={<LineageExplorerWorkspace />} />
                       <Route path="/provenance/:id" element={<LineageExplorerWorkspace />} />
                       <Route path="/lineage-explorer" element={<LineageExplorerWorkspace />} />
@@ -198,6 +204,15 @@ function AppRoot() {
                       <Route path="/electricity-consumer-workspace" element={<ElectricityConsumerWorkspace />} />
                       <Route path="/discom-outage-audit" element={<ElectricityConsumerWorkspace />} />
                       <Route path="/cgrf-compensation-drafter" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/street-vendor-workspace" element={<StreetVendorWorkspace />} />
+                      <Route path="/vendor-eviction-immunity" element={<StreetVendorWorkspace />} />
+                      <Route path="/goods-seizure-reconciler" element={<StreetVendorWorkspace />} />
+                      <Route path="/electricity-consumer-workspace" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/discom-outage-audit" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/cgrf-compensation-drafter" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/rte-quota-workspace" element={<RteAdmissionWorkspace />} />
+                      <Route path="/rte-admission-audit" element={<RteAdmissionWorkspace />} />
+                      <Route path="/rte-screening-redressal" element={<RteAdmissionWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/public-projects" element={<PublicProjectsWorkspace />} />

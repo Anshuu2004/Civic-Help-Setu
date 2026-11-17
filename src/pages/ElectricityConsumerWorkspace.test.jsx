@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import ElectricityConsumerWorkspace from './ElectricityConsumerWorkspace.jsx';
 
 describe('ElectricityConsumerWorkspace Page (#891)', () => {
+describe('ElectricityConsumerWorkspace Page (#890)', () => {
   it('renders workspace with header, legal notice, and all tabs', () => {
     const html = renderToStaticMarkup(<ElectricityConsumerWorkspace />);
 

@@ -202,6 +202,36 @@ const Footer = () => {
                   Electricity Rights &amp; CGRF
                 </Link>
               </li>
+<li>
+  <Link
+    to="/street-vendor-workspace"
+    style={linkBaseStyle}
+    onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+    onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+  >
+    Street Vendor Rights &amp; TVC
+  </Link>
+</li>
+<li>
+  <Link
+    to="/electricity-consumer-workspace"
+    style={linkBaseStyle}
+    onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+    onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+  >
+    Electricity Rights &amp; CGRF
+  </Link>
+</li>
+<li>
+  <Link
+    to="/rte-quota-workspace"
+    style={linkBaseStyle}
+    onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+    onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+  >
+    RTE Quota &amp; Child Rights
+  </Link>
+</li>
               {can('users.read', user) && (
                 <li>
                   <Link
