@@ -276,6 +276,9 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_ward_issue_audit_logs_v1',
   'civicbridge_ward_issue_rate_limit_v1',
   'civicbridge_ward_heatmap_migration_backup_v1',
+  // Municipal greenhouse-gas inventory, factor versions and append-only audit trail (#753).
+  // These are public-authority operating records, not a citizen's personal data.
+  'civic_ghg_inventory_v1',
   // Civic knowledge records lineage and provenance explorer (#777)
   'civicbridge_knowledge_sources_v1',
   'civicbridge_source_snapshots_v1',

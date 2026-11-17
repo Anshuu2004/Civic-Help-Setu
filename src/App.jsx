@@ -67,6 +67,7 @@ import CivicSurveyWorkspace from './pages/CivicSurveyWorkspace';
 import PublicToiletDirectory from './pages/PublicToiletDirectory';
 import AccessibleRouteBarrierWorkspace from './pages/AccessibleRouteBarrierWorkspace';
 import StreetlightOutageWorkspace from './pages/StreetlightOutageWorkspace';
+import GhgInventoryWorkspace from './pages/GhgInventoryWorkspace';
 import WaterQualityRegister from './pages/WaterQualityRegister';
 import PublicProjectsWorkspace from './pages/PublicProjectsWorkspace';
 import WardIssueHeatmapWorkspace from './pages/WardIssueHeatmapWorkspace';
@@ -226,6 +227,9 @@ function AppRoot() {
                       <Route path="/streetlights" element={<StreetlightOutageWorkspace />} />
                       <Route path="/streetlight-outages" element={<StreetlightOutageWorkspace />} />
                       <Route path="/services/streetlight-outages" element={<StreetlightOutageWorkspace />} />
+                      <Route path="/ghg-inventory" element={<GhgInventoryWorkspace />} />
+                      <Route path="/emissions-inventory" element={<GhgInventoryWorkspace />} />
+                      <Route path="/services/ghg-inventory" element={<GhgInventoryWorkspace />} />
                       <Route path="/shared-checklist/:token" element={<SharedChecklistView />} />
                       <Route path="/shared-directory/:token" element={<SharedDirectoryView />} />
                       <Route path="/app-status/:token" element={<PublicApplicationStatusView />} />
