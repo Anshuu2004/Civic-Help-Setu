@@ -37,6 +37,7 @@ import {
   Volume2,
   Recycle,
   HeartPulse,
+  GraduationCap,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -1085,6 +1086,12 @@ if (normalizedTarget === '/water-quality') {
                 to: '/clinical-establishment-workspace',
                 label: 'Clinical Establishment & Patient Rights',
                 icon: HeartPulse
+              })}
+
+              {renderNavLink({
+                to: '/rte-quota-workspace',
+                label: 'RTE Quota & Child Rights',
+                icon: GraduationCap
               })}
               {renderNavLink({
                 to: '/tenants',
