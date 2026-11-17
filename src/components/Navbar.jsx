@@ -26,7 +26,7 @@ import {
   Droplets,
   KeyRound,
   Store,
-  Database
+  Database,
   Building2,
   Trees,
   Lightbulb,
