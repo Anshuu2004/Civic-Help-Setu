@@ -194,6 +194,16 @@ const Footer = () => {
               </li>
 <li>
   <Link
+    to="/street-vendor-workspace"
+    style={linkBaseStyle}
+    onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+    onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+  >
+    Street Vendor Rights &amp; TVC
+  </Link>
+</li>
+<li>
+  <Link
     to="/electricity-consumer-workspace"
     style={linkBaseStyle}
     onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
