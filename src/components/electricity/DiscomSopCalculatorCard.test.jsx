@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import DiscomSopCalculatorCard from './DiscomSopCalculatorCard.jsx';
 
+describe('DiscomSopCalculatorCard Component (#891)', () => {
 describe('DiscomSopCalculatorCard Component (#890)', () => {
   it('renders standard of performance outage compensation calculator form', () => {
     const html = renderToStaticMarkup(<DiscomSopCalculatorCard />);

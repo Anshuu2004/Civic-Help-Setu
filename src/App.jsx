@@ -78,6 +78,7 @@ import NoisePollutionWorkspace from './pages/NoisePollutionWorkspace';
 import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 import ClinicalEstablishmentWorkspace from './pages/ClinicalEstablishmentWorkspace';
+import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
 import CatalogueVisualQaWorkspace from './pages/CatalogueVisualQaWorkspace';
 import StreetVendorWorkspace from './pages/StreetVendorWorkspace';
 import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
@@ -204,6 +205,9 @@ function AppRoot() {
                       <Route path="/clinical-establishment-workspace" element={<ClinicalEstablishmentWorkspace />} />
                       <Route path="/patient-rights-charter" element={<ClinicalEstablishmentWorkspace />} />
                       <Route path="/hospital-billing-audit" element={<ClinicalEstablishmentWorkspace />} />
+                      <Route path="/electricity-consumer-workspace" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/discom-outage-audit" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/cgrf-compensation-drafter" element={<ElectricityConsumerWorkspace />} />
                       <Route path="/street-vendor-workspace" element={<StreetVendorWorkspace />} />
                       <Route path="/vendor-eviction-immunity" element={<StreetVendorWorkspace />} />
                       <Route path="/goods-seizure-reconciler" element={<StreetVendorWorkspace />} />

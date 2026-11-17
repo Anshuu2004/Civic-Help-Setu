@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import DefectiveMeterDiagnosticCard from './DefectiveMeterDiagnosticCard.jsx';
 
+describe('DefectiveMeterDiagnosticCard Component (#891)', () => {
 describe('DefectiveMeterDiagnosticCard Component (#890)', () => {
   it('renders defective meter diagnostic form and billing adjustment calculation', () => {
     const html = renderToStaticMarkup(<DefectiveMeterDiagnosticCard />);

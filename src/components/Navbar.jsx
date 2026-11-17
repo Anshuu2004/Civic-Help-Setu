@@ -1098,6 +1098,10 @@ if (normalizedTarget === '/water-quality') {
               })}
 
               {renderNavLink({
+                to: '/electricity-consumer-workspace',
+                label: 'Electricity & Consumer Rights',
+                icon: Zap
+              })}
   to: '/street-vendor-workspace',
   label: 'Street Vendor Rights & TVC',
   icon: Store
