@@ -82,6 +82,7 @@ import ClinicalEstablishmentWorkspace from './pages/ClinicalEstablishmentWorkspa
 import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
 import CatalogueVisualQaWorkspace from './pages/CatalogueVisualQaWorkspace';
 import StreetVendorWorkspace from './pages/StreetVendorWorkspace';
+import DarkPatternsWorkspace from './pages/DarkPatternsWorkspace';
 
 import RteAdmissionWorkspace from './pages/RteAdmissionWorkspace';
 
@@ -209,6 +210,9 @@ function AppRoot() {
                       <Route path="/electricity-consumer-workspace" element={<ElectricityConsumerWorkspace />} />
                       <Route path="/discom-outage-audit" element={<ElectricityConsumerWorkspace />} />
                       <Route path="/cgrf-compensation-drafter" element={<ElectricityConsumerWorkspace />} />
+                      <Route path="/dark-patterns-workspace" element={<DarkPatternsWorkspace />} />
+                      <Route path="/drip-pricing-audit" element={<DarkPatternsWorkspace />} />
+                      <Route path="/ccpa-redressal" element={<DarkPatternsWorkspace />} />
                       <Route path="/street-vendor-workspace" element={<StreetVendorWorkspace />} />
                       <Route path="/vendor-eviction-immunity" element={<StreetVendorWorkspace />} />
                       <Route path="/goods-seizure-reconciler" element={<StreetVendorWorkspace />} />
