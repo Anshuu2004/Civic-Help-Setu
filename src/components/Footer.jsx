@@ -202,6 +202,7 @@ const Footer = () => {
                   Electricity Rights &amp; CGRF
                 </Link>
               </li>
+<li><Link to="/accessibility-audit-workspace" style={linkBaseStyle}>Universal Accessibility Audit</Link></li>
 <li><Link to="/dark-patterns-workspace">Dark Patterns &amp; Consumer Redressal</Link></li>
 <li>
   <Link
