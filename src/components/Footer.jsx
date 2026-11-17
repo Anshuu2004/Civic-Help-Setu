@@ -192,6 +192,16 @@ const Footer = () => {
                   Clinical Establishment &amp; Patient Rights
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/street-vendor-workspace"
+                  style={linkBaseStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, focusRingStyle)}
+                  onBlur={(e) => { e.currentTarget.style.outline = ''; e.currentTarget.style.outlineOffset = ''; }}
+                >
+                  Street Vendor Rights &amp; TVC
+                </Link>
+              </li>
               {can('users.read', user) && (
                 <li>
                   <Link

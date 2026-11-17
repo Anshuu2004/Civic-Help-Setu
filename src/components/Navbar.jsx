@@ -1086,6 +1086,12 @@ if (normalizedTarget === '/water-quality') {
                 label: 'Clinical Establishment & Patient Rights',
                 icon: HeartPulse
               })}
+
+              {renderNavLink({
+                to: '/street-vendor-workspace',
+                label: 'Street Vendor Rights & TVC',
+                icon: Store
+              })}
               {renderNavLink({
                 to: '/tenants',
                 label: 'Authority Workspaces',

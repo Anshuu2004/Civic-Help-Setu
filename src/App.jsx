@@ -77,6 +77,7 @@ import NoisePollutionWorkspace from './pages/NoisePollutionWorkspace';
 import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 import ClinicalEstablishmentWorkspace from './pages/ClinicalEstablishmentWorkspace';
+import StreetVendorWorkspace from './pages/StreetVendorWorkspace';
 
 const Services = lazy(() => import('./pages/Services'));
 
@@ -194,6 +195,9 @@ function AppRoot() {
                       <Route path="/clinical-establishment-workspace" element={<ClinicalEstablishmentWorkspace />} />
                       <Route path="/patient-rights-charter" element={<ClinicalEstablishmentWorkspace />} />
                       <Route path="/hospital-billing-audit" element={<ClinicalEstablishmentWorkspace />} />
+                      <Route path="/street-vendor-workspace" element={<StreetVendorWorkspace />} />
+                      <Route path="/vendor-eviction-immunity" element={<StreetVendorWorkspace />} />
+                      <Route path="/goods-seizure-reconciler" element={<StreetVendorWorkspace />} />
                       <Route path="/track" element={<Track />} />
                       <Route path="/civic-works" element={<CivicWorksBoard />} />
                       <Route path="/public-projects" element={<PublicProjectsWorkspace />} />
