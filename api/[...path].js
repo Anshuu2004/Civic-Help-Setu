@@ -5,6 +5,7 @@
  */
 import addressChange from "./_lib/handlers/address-change-corrections.js";
 import businessLicence from "./_lib/handlers/business-licence-feedback.js";
+import catalogueVisualQa from "./_lib/handlers/catalogue-visual-qa.js";
 import communityFacility from "./_lib/handlers/community-facility-corrections.js";
 import counterDemandReports from "./_lib/handlers/counter-demand-reports.js";
 import crematorium from "./_lib/handlers/crematorium-corrections.js";
@@ -33,6 +34,7 @@ import tenantAdministration from "./_lib/handlers/tenant-administration.js";
 const handlers = {
   "address-change-corrections": addressChange,
   "business-licence-feedback": businessLicence,
+  "catalogue-visual-qa": catalogueVisualQa,
   "civic-surveys": civicSurveys,
   "community-facility-corrections": communityFacility,
   "counter-demand-reports": counterDemandReports,
