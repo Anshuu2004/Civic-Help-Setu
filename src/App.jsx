@@ -79,6 +79,7 @@ import SolidWasteAuditWorkspace from './pages/SolidWasteAuditWorkspace';
 import OpenContractingWorkspace from './pages/OpenContractingWorkspace';
 import ClinicalEstablishmentWorkspace from './pages/ClinicalEstablishmentWorkspace';
 import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
+import CatalogueVisualQaWorkspace from './pages/CatalogueVisualQaWorkspace';
 import StreetVendorWorkspace from './pages/StreetVendorWorkspace';
 import ElectricityConsumerWorkspace from './pages/ElectricityConsumerWorkspace';
 import RteAdmissionWorkspace from './pages/RteAdmissionWorkspace';
@@ -131,6 +132,9 @@ function AppRoot() {
                       <Route path="/services/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
                       <Route path="/ward-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
                       <Route path="/civic-issue-heatmap" element={<WardIssueHeatmapWorkspace />} />
+                      <Route path="/services/catalogue-visual-qa" element={<CatalogueVisualQaWorkspace />} />
+                      <Route path="/catalogue-visual-qa" element={<CatalogueVisualQaWorkspace />} />
+                      <Route path="/visual-qa" element={<CatalogueVisualQaWorkspace />} />
                       <Route path="/services/ward-budget-proposal" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget" element={<WardBudgetWorkspace />} />
                       <Route path="/ward-budget/:id" element={<WardBudgetWorkspace />} />
