@@ -30,6 +30,7 @@ import {
   Building2,
   Trees,
   Lightbulb,
+  Leaf,
   ShieldAlert,
   GitFork,
   Scale,
@@ -1179,6 +1180,13 @@ if (normalizedTarget === '/water-quality') {
                 activeTarget: '/streetlights',
                 label: t('nav.streetlights', 'Streetlight Outages'),
                 icon: Lightbulb
+              })}
+
+              {renderNavLink({
+                to: '/ghg-inventory',
+                activeTarget: '/ghg-inventory',
+                label: t('nav.ghgInventory', 'GHG Inventory'),
+                icon: Leaf
               })}
 
               {renderNavLink({

@@ -30,6 +30,7 @@ import waterQualityRegister from "./_lib/handlers/water-quality-register.js";
 import publicProjects from "./_lib/handlers/public-projects.js";
 import wardIssueHeatmap from "./_lib/handlers/ward-issue-heatmap.js";
 import tenantAdministration from "./_lib/handlers/tenant-administration.js";
+import ghgInventory from "./_lib/handlers/ghg-inventory.js";
 
 const handlers = {
   "address-change-corrections": addressChange,
@@ -59,6 +60,7 @@ const handlers = {
   "water-tanker-reports": waterTankerReports,
   "public-projects": publicProjects,
   "tenant-administration": tenantAdministration,
+  "ghg-inventory": ghgInventory,
 };
 
 function getRoute(req) {

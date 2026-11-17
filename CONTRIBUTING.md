@@ -71,9 +71,17 @@ npx vitest run src/services/streetlightService.test.js        # streetlight clus
 npx vitest run src/services/streetlightAccessControl.test.js  # streetlight RBAC & privacy scoping tests (#756)
 npx vitest run src/services/streetlightMigrations.test.js     # streetlight schema migration & rollback tests (#756)
 npx vitest run src/pages/StreetlightOutageWorkspace.test.jsx   # streetlight workspace & accessible UI tests (#756)
+npx vitest run src/data/ghgInventoryContract.test.js          # GHG inventory calculation & projection contract tests (#753)
+npx vitest run src/services/ghgInventoryAccessControl.test.js # GHG role & jurisdiction scoping tests (#753)
+npx vitest run src/services/ghgInventoryMigrations.test.js    # GHG inventory migration, rollback & retention tests (#753)
+npx vitest run src/services/ghgInventoryService.test.js       # GHG inventory workflow & state machine tests (#753)
+npx vitest run src/pages/GhgInventoryWorkspace.test.jsx       # GHG inventory workspace UI & accessibility tests (#753)
+npx vitest run tests/ghg-inventory.test.js                    # GHG submission API auth, idempotency & abuse tests (#753)
 ```
 
 Architecture, data model, spatial clustering algorithms, explainability ruleset, and technician workflows for streetlight outages are documented in [docs/streetlight-outage-clustering.md](docs/streetlight-outage-clustering.md).
+
+Architecture, data model, calculation methodology, uncertainty bands, role/jurisdiction scoping, retention and rollback for the municipal greenhouse-gas inventory are documented in [docs/municipal-greenhouse-gas-inventory.md](docs/municipal-greenhouse-gas-inventory.md).
 npx vitest run src/services/waterQualityService.test.js        # water quality domain & supersession tests (#754)
 npx vitest run src/services/waterQualityRulesEngine.test.js    # deterministic IS 10500 compliance tests (#754)
 npx vitest run src/services/waterQualityValidation.test.js     # anti-PII & schema validation tests (#754)
