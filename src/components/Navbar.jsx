@@ -438,107 +438,122 @@ if (normalizedTarget === '/water-quality') {
             flexShrink: 0
           }}
         >
-          {/* NETWORK STATUS */}
-          <button
-            type="button"
-            onClick={() => setShowOfflineModal(true)}
-            aria-label={
-              isOnline
-                ? 'Online. View offline cache status'
-                : 'Offline mode active. View cache status'
-            }
-            title={
-              isOnline
-                ? 'Network Online - View Offline Cache'
-                : 'Offline Mode Active'
-            }
-            style={{
-              padding: '0.4rem 0.65rem',
-              background: isOnline
-                ? 'var(--glass-bg)'
-                : 'rgba(239, 68, 68, 0.15)',
-              border: `1px solid ${
+          <div 
+              className="desktop-nav-items" 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '0.5rem' 
+              }}
+            >
+            {/* NETWORK STATUS */}
+            <button
+              type="button"
+              onClick={() => setShowOfflineModal(true)}
+              aria-label={
                 isOnline
-                  ? 'var(--border-main)'
-                  : 'rgba(239, 68, 68, 0.35)'
-              }`,
-              borderRadius: '99px',
-              color: isOnline
-                ? 'var(--text-secondary)'
-                : '#ef4444',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.75rem',
-              fontWeight: '600'
-            }}
-          >
-            {isOnline ? (
-              <>
-                <span
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: '#10b981'
-                  }}
-                />
-                <span>Online</span>
-              </>
-            ) : (
-              <>
-                <WifiOff size={13} />
-                <span>Offline</span>
-              </>
-            )}
-          </button>
+                  ? 'Online. View offline cache status'
+                  : 'Offline mode active. View cache status'
+              }
+              title={
+                isOnline
+                  ? 'Network Online - View Offline Cache'
+                  : 'Offline Mode Active'
+              }
+              style={{
+                minHeight: '44px',     
+                minWidth: '44px', 
+                padding: '0.4rem 0.65rem',
+                background: isOnline
+                  ? 'var(--glass-bg)'
+                  : 'rgba(239, 68, 68, 0.15)',
+                border: `1px solid ${
+                  isOnline
+                    ? 'var(--border-main)'
+                    : 'rgba(239, 68, 68, 0.35)'
+                }`,
+                borderRadius: '99px',
+                color: isOnline
+                  ? 'var(--text-secondary)'
+                  : '#ef4444',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.75rem',
+                fontWeight: '600'
+              }}
+            >
+              {isOnline ? (
+                <>
+                  <span
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: '#10b981'
+                    }}
+                  />
+                  <span>Online</span>
+                </>
+              ) : (
+                <>
+                  <WifiOff size={13} />
+                  <span>Offline</span>
+                </>
+              )}
+            </button>
 
-          {/* EMERGENCY SOS */}
-          <button
-            type="button"
-            onClick={() => setShowSosModal(true)}
-            aria-label="Open emergency helplines"
-            title="Rapid Emergency Helplines"
-            style={{
-              padding: '0.4rem 0.65rem',
-              borderRadius: '999px',
-              border: '1px solid #ef4444',
-              background: 'rgba(239, 68, 68, 0.12)',
-              color: '#ef4444',
-              fontSize: '0.78rem',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem'
-            }}
-          >
-            <PhoneCall size={14} />
-            <span>SOS</span>
-          </button>
+            {/* EMERGENCY SOS */}
+            <button
+              type="button"
+              onClick={() => setShowSosModal(true)}
+              aria-label="Open emergency helplines"
+              title="Rapid Emergency Helplines"
+              style={{
+                minHeight: '44px',     
+                minWidth: '44px', 
+                padding: '0.4rem 0.65rem',
+                borderRadius: '999px',
+                border: '1px solid #ef4444',
+                background: 'rgba(239, 68, 68, 0.12)',
+                color: '#ef4444',
+                fontSize: '0.78rem',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem'
+              }}
+            >
+              <PhoneCall size={14} />
+              <span>SOS</span>
+            </button>
 
-          {/* VOICE NAVIGATION */}
-          <button
-            type="button"
-            onClick={() => setShowVoiceNavModal(true)}
-            className="top-navbar-theme-btn"
-            title="Multilingual Voice Navigation"
-            aria-label="Open multilingual voice navigation"
-            style={{
-              padding: '0.45rem',
-              background: 'rgba(14, 165, 233, 0.1)',
-              borderRadius: '50%',
-              color: '#0284c7',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Mic size={18} />
-          </button>
+            {/* VOICE NAVIGATION */}
+            <button
+              type="button"
+              onClick={() => setShowVoiceNavModal(true)}
+              className="top-navbar-theme-btn"
+              title="Multilingual Voice Navigation"
+              aria-label="Open multilingual voice navigation"
+              style={{
+                minHeight: '44px',     
+                minWidth: '44px', 
+                padding: '0.45rem',
+                background: 'rgba(14, 165, 233, 0.1)',
+                borderRadius: '50%',
+                color: '#0284c7',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Mic size={18} />
+            </button>
+          </div>
 
           {/* THEME TOGGLE */}
           <button
@@ -556,6 +571,8 @@ if (normalizedTarget === '/water-quality') {
                 : 'Switch to dark theme'
             }
             style={{
+              minHeight: '44px',     
+              minWidth: '44px', 
               padding: '0.45rem',
               background: 'var(--glass-bg-hover)',
               borderRadius: '50%',
@@ -588,6 +605,8 @@ if (normalizedTarget === '/water-quality') {
             aria-expanded={isOpen}
             aria-controls="mobile-navigation-drawer"
             style={{
+              minHeight: '44px',     
+              minWidth: '44px', 
               padding: '0.45rem',
               background: 'var(--glass-bg-hover)',
               borderRadius: '50%',
@@ -708,39 +727,136 @@ if (normalizedTarget === '/water-quality') {
                 </div>
               </div>
             )}
+            <div 
+              className="mobile-only-tools" 
+              style={{ 
+                flexDirection: 'column', 
+                gap: '0.6rem', 
+                width: '100%'
+              }}
+            >
+              <div 
+                style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(2, 1fr)', 
+                  gap: '0.5rem', 
+                  alignItems: 'center' 
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => { setShowSosModal(true); setIsOpen(false); }}
+                  style={{
+                    minHeight: '44px',
+                    padding: '0.4rem 0.5rem',
+                    borderRadius: '99px',
+                    border: '1px solid #ef4444',
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    color: '#ef4444',
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.3rem',
+                  }}
+                >
+                  <PhoneCall size={13} />
+                  <span>SOS</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setShowOfflineModal(true); setIsOpen(false); }}
+                  style={{
+                    minHeight: '44px',
+                    padding: '0.4rem 0.5rem',
+                    borderRadius: '99px',
+                    border: `1px solid ${isOnline ? 'var(--border-main)' : 'rgba(239, 68, 68, 0.35)'}`,
+                    background: isOnline ? 'var(--glass-bg)' : 'rgba(239, 68, 68, 0.15)',
+                    color: isOnline ? 'var(--text-secondary)' : '#ef4444',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.3rem'
+                  }}
+                >
+                  {isOnline ? (
+                    <span 
+                      style={{ 
+                        width: '7px', 
+                        height: '7px', 
+                        borderRadius: '50%', 
+                        background: '#10b981', 
+                        display: 'inline-block' 
+                      }} 
+                    />
+                  ) : (
+                    <WifiOff size={13} style={{ color: '#ef4444' }} />
+                  )}
+                  <span>{isOnline ? 'Online' : 'Offline'}</span>
+                </button>
+              </div>
+            </div>
 
             {/* SEARCH AND LANGUAGE */}
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'column',
+                alignItems: 'center',
                 gap: '0.85rem',
                 width: '100%'
               }}
             >
-              <VoiceSearchInput
-                onTranscript={(transcript) => {
-                  setIsOpen(false);
-                  navigate(
-                    `/services?q=${encodeURIComponent(transcript)}`
-                  );
+              <div 
+                style={{ 
+                  flex: 1, 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center' 
                 }}
-                onServiceMatched={(match) => {
-                  if (match?.targetServiceId) {
-                    setIsOpen(false);
-                    navigate(
-                      `/services/${match.targetServiceId}`
-                    );
-                  }
-                }}
-              />
+              >
+                <div 
+                  style={{ 
+                    width: '100%', 
+                    display: 'flex', 
+                    justifyContent: 'center' 
+                  }}
+                >
+              
+                  <VoiceSearchInput
+                    onTranscript={(transcript) => {
+                      setIsOpen(false);
+                      navigate(
+                        `/services?q=${encodeURIComponent(transcript)}`
+                      );
+                    }}
+                    onServiceMatched={(match) => {
+                      if (match?.targetServiceId) {
+                        setIsOpen(false);
+                        navigate(
+                          `/services/${match.targetServiceId}`
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              </div>
 
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: '1rem'
+                  flex: 1, 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between', 
+                  background: 'var(--glass-bg)', 
+                  padding: '0.25rem 0.3rem', 
+                  borderRadius: '99px', 
+                  border: '1px solid var(--border-main)' 
                 }}
               >
                 <span
@@ -1126,7 +1242,9 @@ if (normalizedTarget === '/water-quality') {
                   fontWeight: '700',
                   borderRadius: '0.65rem',
                   textDecoration: 'none',
-                  width: '100%'
+                  width: '100%',
+                  background: 'var(--text-primary)', 
+                  color: 'var(--bg-main)'
                 }}
               >
                 <User size={18} />
