@@ -120,6 +120,10 @@ A dedicated preparedness workspace for municipal authorities and disaster respon
 
 Isolated administration workspaces for distinct municipal and district civic authorities, supporting sovereign staff memberships, anti-IDOR scoped datasets, tamper-evident SHA-256 audit logs, bounded local AI guidance, and controlled cross-tenant public catalogue sharing.
 
+### 🧪 16. Catalogue Visual QA Workspace
+
+A reviewer-only workspace for responsive service-card layout checks. Render the production card against deterministic synthetic long-title, multilingual and missing-metadata fixtures at named desktop, tablet and mobile viewports; inspect bounding boxes, overflow warnings and metadata gaps; review synthetic suggestions; compare a saved screenshot baseline; and export a private snapshot. It never reads or publishes production catalogue or citizen data, and review progress is not an official application status. See [architecture, API and accessibility documentation](docs/civic-service-catalogue-visual-qa.md).
+
 ---
 
 ## 📊 Project at a Glance
@@ -159,6 +163,7 @@ The platform includes the following major application areas:
 | Open Source     | Explore community contributions           |
 | Privacy Policy  | Review privacy-related information        |
 | Admin           | Access authorized administrative features |
+| Catalogue Visual QA | Reviewer-only responsive service-card layout checks with synthetic fixtures and private review snapshots |
 | Authority Workspaces | Multi-authority sovereign administration, isolated staff, datasets, and audit logs |
 
 The availability of individual features depends on the application's current implementation and configuration.

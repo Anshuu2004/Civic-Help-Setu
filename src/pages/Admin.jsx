@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   FileCheck,
   Upload,
+  ScanSearch,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -627,6 +628,21 @@ const Admin = () => {
                 Role: {user?.role || 'admin'}
               </span>
             </div>
+
+            <button
+              type="button"
+              onClick={() => navigate('/services/catalogue-visual-qa')}
+              className="btn btn-secondary"
+              style={{
+                padding: '0.5rem 0.85rem',
+                fontSize: '0.85rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+              }}
+            >
+              <ScanSearch size={16} /> Catalogue visual QA
+            </button>
 
             <button
               type="button"
