@@ -191,6 +191,14 @@ After clearing, the sample reviews, sample audit reports and the sample vault do
 | `civicbridge_shareable_citizen_profiles` | Shareable citizen profile tokens | Sharing feature |
 | `civicbridge_voluntary_profile_opt_in` | Voluntary profile participation consent | Voluntary profile feature |
 | `civicbridge_voluntary_profile_attrs` | Voluntary profile attribute selections | Voluntary profile feature |
+| `civicbridge_synthetic_profiles_v1` | Testing scenario configurations and seeds | Synthetic dataset generation parameters (#778) |
+| `civicbridge_synthetic_jobs_v1` | Local generation job statuses and execution logs | Asynchronous synthetic generation job tracking (#778) |
+| `civicbridge_synthetic_artifacts_meta_v1` | Certified synthetic dataset metadata, checksums, and k-anonymity scores | Synthetic artifact cataloging (#778) |
+| `civicbridge_synthetic_artifact_data_` | Isolated synthetic dataset payloads (offices, services, applications, grievances) | Ephemeral testing payload storage (#778) |
+| `civicbridge_synthetic_validation_runs_v1` | Zero-PII compliance and referential integrity audit logs | Synthetic verification history (#778) |
+| `civicbridge_synthetic_schema_catalog_v1` | Canonical schema definitions and field constraints | Schema catalog storage (#778) |
+| `civicbridge_synthetic_audit_logs_v1` | Append-only audit logs for synthetic generation and migrations | Security audit trail (#778) |
+| `civicbridge_synthetic_migration_backup_v1` | Pre-migration snapshot backup for zero-data-loss rollback | Schema rollback storage (#778) |
 | `civicbridge_tenants_v1` | Multi-authority civic administration workspace profiles | Multi-tenant isolation feature (#779) |
 | `civicbridge_tenant_memberships_v1` | Authority staff memberships, assigned roles, and ward jurisdictions | Multi-tenant isolation feature (#779) |
 | `civicbridge_tenant_roles_v1` | Granular tenant role permission schemas | Multi-tenant isolation feature (#779) |

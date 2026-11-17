@@ -59,6 +59,7 @@ import WaterTankerTracker from './pages/WaterTankerTracker';
 import AddressChangePlanner from './pages/AddressChangePlanner';
 import RentalTransitionWorkspace from './pages/RentalTransitionWorkspace';
 import CitizenDraftSyncWorkspace from './pages/CitizenDraftSyncWorkspace';
+import SyntheticDatasetWorkspace from './pages/SyntheticDatasetWorkspace';
 import CounterDemandForecastingWorkspace from './pages/CounterDemandForecastingWorkspace';
 import WardBudgetWorkspace from './pages/WardBudgetWorkspace';
 import LineageExplorerWorkspace from './pages/LineageExplorerWorkspace';
@@ -160,6 +161,8 @@ function AppRoot() {
                       <Route path="/move-planner" element={<AddressChangePlanner />} />
                       <Route path="/citizen-drafts" element={<CitizenDraftSyncWorkspace />} />
                       <Route path="/draft-sync" element={<CitizenDraftSyncWorkspace />} />
+                      <Route path="/synthetic-datasets" element={<SyntheticDatasetWorkspace />} />
+                      <Route path="/dataset-generator" element={<SyntheticDatasetWorkspace />} />
                       <Route path="/provenance" element={<LineageExplorerWorkspace />} />
                       <Route path="/provenance/:id" element={<LineageExplorerWorkspace />} />
                       <Route path="/lineage-explorer" element={<LineageExplorerWorkspace />} />

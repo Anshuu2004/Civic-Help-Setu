@@ -221,6 +221,15 @@ export const RETAINED_STORAGE_KEYS = [
   'civicbridge_duplicate_review_states',
   'civicbridge_civic_works_clusters_v1',
   'civicbridge_civic_works_rate_limit_v1',
+  // Synthetic civic dataset generator stores (#778) - zero PII, ephemeral testing fixtures
+  'civicbridge_synthetic_profiles_v1',
+  'civicbridge_synthetic_jobs_v1',
+  'civicbridge_synthetic_artifacts_meta_v1',
+  'civicbridge_synthetic_validation_runs_v1',
+  'civicbridge_synthetic_artifact_data_',
+  'civicbridge_synthetic_schema_catalog_v1',
+  'civicbridge_synthetic_audit_logs_v1',
+  'civicbridge_synthetic_migration_backup_v1',
   // Counter demand forecasting and queue capacity planning (#764)
   'civicbridge_counter_aggregates_v1',
   'civicbridge_capacity_plans_v1',
@@ -951,6 +960,15 @@ export function enforceRetentionPolicies({
 }
 
 export { verifyPrivacyAuditLogIntegrity, verifyExportedDataIntegrity };
+
+const readStoredJson = (storage, key, fallback = null) => {
+  try {
+    const raw = storage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+};
 
 /**
  * Exports all user-owned data into a documented, machine-readable JSON dossier

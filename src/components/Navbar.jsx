@@ -26,6 +26,7 @@ import {
   Droplets,
   KeyRound,
   Store,
+  Database
   Building2,
   Trees,
   Lightbulb,
@@ -199,6 +200,13 @@ if (normalizedTarget === '/water-quality') {
         return (
           normalizedPath === '/admin' ||
           normalizedPath.startsWith('/admin/')
+        );
+      }
+
+      if (normalizedTarget === '/synthetic-datasets') {
+        return (
+          normalizedPath === '/synthetic-datasets' ||
+          normalizedPath === '/dataset-generator'
         );
       }
 
@@ -1090,6 +1098,12 @@ if (normalizedTarget === '/water-quality') {
                 to: '/tenants',
                 label: 'Authority Workspaces',
                 icon: Building2
+              })}
+
+              {renderNavLink({
+                to: '/synthetic-datasets',
+                label: 'Synthetic Dataset Generator',
+                icon: Database
               })}
 
               {renderNavLink({
