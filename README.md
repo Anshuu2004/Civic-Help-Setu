@@ -325,6 +325,8 @@ npm test
 
 Run this command if a test script is configured in `package.json`. If the script is not configured, use the test command provided by the project.
 
+Dependency update pull requests follow the [dependency maintenance policy](docs/DEPENDENCY_MAINTENANCE.md).
+
 ---
 
 ## 🌐 Deployment
