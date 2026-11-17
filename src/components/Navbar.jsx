@@ -26,6 +26,7 @@ import {
   Droplets,
   KeyRound,
   Store,
+  Database
   Building2,
   Trees,
   Lightbulb,
@@ -37,6 +38,8 @@ import {
   Volume2,
   Recycle,
   HeartPulse,
+  Zap,
+  GraduationCap,
 } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
@@ -199,6 +202,13 @@ if (normalizedTarget === '/water-quality') {
         return (
           normalizedPath === '/admin' ||
           normalizedPath.startsWith('/admin/')
+        );
+      }
+
+      if (normalizedTarget === '/synthetic-datasets') {
+        return (
+          normalizedPath === '/synthetic-datasets' ||
+          normalizedPath === '/dataset-generator'
         );
       }
 
@@ -1088,14 +1098,30 @@ if (normalizedTarget === '/water-quality') {
               })}
 
               {renderNavLink({
-                to: '/street-vendor-workspace',
-                label: 'Street Vendor Rights & TVC',
-                icon: Store
-              })}
+  to: '/street-vendor-workspace',
+  label: 'Street Vendor Rights & TVC',
+  icon: Store
+})}
+{renderNavLink({
+  to: '/electricity-consumer-workspace',
+  label: 'Electricity & Consumer Rights',
+  icon: Zap
+})}
+{renderNavLink({
+  to: '/rte-quota-workspace',
+  label: 'RTE Quota & Child Rights',
+  icon: GraduationCap
+})}
               {renderNavLink({
                 to: '/tenants',
                 label: 'Authority Workspaces',
                 icon: Building2
+              })}
+
+              {renderNavLink({
+                to: '/synthetic-datasets',
+                label: 'Synthetic Dataset Generator',
+                icon: Database
               })}
 
               {renderNavLink({
