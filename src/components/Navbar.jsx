@@ -1103,6 +1103,7 @@ if (normalizedTarget === '/water-quality') {
                 label: 'Electricity & Consumer Rights',
                 icon: Zap
               })}
+              {renderNavLink({ to: '/dark-patterns-workspace', label: 'Dark Patterns & Consumer Redressal', icon: Scale })}
               {renderNavLink({
                 to: '/street-vendor-workspace',
                 label: 'Street Vendor Rights & TVC',

@@ -124,6 +124,7 @@ export const USER_DATA_STORES = [
   { key: 'civicbridge_solid_waste_audits', category: 'drafts', exportAs: 'solidWasteAudits', empty: [] }, // solidWasteStorage.js
   { key: 'civicbridge_patient_grievance_records', category: 'drafts', exportAs: 'patientGrievanceRecords', empty: [] }, // clinicalEstablishmentStorage.js
   { key: 'civicbridge_electricity_cgrf_vault', category: 'drafts', exportAs: 'electricityCgrfVault', empty: [] }, // electricityConsumerStorage.js
+  { key: 'civicbridge_dark_patterns_vault', category: 'drafts', exportAs: 'darkPatternsVault', empty: [] },
   { key: 'civicbridge_vendor_rights_vault', category: 'drafts', exportAs: 'vendorRightsVault', empty: [] }, // streetVendorStorage.js
   { key: 'civicbridge_electricity_cgrf_vault', category: 'drafts', exportAs: 'electricityCgrfVault', empty: [] }, // electricityConsumerStorage.js
   { key: 'civicbridge_rte_grievance_vault', category: 'drafts', exportAs: 'rteGrievanceVault', empty: [] }, // rteAdmissionStorage.js

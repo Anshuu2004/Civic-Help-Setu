@@ -1,0 +1,7 @@
+# Dark patterns and consumer redressal
+
+The workspace at `/dark-patterns-workspace` offers keyword suggestions and manual selection across the 13 notified categories, a price comparison, and editable-by-download notice, CCPA and District Commission templates. Keyword matches and unexplained price differences are leads, not legal findings. Compare contemporaneous screenshots, fee disclosures, dates and the applicable law; check jurisdiction and limitation before filing. The tool does not send complaints.
+
+Enter the headline and final amounts for the same transaction, plus any additional charges disclosed upfront. The difference less those disclosed charges is an estimate, not necessarily an unlawful overcharge. The percentage is unavailable for a zero headline price.
+
+The local vault is text-only. It stores a minimised set of fields with a SHA-256 digest over the entire record. Recomputing the digest detects accidental changes, but an attacker can recompute it; it is not a signature or proof of authenticity. Storage is unencrypted and accessible to scripts and other users of the browser. The scrubbing patterns are best effort: do not enter sensitive details and inspect the saved record and exported dossiers for remaining personal data. Use Clear my data (drafts) or individual delete to remove local records; downloaded files must be deleted separately. Secure-context Web Crypto and working localStorage are required. No evidence is uploaded by this feature.
