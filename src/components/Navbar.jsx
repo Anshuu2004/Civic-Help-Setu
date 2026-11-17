@@ -38,6 +38,7 @@ import {
   Volume2,
   Recycle,
   HeartPulse,
+  Zap,
   GraduationCap,
 } from 'lucide-react';
 
@@ -1097,10 +1098,20 @@ if (normalizedTarget === '/water-quality') {
               })}
 
               {renderNavLink({
-                to: '/rte-quota-workspace',
-                label: 'RTE Quota & Child Rights',
-                icon: GraduationCap
-              })}
+  to: '/street-vendor-workspace',
+  label: 'Street Vendor Rights & TVC',
+  icon: Store
+})}
+{renderNavLink({
+  to: '/electricity-consumer-workspace',
+  label: 'Electricity & Consumer Rights',
+  icon: Zap
+})}
+{renderNavLink({
+  to: '/rte-quota-workspace',
+  label: 'RTE Quota & Child Rights',
+  icon: GraduationCap
+})}
               {renderNavLink({
                 to: '/tenants',
                 label: 'Authority Workspaces',
